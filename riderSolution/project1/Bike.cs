@@ -12,7 +12,7 @@ public class Bike : Vehicle
         FrameMaterial = frameMaterial;
     }
 
-    public new object Clone() //new hides a method from the base class. We can't use override, because method isn't virtual 
+    public override object Clone() //new hides a method from the base class. We can't use override, because method isn't virtual 
     {
         var clonedBike = (Bike)base.Clone();
         clonedBike.HasLock = this.HasLock;

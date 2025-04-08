@@ -41,7 +41,7 @@ public abstract class Vehicle : ICloneable
         Console.WriteLine($"The vehicle {Brand} {Model} is driving to {destination}.");
     }
 
-    public object Clone()
+    public virtual object Clone()
     {
         return this.MemberwiseClone();
     }

@@ -10,7 +10,7 @@ public class Car : Vehicle
         TransmissionType = transmissionType;
     }
 
-    public new object Clone()
+    public override object Clone()
     {
         var clonedCar = (Car)base.Clone();
         clonedCar.TransmissionType = this.TransmissionType;
