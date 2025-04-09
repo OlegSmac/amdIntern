@@ -2,27 +2,38 @@ namespace project1;
 
 public class Bike : Vehicle
 {
-    public override int MaxSpeed { get; } = 30;
-    public bool HasLock { get; set; }
-    public string FrameMaterial { get; set; }
-
-    public Bike(string brand, string model, int year, bool hasLock, string frameMaterial) : base(brand, model, year)
+    public override int MaxSpeed { get; } = 180;
+    private bool HasSidecar { get; set; }
+    public Bike(string brand, string model, int year, bool hasSidecar = false) : base(brand, model, year)
     {
-        HasLock = hasLock;
-        FrameMaterial = frameMaterial;
+        HasSidecar = hasSidecar;
     }
 
-    public override object Clone() //new hides a method from the base class. We can't use override, because method isn't virtual 
+    public void PutSidecar()
+    {
+        if (Speed > 0) throw new Exception("Bike should be stopped before putting sidecar.");
+        if (HasSidecar) throw new Exception("Sidecar is already present.");
+        
+        HasSidecar = true;
+    }
+
+    public void RemoveSidecar()
+    {
+        if (Speed > 0) throw new Exception("Bike should be stopped before removing sidecar.");
+        if (!HasSidecar) throw new Exception("Sidecar isn't present now.");
+        
+        HasSidecar = false;
+    }
+
+    public override object Clone() 
     {
         var clonedBike = (Bike)base.Clone();
-        clonedBike.HasLock = this.HasLock;
-        clonedBike.FrameMaterial = this.FrameMaterial;
         
         return clonedBike;
     }
 
     public override string GetInfo()
     {
-        return $"This is the bike {Brand} {Model} {Year} with {FrameMaterial} frame material";
+        return $"This is the bike {_info.Brand} {_info.Model} {_info.Year} and it has" + (HasSidecar ? "" : "'t") + " sidecar.";
     }
 }

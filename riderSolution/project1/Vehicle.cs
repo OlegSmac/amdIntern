@@ -4,50 +4,103 @@ namespace project1;
 
 public abstract class Vehicle : ICloneable
 {
-    public abstract int MaxSpeed { get; }
-    public string Brand { get; set; }
-    public string Model { get; set; }
-
-    private int _year;
-
-    public int Year
+    public class VehicleInfo
     {
-        get { return _year; }
+        public string Brand { get; }
+        public string Model { get; }
+        public int Year { get; }
+
+        public VehicleInfo(string brand, string model, int year)
+        {
+            if (year > DateTime.Now.Year) throw new ArgumentException("Year cannot be in the future");
+
+            Brand = brand;
+            Model = model;
+            Year = year;
+        }
+        
+        public string GetInfo()
+        {
+            return $"This is {Brand} {Model} vehicle from {Year} year.";
+        }
+    }
+    
+    protected VehicleInfo _info;
+    public abstract int MaxSpeed { get; }
+    public bool IsTurnedOn { get; set; }
+    private int _speed = 0;
+        
+    public int Speed
+    {
+        get { return _speed; }
         set
         {
-            if (value <= DateTime.Now.Year) _year = value;
+            if (!IsTurnedOn) throw new Exception("Vehicle is not turned on.");
+            if (value > MaxSpeed) throw new ArgumentException($"Speed cannot be greater than {MaxSpeed}.");
+            if (value < 0) throw new ArgumentException("Speed cannot be less than zero.");
+        
+            _speed = value;
         }
     }
 
-    protected Vehicle(string brand, string model, int year)
+    public void TurnOn()
     {
-        Brand = brand;
-        Model = model;
-        Year = year;
+        if (IsTurnedOn) throw new Exception("Vehicle is turned on.");
+        
+        IsTurnedOn = true;
+    }
+
+    public void TurnOff()
+    {
+        if (!IsTurnedOn) throw new Exception("Vehicle is not turned on.");
+            
+        IsTurnedOn = false;
+    }
+
+    public Vehicle(string brand, string model, int year)
+    {
+        _info = new VehicleInfo(brand, model, year);
+        IsTurnedOn = false;
+    }
+
+    public void ChangeSpeed(int speedDelta)
+    {
+        Speed += speedDelta; 
     }
     
-    public void Drive()
+    public void Drive() 
     {
-        Console.WriteLine($"The vehicle {Brand} {Model} is driving.");        
+        if (!IsTurnedOn) throw new Exception("Vehicle is not turned on.");
+        
+        if (Speed == 0) ChangeSpeed(1);
+        Console.WriteLine($"The vehicle {_info.Brand} {_info.Model} is driving with speed {Speed} km/h.");        
     }
 
-    public void Drive(double distance)
+    public void Drive(int speed)
     {
-        Console.WriteLine($"The vehicle {Brand} {Model} is driving for {distance} km.");
+        if (!IsTurnedOn) throw new Exception("Vehicle is not turned on.");
+        
+        Speed = speed;
+        Console.WriteLine($"The vehicle {_info.Brand} {_info.Model} is driving with speed {Speed} km/h.");
     }
 
-    public void Drive(string destination)
+    public void Stop()
     {
-        Console.WriteLine($"The vehicle {Brand} {Model} is driving to {destination}.");
+        Speed = 0;
+        Console.WriteLine($"The vehicle {_info.Brand} {_info.Model} is stopped.");
     }
 
     public virtual object Clone()
     {
-        return this.MemberwiseClone();
-    }
+        var clonedVehicle = (Vehicle)this.MemberwiseClone();
+        clonedVehicle._info = new VehicleInfo(_info.Brand, _info.Model, _info.Year);
     
+        return clonedVehicle;
+    }
+
+
     public virtual string GetInfo()
     {
-        return $"This is {Brand} {Model} vehicle from {Year} year.";
+        return _info.GetInfo();
     }
 }

@@ -1,47 +1,82 @@
 namespace project1;
 
+public record Cargo
+{
+    public string Material { get; init; }
+
+    private int _weight;
+    public int Weight
+    {
+        get { return _weight; }
+        init
+        {
+            if (value <= 0) throw new Exception("Weight should be positive number.");
+            
+            _weight = value;
+        }
+    }
+
+    public Cargo(string material, int weight)
+    {
+        Material = material;
+        Weight = weight;
+    }
+}
+
 public class Truck : Vehicle
 {
     public override int MaxSpeed { get; } = 150;
-    public double MaxLoadKg { get; set; }
+    public int MaxLoadKg { get; }
 
-    private double _loadKg;
+    private Cargo _cargo;
     
-    private double LoadKg
-    {
-        set
-        {
-            if (value <= MaxLoadKg) _loadKg = value; 
-        }
-    }
-    
-    public Truck(string brand, string model, int year, double maxLoadKg) : base(brand, model, year)
+    public Truck(string brand, string model, int year, int maxLoadKg) : base(brand, model, year)
     {
         MaxLoadKg = maxLoadKg;
-        _loadKg = 0;
     }
 
-    public double GetLoadKg()
+    public string GetMaterial()
     {
-        return _loadKg;
+        return _cargo == null ? "Empty" : _cargo.Material;
+    } 
+    
+    public int GetLoadKg()
+    {
+        return _cargo == null ? 0 : _cargo.Weight; 
     }
 
-    public void UploadTruck(string material, double weight = 0)
+    public void UploadTruck(Cargo cargo)
     {
-        _loadKg = Math.Min(this.MaxLoadKg, weight);
-        Console.WriteLine($"The {weight} of {material} was uploaded.");
+        if (Speed > 0) throw new Exception("Truck should be stopped before uploading.");
+        if (_cargo != null) throw new Exception("Truck is already uploaded.");
+        if (cargo.Weight > MaxLoadKg) throw new Exception("Weight cannot be greater than max load kg.");
+        
+        _cargo = cargo;
+        Console.WriteLine($"The {_cargo.Weight} of {_cargo.Material} was uploaded.");
+    }
+
+    public void UnloadTruck()
+    {
+        if (Speed > 0) throw new Exception("Truck should be stopped before unloading.");
+        if (_cargo == null) throw new Exception("Truck is already unloaded.");
+        
+        string material = _cargo.Material;
+        int weight = _cargo.Weight;
+        _cargo = null;
+        
+        Console.WriteLine($"The {weight} of {material} was unloaded.");
     }
 
     public override object Clone()
     {
         var clonedTruck = (Truck)base.Clone();
-        clonedTruck.MaxLoadKg = this.MaxLoadKg;
+        clonedTruck._cargo = _cargo == null ? null : new Cargo(_cargo.Material, _cargo.Weight);
         
         return clonedTruck;
     }
     
     public override string GetInfo()
     {
-        return $"This is the truck {Brand} {Model} from {Year} year with max load {MaxLoadKg} kg.";
+        return $"This is the truck {_info.Brand} {_info.Model} from {_info.Year} year with max load {MaxLoadKg} kg.";
     }
 }
