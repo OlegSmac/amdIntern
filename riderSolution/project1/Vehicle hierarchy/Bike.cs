@@ -34,6 +34,6 @@ public class Bike : Vehicle
 
     public override string GetInfo()
     {
-        return $"This is the bike {_info.Brand} {_info.Model} {_info.Year} and it has" + (HasSidecar ? "" : "'t") + " sidecar.";
+        return $"This is the bike {Info.Brand} {Info.Model} {Info.Year} and it has" + (HasSidecar ? "" : "'t") + " sidecar.";
     }
 }

@@ -82,6 +82,6 @@ public class Truck : Vehicle
     
     public override string GetInfo()
     {
-        return $"This is the truck {_info.Brand} {_info.Model} from {_info.Year} year with max load {MaxLoadKg} kg.";
+        return $"This is the truck {Info.Brand} {Info.Model} from {Info.Year} year with max load {MaxLoadKg} kg.";
     }
 }

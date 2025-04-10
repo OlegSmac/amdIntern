@@ -35,6 +35,6 @@ public class Car : Vehicle
     
     public override string GetInfo()
     {
-        return $"This is the car {_info.Brand} {_info.Model} from {_info.Year} year with {Passengers} passengers.";
+        return $"This is the car {Info.Brand} {Info.Model} from {Info.Year} year with {Passengers} passengers.";
     }
 }

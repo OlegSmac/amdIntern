@@ -1,9 +1,11 @@
 namespace project1;
 
-public interface IRepository<T> where T : Vehicle
+public interface IVehicleRepository<T> where T : Vehicle
 {
     IList<T> FindAll();
+
+    T GetById(int id);
     void Add(T vehicle);
-    T TakeById(int id);
+    void ExcludeFromDealership(T vehicle);
     void Update(T vehicle);
 }

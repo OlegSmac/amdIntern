@@ -4,9 +4,9 @@ namespace project1;
 
 public abstract class Vehicle : ICloneable
 {
-    public class VehicleInfo
+    public struct VehicleInfo
     {
-        public int Id { get; set; }
+        public int Id { get; }
         public string Brand { get; }
         public string Model { get; }
         public int Year { get; }
@@ -27,7 +27,7 @@ public abstract class Vehicle : ICloneable
         }
     }
     
-    protected VehicleInfo _info;
+    public VehicleInfo Info;
     public abstract int MaxSpeed { get; }
     public bool IsTurnedOn { get; set; }
     private int _speed = 0;
@@ -47,12 +47,12 @@ public abstract class Vehicle : ICloneable
 
     public int GetId()
     {
-        return _info.Id;
+        return Info.Id;
     }
 
     public Vehicle(int id, string brand, string model, int year)
     {
-        _info = new VehicleInfo(id, brand, model, year);
+        Info = new VehicleInfo(id, brand, model, year);
         IsTurnedOn = false;
     }
     
@@ -80,7 +80,7 @@ public abstract class Vehicle : ICloneable
         if (!IsTurnedOn) throw new Exception("Vehicle is not turned on.");
         
         if (Speed == 0) ChangeSpeed(1);
-        Console.WriteLine($"The vehicle {_info.Brand} {_info.Model} is driving with speed {Speed} km/h.");        
+        Console.WriteLine($"The vehicle {Info.Brand} {Info.Model} is driving with speed {Speed} km/h.");        
     }
 
     public void Drive(int speed)
@@ -88,19 +88,19 @@ public abstract class Vehicle : ICloneable
         if (!IsTurnedOn) throw new Exception("Vehicle is not turned on.");
         
         Speed = speed;
-        Console.WriteLine($"The vehicle {_info.Brand} {_info.Model} is driving with speed {Speed} km/h.");
+        Console.WriteLine($"The vehicle {Info.Brand} {Info.Model} is driving with speed {Speed} km/h.");
     }
 
     public void Stop()
     {
         Speed = 0;
-        Console.WriteLine($"The vehicle {_info.Brand} {_info.Model} is stopped.");
+        Console.WriteLine($"The vehicle {Info.Brand} {Info.Model} is stopped.");
     }
 
     public virtual object Clone()
     {
         var clonedVehicle = (Vehicle)this.MemberwiseClone();
-        clonedVehicle._info = new VehicleInfo(_info.Id, _info.Brand, _info.Model, _info.Year);
+        clonedVehicle.Info = new VehicleInfo(Info.Id, Info.Brand, Info.Model, Info.Year);
     
         return clonedVehicle;
     }
@@ -108,6 +108,6 @@ public abstract class Vehicle : ICloneable
 
     public virtual string GetInfo()
     {
-        return _info.GetInfo();
+        return Info.GetInfo();
     }
 }

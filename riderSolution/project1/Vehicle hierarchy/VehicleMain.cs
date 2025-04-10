@@ -17,7 +17,8 @@ public class VehicleMain
         var truck1 = new Truck(3, "Scania", "R22", 2004, 1000);
         dealership1.Add(truck1);
 
-        var car = dealership1.TakeById(1);
+        var car = dealership1.GetById(1);
+        dealership1.ExcludeFromDealership(car);
         Console.WriteLine(car.GetInfo());
         
         var dealership2 = new VehicleDealership<Car>();

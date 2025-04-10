@@ -1,6 +1,6 @@
 namespace project1;
 
-public class VehicleDealership<T> : IRepository<T> where T : Vehicle
+public class VehicleDealership<T> : IVehicleRepository<T> where T : Vehicle
 {
     private readonly List<T> _vehicles;
 
@@ -9,7 +9,7 @@ public class VehicleDealership<T> : IRepository<T> where T : Vehicle
         _vehicles = new List<T>();
     }
 
-    private T GetById(int id)
+    public T GetById(int id)
     {
         foreach (T vehicle in _vehicles)
         {
@@ -36,26 +36,27 @@ public class VehicleDealership<T> : IRepository<T> where T : Vehicle
         _vehicles.Add(vehicle);
     }
 
-    public T TakeById(int id)
+    public void ExcludeFromDealership(T vehicle)
     {
-        if (GetById(id) == null) throw new Exception($"Vehicle with {id} must exists before taking.");
+        if (vehicle == null) throw new ArgumentException($"Vehicle must not be null.");
         
-        T vehicle = GetById(id);
         _vehicles.Remove(vehicle);
-        
-        return vehicle;
     }
 
     public void Update(T vehicle)
     {
-        if (GetById(vehicle.GetId()) == null) throw new Exception($"Vehicle with {vehicle.GetId()} must exists before updating.");
+        if (vehicle == null) throw new ArgumentException($"Vehicle must not be null.");
+        T vehicleInList = GetById(vehicle.GetId()); 
+        
+        if (vehicleInList == null) throw new Exception($"Vehicle with {vehicle.GetId()} must exists before updating.");
         if (vehicle.Speed != 0) throw new Exception("Vehicle should be stopped before adding in dealership.");
         if (vehicle.IsTurnedOn) throw new Exception("Vehicle should be turned off.");
         
         if (vehicle is Car car && car.Passengers > 0) throw new Exception("Car shouldn't has passengers.");
         if (vehicle is Truck truck && truck.HasCargo()) throw new Exception("Truck shouldn't have cargo.");
         
-        T vehicleInList = GetById(vehicle.GetId());
-        vehicleInList = (T)vehicle.Clone();
+        if (vehicleInList.Speed != vehicle.Speed) vehicleInList.Speed = vehicle.Speed;
+        if (vehicleInList.IsTurnedOn != vehicle.IsTurnedOn) vehicleInList.IsTurnedOn = vehicle.IsTurnedOn;
+        vehicleInList.Info = vehicle.Info;
     }
 }

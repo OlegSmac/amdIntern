@@ -7,7 +7,7 @@ public class Program
 {
     static void Main()
     {
-        //VehicleMain.MainFunction();
-        Lesson5Main.MainFunction();
+        VehicleMain.MainFunction();
+        //Lesson5Main.MainFunction();
     }
 }
