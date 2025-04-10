@@ -30,7 +30,7 @@ public class Truck : Vehicle
 
     private Cargo _cargo;
     
-    public Truck(string brand, string model, int year, int maxLoadKg) : base(brand, model, year)
+    public Truck(int id, string brand, string model, int year, int maxLoadKg) : base(id, brand, model, year)
     {
         MaxLoadKg = maxLoadKg;
     }
@@ -43,6 +43,11 @@ public class Truck : Vehicle
     public int GetLoadKg()
     {
         return _cargo == null ? 0 : _cargo.Weight; 
+    }
+
+    public bool HasCargo()
+    {
+        return _cargo != null;
     }
 
     public void UploadTruck(Cargo cargo)

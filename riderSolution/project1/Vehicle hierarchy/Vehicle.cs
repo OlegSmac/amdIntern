@@ -6,14 +6,16 @@ public abstract class Vehicle : ICloneable
 {
     public class VehicleInfo
     {
+        public int Id { get; set; }
         public string Brand { get; }
         public string Model { get; }
         public int Year { get; }
 
-        public VehicleInfo(string brand, string model, int year)
+        public VehicleInfo(int id, string brand, string model, int year)
         {
             if (year > DateTime.Now.Year) throw new ArgumentException("Year cannot be in the future");
 
+            Id = id;
             Brand = brand;
             Model = model;
             Year = year;
@@ -29,7 +31,7 @@ public abstract class Vehicle : ICloneable
     public abstract int MaxSpeed { get; }
     public bool IsTurnedOn { get; set; }
     private int _speed = 0;
-        
+
     public int Speed
     {
         get { return _speed; }
@@ -38,11 +40,22 @@ public abstract class Vehicle : ICloneable
             if (!IsTurnedOn) throw new Exception("Vehicle is not turned on.");
             if (value > MaxSpeed) throw new ArgumentException($"Speed cannot be greater than {MaxSpeed}.");
             if (value < 0) throw new ArgumentException("Speed cannot be less than zero.");
-        
+
             _speed = value;
         }
     }
 
+    public int GetId()
+    {
+        return _info.Id;
+    }
+
+    public Vehicle(int id, string brand, string model, int year)
+    {
+        _info = new VehicleInfo(id, brand, model, year);
+        IsTurnedOn = false;
+    }
+    
     public void TurnOn()
     {
         if (IsTurnedOn) throw new Exception("Vehicle is turned on.");
@@ -54,12 +67,6 @@ public abstract class Vehicle : ICloneable
     {
         if (!IsTurnedOn) throw new Exception("Vehicle is not turned on.");
             
-        IsTurnedOn = false;
-    }
-
-    public Vehicle(string brand, string model, int year)
-    {
-        _info = new VehicleInfo(brand, model, year);
         IsTurnedOn = false;
     }
 
@@ -93,7 +100,7 @@ public abstract class Vehicle : ICloneable
     public virtual object Clone()
     {
         var clonedVehicle = (Vehicle)this.MemberwiseClone();
-        clonedVehicle._info = new VehicleInfo(_info.Brand, _info.Model, _info.Year);
+        clonedVehicle._info = new VehicleInfo(_info.Id, _info.Brand, _info.Model, _info.Year);
     
         return clonedVehicle;
     }

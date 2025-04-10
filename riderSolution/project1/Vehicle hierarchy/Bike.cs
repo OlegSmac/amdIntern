@@ -4,7 +4,7 @@ public class Bike : Vehicle
 {
     public override int MaxSpeed { get; } = 180;
     private bool HasSidecar { get; set; }
-    public Bike(string brand, string model, int year, bool hasSidecar = false) : base(brand, model, year)
+    public Bike(int id, string brand, string model, int year, bool hasSidecar = false) : base(id, brand, model, year)
     {
         HasSidecar = hasSidecar;
     }

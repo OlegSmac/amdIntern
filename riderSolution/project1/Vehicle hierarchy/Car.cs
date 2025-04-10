@@ -3,9 +3,9 @@ namespace project1;
 public class Car : Vehicle
 {
     public override int MaxSpeed { get; } = 200;
-    private int Passengers { get; set; } //driver is by default, this is extra passengers
+    public int Passengers { get; private set; } //driver is by default, this is extra passengers
 
-    public Car(string brand, string model, int year, int passengers = 0) : base(brand, model, year)
+    public Car(int id, string brand, string model, int year, int passengers = 0) : base(id, brand, model, year)
     {
         Passengers = passengers;
     }
