@@ -1,3 +1,5 @@
+using project1.Exceptions;
+
 namespace project1;
 
 public class VehicleDealership<T> : IVehicleRepository<T> where T : Vehicle
@@ -27,10 +29,10 @@ public class VehicleDealership<T> : IVehicleRepository<T> where T : Vehicle
     public void Add(T vehicle)
     {
         if (GetById(vehicle.GetId()) != null) throw new Exception($"Vehicle with id = {vehicle.GetId()} already exists in dealership.");
-        if (vehicle.Speed != 0) throw new Exception("Vehicle should be stopped before adding in dealership.");
-        if (vehicle.IsTurnedOn) throw new Exception("Vehicle should be turned off before adding in dealership.");
+        if (vehicle.Speed != 0) throw new VehicleNotStoppedException("Vehicle should be stopped before adding in dealership.");
+        if (vehicle.IsTurnedOn) throw new VehicleTurnedOnException("Vehicle should be turned off before adding in dealership.");
         
-        if (vehicle is Car car && car.Passengers > 0) throw new Exception("Car shouldn't has passengers.");
+        if (vehicle is Car car && car.Passengers > 0) throw new Exception("Car shouldn't have passengers.");
         if (vehicle is Truck truck && truck.HasCargo()) throw new Exception("Truck shouldn't have cargo.");
         
         _vehicles.Add(vehicle);
@@ -49,8 +51,8 @@ public class VehicleDealership<T> : IVehicleRepository<T> where T : Vehicle
         T vehicleInList = GetById(vehicle.GetId()); 
         
         if (vehicleInList == null) throw new Exception($"Vehicle with {vehicle.GetId()} must exists before updating.");
-        if (vehicle.Speed != 0) throw new Exception("Vehicle should be stopped before adding in dealership.");
-        if (vehicle.IsTurnedOn) throw new Exception("Vehicle should be turned off.");
+        if (vehicle.Speed != 0) throw new VehicleNotStoppedException("Vehicle should be stopped before adding in dealership.");
+        if (vehicle.IsTurnedOn) throw new VehicleTurnedOnException("Vehicle should be turned off.");
         
         if (vehicle is Car car && car.Passengers > 0) throw new Exception("Car shouldn't has passengers.");
         if (vehicle is Truck truck && truck.HasCargo()) throw new Exception("Truck shouldn't have cargo.");
