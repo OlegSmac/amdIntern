@@ -2,6 +2,7 @@ using project1.Exceptions;
 
 namespace project1;
 
+public delegate void PrintAllInformation(Vehicle vehicle);
 public class VehicleDealership<T> : IVehicleRepository<T> where T : Vehicle
 {
     private readonly List<T> _vehicles;
@@ -60,5 +61,35 @@ public class VehicleDealership<T> : IVehicleRepository<T> where T : Vehicle
         if (vehicleInList.Speed != vehicle.Speed) vehicleInList.Speed = vehicle.Speed;
         if (vehicleInList.IsTurnedOn != vehicle.IsTurnedOn) vehicleInList.IsTurnedOn = vehicle.IsTurnedOn;
         vehicleInList.Info = vehicle.Info;
+    }
+
+    // public List<T> Find(Func<T, bool> compare) //using Func delegate
+    // {
+    //     var vehicles = new List<T>();
+    //     foreach (T vehicle in _vehicles)
+    //     {
+    //         if (compare(vehicle)) vehicles.Add(vehicle);
+    //     }
+    //     
+    //     return vehicles;
+    // }
+    
+    public List<T> Find(Func<T, bool> compare)
+    {
+        return _vehicles.Where(compare).ToList();
+    }
+    
+    public List<T> GetSorted(Func<T, object> selector)
+    {
+        return _vehicles.OrderBy(selector).ToList();
+    }
+
+    public void PrintAllBrandsInDealership()
+    {
+        var brands = _vehicles.Select(v => v.Info.Brand).Distinct();
+     
+        Console.WriteLine("Brands in the dealership:");
+        foreach (var brand in brands) Console.Write($"{brand} ");
+        Console.WriteLine();
     }
 }
