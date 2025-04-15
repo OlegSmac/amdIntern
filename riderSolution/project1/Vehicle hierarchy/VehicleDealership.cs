@@ -2,7 +2,6 @@ using project1.Exceptions;
 
 namespace project1;
 
-public delegate void PrintAllInformation(Vehicle vehicle);
 public class VehicleDealership<T> : IVehicleRepository<T> where T : Vehicle
 {
     private readonly List<T> _vehicles;
@@ -91,5 +90,25 @@ public class VehicleDealership<T> : IVehicleRepository<T> where T : Vehicle
         Console.WriteLine("Brands in the dealership:");
         foreach (var brand in brands) Console.Write($"{brand} ");
         Console.WriteLine();
+    }
+
+    public double VehiclesAverageYear()
+    {
+        return _vehicles.Average(vehicle => vehicle.Info.Year);
+    }
+
+    public IList<T> GetIntersectVehicles(VehicleDealership<T> vehicleDealership)
+    {
+        return _vehicles.Intersect(vehicleDealership.FindAll()).ToList();
+    }
+
+    public bool AreAllVehiclesFromBrand(string brand)
+    {
+        return _vehicles.Any(vehicle => vehicle.Info.Brand == brand);
+    }
+
+    public T GetFirstVehicleFromBrand(string brand)
+    {
+        return _vehicles.FirstOrDefault(vehicle => vehicle.Info.Brand == brand);
     }
 }
