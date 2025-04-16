@@ -14,7 +14,7 @@ public class Car : Vehicle
 
     public void TakePassengers(int passengers)
     {
-        if (Speed > 0) throw new VehicleNotStoppedException("Car should be stopped before taking any passengers.");
+        if (Speed > 0) throw new Exception("Car should be stopped before taking any passengers.");
         if (Passengers + passengers > 4) throw new ArgumentException("Number of passengers can't be more than 4.");
         
         Passengers += passengers;
@@ -22,7 +22,7 @@ public class Car : Vehicle
 
     public void DisembarkPassengers(int passengers)
     {
-        if (Speed > 0) throw new VehicleNotStoppedException("Car should be stopped before set down any passengers.");
+        if (Speed > 0) throw new Exception("Car should be stopped before set down any passengers.");
         if (passengers > Passengers) throw new ArgumentException("Car doesn't have this number of passengers.");
         
         Passengers -= passengers;

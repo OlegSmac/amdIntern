@@ -7,7 +7,15 @@ public class Program
 {
     static void Main()
     {
-        VehicleMain.MainFunction();
+        try
+        {
+            VehicleMain.MainFunction();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        
         //Lesson5Main.MainFunction();
     }
 }

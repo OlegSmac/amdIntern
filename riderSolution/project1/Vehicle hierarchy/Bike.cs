@@ -13,7 +13,7 @@ public class Bike : Vehicle
 
     public void PutSidecar()
     {
-        if (Speed > 0) throw new VehicleNotStoppedException("Bike should be stopped before putting sidecar.");
+        if (Speed > 0) throw new Exception("Bike should be stopped before putting sidecar.");
         if (HasSidecar) throw new Exception("Sidecar is already present.");
         
         HasSidecar = true;
@@ -21,7 +21,7 @@ public class Bike : Vehicle
 
     public void RemoveSidecar()
     {
-        if (Speed > 0) throw new VehicleNotStoppedException("Bike should be stopped before removing sidecar.");
+        if (Speed > 0) throw new Exception("Bike should be stopped before removing sidecar.");
         if (!HasSidecar) throw new Exception("Sidecar isn't present now.");
         
         HasSidecar = false;

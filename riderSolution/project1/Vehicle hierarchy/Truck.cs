@@ -54,7 +54,7 @@ public class Truck : Vehicle
 
     public void UploadTruck(Cargo cargo)
     {
-        if (Speed > 0) throw new VehicleNotStoppedException("Truck should be stopped before uploading.");
+        if (Speed > 0) throw new Exception("Truck should be stopped before uploading.");
         if (_cargo != null) throw new Exception("Truck is already uploaded.");
         if (cargo.Weight > MaxLoadKg) throw new Exception("Weight cannot be greater than max load kg.");
         
@@ -64,7 +64,7 @@ public class Truck : Vehicle
 
     public void UnloadTruck()
     {
-        if (Speed > 0) throw new VehicleNotStoppedException("Truck should be stopped before unloading.");
+        if (Speed > 0) throw new Exception("Truck should be stopped before unloading.");
         if (_cargo == null) throw new Exception("Truck is already unloaded.");
         
         string material = _cargo.Material;
