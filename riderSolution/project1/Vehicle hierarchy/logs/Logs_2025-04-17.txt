@@ -1,0 +1,6 @@
+2025-04-17 15:59:18 method: Add, outcome: Success
+2025-04-17 15:59:18 method: Update, outcome: Failure: Vehicle with id 2 must exist in dealership before updating.
+2025-04-17 15:59:21 method: Add, outcome: Success
+2025-04-17 15:59:21 method: Update, outcome: Failure: Vehicle with id 2 must exist in dealership before updating.
+2025-04-17 15:59:29 method: Add, outcome: Success
+2025-04-17 15:59:29 method: ExcludeFromDealership, outcome: Success

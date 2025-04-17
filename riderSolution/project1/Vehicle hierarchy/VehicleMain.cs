@@ -7,7 +7,7 @@ namespace project1;
 public class VehicleMain
 {
     public delegate void PrintAllCarInformation(Car car);
-    internal static void MainFunction()
+    internal static async Task MainFunction()
     {
         //--------------------------------------------- 7 assignment
         var dealership1 = new VehicleDealership<Vehicle>();
@@ -17,8 +17,8 @@ public class VehicleMain
 
         try
         {
-            car1.TakePassengers(2);
-            dealership1.Add(car1);
+            //car1.TakePassengers(2);
+            await dealership1.Add(car1);
         }
         catch (VehicleAlreadyExistsException e)
         {
@@ -40,20 +40,20 @@ public class VehicleMain
 
         try
         {
-            dealership1.Update(car2);
+            await dealership1.Update(car2);
         }
         catch (VehicleNotFoundException e)
         {
             Console.WriteLine($"Vehicle not found: {e.Message}");
             throw;
         }
-
+        
         var truck1 = new Truck(3, "Scania", "R22", 2004, 1000);
         var car = dealership1.GetById(1);
-
+        
         if (car != null)
         {
-            dealership1.ExcludeFromDealership(car);
+            await dealership1.ExcludeFromDealership(car);
         }
         
         

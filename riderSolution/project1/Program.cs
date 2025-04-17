@@ -6,18 +6,18 @@ namespace project1;
 
 public class Program
 {
-    static void Main()
+    static async Task Main()
     {
-        // try
-        // {
-        //     VehicleMain.MainFunction();
-        // }
-        // catch (Exception e)
-        // {
-        //     Console.WriteLine(e.Message);
-        // }
+        try
+        {
+            await VehicleMain.MainFunction();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
         
         //Lesson5Main.MainFunction();
-        Lesson10Main.MainFunction();
+        //Lesson10Main.MainFunction();
     }
 }

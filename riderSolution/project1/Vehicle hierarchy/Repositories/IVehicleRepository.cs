@@ -5,7 +5,7 @@ public interface IVehicleRepository<T> where T : Vehicle
     IList<T> FindAll();
 
     T GetById(int id);
-    void Add(T vehicle);
-    void ExcludeFromDealership(T vehicle);
-    void Update(T vehicle);
+    Task Add(T vehicle);
+    Task ExcludeFromDealership(T vehicle);
+    Task Update(T vehicle);
 }
