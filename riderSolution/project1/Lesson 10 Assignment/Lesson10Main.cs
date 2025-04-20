@@ -40,33 +40,33 @@ public class Lesson10Main
         string subject = "Subscribing to the newsletter.";
         string body = "Thank you for subscribing to our newsletter.";
 
-        using (SmtpClient smtpClient = new SmtpClient())
+        using SmtpClient smtpClient = new SmtpClient();
+        smtpClient.Host = "smtp.gmail.com";
+        smtpClient.Port = 587;
+        smtpClient.Credentials = new NetworkCredential(senderEmail, senderPassword);
+        smtpClient.EnableSsl = true;
+
+        MailMessage mailMessage = new MailMessage(senderEmail, userEmail, subject, body);
+        try
         {
-            smtpClient.Host = "smtp.gmail.com";
-            smtpClient.Port = 587;
-            smtpClient.Credentials = new NetworkCredential(senderEmail, senderPassword);
-            smtpClient.EnableSsl = true;
-            
-            using (MailMessage mailMessage = new MailMessage(senderEmail, userEmail, subject, body))
+            smtpClient.Send(mailMessage);
+            Console.WriteLine("Message sent successfully.");
+        }
+        catch (SmtpException smtpEx)
+        {
+            Console.WriteLine($"SMTP Error: {smtpEx.Message}");
+            if (smtpEx.InnerException != null)
             {
-                try
-                {
-                    smtpClient.Send(mailMessage);
-                    Console.WriteLine("Message sent successfully.");
-                }
-                catch (SmtpException smtpEx)
-                {
-                    Console.WriteLine($"SMTP Error: {smtpEx.Message}");
-                    if (smtpEx.InnerException != null)
-                    {
-                        Console.WriteLine($"Inner Exception: {smtpEx.InnerException.Message}");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Another exception: {e.Message}");
-                }
+                Console.WriteLine($"Inner Exception: {smtpEx.InnerException.Message}");
             }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Another exception: {e.Message}");
+        }
+        finally
+        {
+            mailMessage.Dispose();
         }
     }
     

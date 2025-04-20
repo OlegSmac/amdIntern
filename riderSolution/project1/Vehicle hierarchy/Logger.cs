@@ -7,11 +7,10 @@ public static class Logger
         string logDir = "/home/thinkpad/Amdaris/amdIntern/riderSolution/project1/Vehicle hierarchy/logs";
         if (!Directory.Exists(logDir)) Directory.CreateDirectory(logDir);
         
-        string date = DateTime.Now.ToString("yyyy-MM-dd");
-        string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        string fileName = Path.Combine(logDir, $"Logs_{date}.txt");
+        DateTime dateTime = DateTime.Now;
+        string fileName = Path.Combine(logDir, $"Logs_{dateTime:yyyy-MM-dd}.txt");
         string outcome = success ? "Success" : $"Failure: {errorMessage}";
-        string log = $"{dateTime} method: {methodName}, outcome: {outcome}\n";
+        string log = $"{dateTime:yyyy-MM-dd HH:mm:ss} method: {methodName}, outcome: {outcome}\n";
         
         // Console.WriteLine($"Current directory: {Environment.CurrentDirectory}");
         // Console.WriteLine($"Log file path: {fileName}");
