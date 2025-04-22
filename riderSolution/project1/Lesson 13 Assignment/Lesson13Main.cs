@@ -123,5 +123,5 @@ public class Lesson13Main
 
             Console.ReadLine();
         }
-    }    
+    }
 }
