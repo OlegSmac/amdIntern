@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using project1.Lesson_13_Assignment.BusinessLayer.Exceptions;
 
 namespace project1.Lesson_13_Assignment.BusinessLayer
 {
 	/// <summary>
 	/// Represents a single speaker
+	/// First version: https://github.com/mustafadagdelen/dirty-code-for-clean-code-sample/blob/master/BusinessLayer/Speaker.cs
 	/// </summary>
 	public class Speaker
 	{
@@ -14,9 +16,9 @@ namespace project1.Lesson_13_Assignment.BusinessLayer
 		private const int CERTIFICATE_COUNT = 3;
 		
 		//var nt = new List<string> {"MVC4", "Node.js", "CouchDB", "KendoUI", "Dapper", "Angular"}; //rename to _newTechnologies
-		private readonly List<string> _oldTechnologies = new List<string>() { "Cobol", "Punch Cards", "Commodore", "VBScript" }; 
-		private readonly List<string> _unfavorableDomains = new List<string>() { "aol.com", "hotmail.com", "prodigy.com", "CompuServe.com" };
-		private readonly List<string> _preferredEmployers = new List<string>() { "Microsoft", "Google", "Fog Creek Software", "37Signals" };
+		public static readonly List<string> OldTechnologies = new List<string>() { "Cobol", "Punch Cards", "Commodore", "VBScript" }; 
+		public static readonly List<string> UnfavorableDomains = new List<string>() { "aol.com", "hotmail.com", "prodigy.com", "CompuServe.com" };
+		public static readonly List<string> PreferredEmployers = new List<string>() { "Microsoft", "Google", "Fog Creek Software", "37Signals" };
 		
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
@@ -30,6 +32,23 @@ namespace project1.Lesson_13_Assignment.BusinessLayer
 		public int RegistrationFee { get; set; }
 		public List<Session> Sessions { get; set; }
 
+		private bool DoesSpeakerMeetsRequirements()
+		{
+			return Exp > EXPERIENCE_YEARS ||
+			       HasBlog ||
+			       Certifications.Count() > CERTIFICATE_COUNT ||
+			       PreferredEmployers.Contains(Employer) ||
+			       !UnfavorableDomains.Contains(Email.Split('@').Last()) &&
+			       !(Browser.Name == WebBrowser.BrowserName.InternetExplorer && Browser.MajorVersion < 9);
+		}
+
+		private bool IsAnyApprovedSession()
+		{
+			return Sessions.Any(session =>
+				!OldTechnologies.Any(oldTechnology =>
+					session.Title.Contains(oldTechnology) || session.Description.Contains(oldTechnology)));
+		}
+		
 		private void CalculateRegistrationFee()
 		{
 			if (Exp <= 1) RegistrationFee = 500;
@@ -49,22 +68,8 @@ namespace project1.Lesson_13_Assignment.BusinessLayer
 			if (string.IsNullOrWhiteSpace(LastName)) throw new ArgumentNullException("Last name is required.");
 			if (string.IsNullOrWhiteSpace(Email)) throw new ArgumentNullException("Email is required.");
 			if (Sessions.Count() == 0) throw new ArgumentException("Can't register speaker with no sessions to present.");
-			
-			if (!(Exp > EXPERIENCE_YEARS ||
-			      HasBlog ||
-			      Certifications.Count() > CERTIFICATE_COUNT ||
-			      _preferredEmployers.Contains(Employer) ||
-			      !_unfavorableDomains.Contains(Email.Split('@').Last()) && 
-			      !(Browser.Name == WebBrowser.BrowserName.InternetExplorer && Browser.MajorVersion < 9)))
-			{
-				throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our arbitrary and capricious standards.");
-			}
-
-			if (Sessions.All(session => 
-				    _oldTechnologies.Any(oldTechnology => session.Title.Contains(oldTechnology) || session.Description.Contains(oldTechnology))))
-			{
-				throw new NoSessionsApprovedException("No sessions approved.");
-			}
+			if (!DoesSpeakerMeetsRequirements()) throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our arbitrary and capricious standards.");
+			if (IsAnyApprovedSession()) throw new NoSessionsApprovedException("No sessions approved.");
 			
 			
 			//if we got this far, the speaker is approved
@@ -84,19 +89,5 @@ namespace project1.Lesson_13_Assignment.BusinessLayer
 				throw new Exception("Error saving speaker", e);
 			}
 		}
-
-		#region Custom Exceptions
-		public class SpeakerDoesntMeetRequirementsException : Exception
-		{
-			public SpeakerDoesntMeetRequirementsException(string message) : base(message) { }
-
-			public SpeakerDoesntMeetRequirementsException(string format, params object[] args) : base(string.Format(format, args)) { }
-		}
-
-		public class NoSessionsApprovedException : Exception
-		{
-			public NoSessionsApprovedException(string message) : base(message) { }
-		}
-		#endregion
 	}
 }
