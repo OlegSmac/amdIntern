@@ -1,6 +1,6 @@
 namespace project1.Lesson_12_Assignment;
 
-public interface INotificationSender
+public interface INotificationSender<T>
 {
-    void SendNotification(User fromUser, User toUser, string message);
+    void SendNotification(User fromUser, User toUser, T message);
 }

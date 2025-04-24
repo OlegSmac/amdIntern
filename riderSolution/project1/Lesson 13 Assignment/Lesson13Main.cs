@@ -4,7 +4,7 @@ namespace project1.Lesson_13_Assignment;
 
 public class Lesson13Main
 {
-    private static IRepository _repository = new Repository();
+    private static RegistrationService registrationService = new RegistrationService();
     static void OptionAddSpeaker()
     {
         Console.WriteLine("Enter the speaker first name:");
@@ -14,7 +14,7 @@ public class Lesson13Main
         Console.WriteLine("Enter the speaker email:");
         string email = Console.ReadLine();
         Console.WriteLine("Enter the speaker expirience:");
-        int exp = int.Parse(Console.ReadLine());
+        int experience = int.Parse(Console.ReadLine());
         Console.WriteLine("Does this speaker have a blog:");
         bool hasBlog = bool.Parse(Console.ReadLine() ?? "false");
         
@@ -58,34 +58,18 @@ public class Lesson13Main
             FirstName = firstName,
             LastName = lastName, 
             Email = email,
-            Exp = exp,
+            Experience = experience,
             HasBlog = hasBlog,
             BlogURL = blogUrl,
             Browser = new WebBrowser(browserName, 1),
             Certifications = certifications, Employer = employer,
             Sessions = sessions
         };
-        // var speaker = new Speaker
-        // {
-        //     FirstName = "Oleg",
-        //     LastName = "Smac",
-        //     Email = "oleg@gmail.com",
-        //     Exp = 1,
-        //     HasBlog = true,
-        //     BlogURL = "https://fdf",
-        //     Browser = new WebBrowser("Chrome", 100),
-        //     Certifications = new List<string> { "ICPC", "SQL", "C#" },
-        //     Employer = "Microsoft",
-        //     Sessions = new List<Session>
-        //     {
-        //         new Session("Modern C#", "Talk about new C# features.")
-        //     }
-        // };
 
         int? speakerId = null;
         try
         {
-            speakerId = speaker.Register(_repository);
+            speakerId = registrationService.Register(speaker);
         }
         catch (Exception e)
         {

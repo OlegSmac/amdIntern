@@ -2,43 +2,41 @@ namespace project1.Lesson_12_Assignment;
 
 public class Lesson12Main
 {
-    static readonly Dictionary<int, INotificationSender> notificationChannels = new()
-    {
-        { 1, new EmailNotification() },
-        { 2, new SmsNotification() },
-        { 3, new PushNotification() }
-    };
+    private static NotificationService<string> service = new NotificationService<string>();
 
-    private static List<User> users = new()
-    {
-        new User("OlegSmac", "oleansmacinih@gmail.com", "+37379240713", "26542"),
-        new User("Nikita", "nikita@gmail.com", "079534453", "42244"),
-        new User("Tatiana", "tatiana@gmail.com", "+37379101317", "42245")
-    };
-    
-    private static NotificationService service = new NotificationService();
-
-    static User GetUser(Func<User, bool> compare)
-    {
-        return users.Where(compare).FirstOrDefault();
-    }
-
-    static void OptionSendNotification()
+    static User GetSender()
     {
         Console.WriteLine("Enter sender nickname:");
         var senderNickname = Console.ReadLine();
-        var fromUser = GetUser(user => user.Nickname == senderNickname);
-        
+        return UserService.GetUser(user => user.Nickname == senderNickname);
+    }
+
+    static User GetReceiver()
+    {
+        Console.WriteLine("Enter recipient nickname:");
+        var recipientNickname = Console.ReadLine();
+        return UserService.GetUser(user => user.Nickname == recipientNickname);
+    }
+
+    static void PrintChannelTypes()
+    {
+        Console.WriteLine("\nChoose notification channel:");
+        foreach (var entry in Enum.GetValues(typeof(NotificationService<>.NotificationType)))
+        {
+            Console.WriteLine($"{entry}");
+        }
+    }
+    
+    static void OptionSendNotification()
+    {
+        User fromUser = GetSender();
         if (fromUser == null)
         {
             Console.WriteLine("User not found.");
             return;
         }
         
-        Console.WriteLine("Enter recipient nickname:");
-        var recipientNickname = Console.ReadLine();
-        var toUser = GetUser(user => user.Nickname == recipientNickname);
-
+        User toUser = GetReceiver();
         if (toUser == null)
         {
             Console.WriteLine("User not found.");
@@ -46,13 +44,9 @@ public class Lesson12Main
         }
 
         Console.WriteLine("Enter your message:");
-        var message = Console.ReadLine() ?? "";
+        string message = Console.ReadLine() ?? "";
 
-        Console.WriteLine("\nChoose notification channel:");
-        foreach (var entry in notificationChannels)
-        {
-            Console.WriteLine($"{entry.Key}. {entry.Value.GetType().Name.Replace("Notification", "")}");
-        }
+        PrintChannelTypes();
 
         Console.Write("Your choice: ");
         if (!int.TryParse(Console.ReadLine(), out int choice))
@@ -61,37 +55,40 @@ public class Lesson12Main
             return;
         }
 
-        if (notificationChannels.TryGetValue(choice, out INotificationSender channel))
-        {
-            service.Notify(fromUser, toUser, message, channel);
-        }
-        else Console.WriteLine("Invalid choice.");
+        service.Notify(fromUser, toUser, message, (NotificationService<string>.NotificationType)choice);
     }
-
-    static void OptionAddUser()
+    
+    static User GetUserInput()
     {
         Console.WriteLine("Enter nickname:");
-        var userNickname = Console.ReadLine();
+        var nickname = Console.ReadLine();
         Console.WriteLine("Enter email:");
-        var userEmail = Console.ReadLine();
+        var email = Console.ReadLine();
         Console.WriteLine("Enter phone:");
-        var userPhone = Console.ReadLine();
+        var phone = Console.ReadLine();
         Console.WriteLine("Enter device id:");
-        var userDeviceId = Console.ReadLine();
+        var deviceId = Console.ReadLine();
 
-        if (GetUser(user =>
-                user.Nickname == userNickname ||
-                user.Email == userEmail ||
-                user.PhoneNumber == userPhone ||
-                user.DeviceId == userDeviceId) != null)
+        return new User(nickname, email, phone, deviceId);
+    }
+
+    static void TryAddUser(User user)
+    {
+        if (UserValidator.CanUserBeAdded(user))
         {
-            Console.WriteLine("A user with the same nickname, email, phone, or device ID already exists.");
+            UserService.AddUser(user);
+            Console.WriteLine("User was added.");
         }
         else
         {
-            users.Add(new User(userNickname, userEmail, userPhone, userDeviceId));
-            Console.WriteLine("User was added.");
+            Console.WriteLine("A user with the same nickname, email, phone, or device ID already exists.");
         }
+    }
+    
+    static void OptionAddUser()
+    {
+        User inputUser = GetUserInput();
+        TryAddUser(inputUser);
     }
     
     static void PrintMenu()

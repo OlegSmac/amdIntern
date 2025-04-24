@@ -7,6 +7,6 @@ namespace project1.Lesson_13_Assignment.BusinessLayer
 {
     public interface IRepository
     {
-        int SaveSpeaker(Speaker speaker);
+        int SaveSpeaker(Speaker speaker, int registrationFee);
     }
 }

@@ -24,8 +24,8 @@ public class Program
         //Lesson5Main.MainFunction();
         //Lesson10Main.MainFunction();
         //Lesson12Main.MainFunction();
-        //Lesson13Main.MainFunction();
+        Lesson13Main.MainFunction();
         //Lesson14Main.MainFunction();
-        Lesson15Main.MainFunction();
+        //Lesson15Main.MainFunction();
     }
 }
