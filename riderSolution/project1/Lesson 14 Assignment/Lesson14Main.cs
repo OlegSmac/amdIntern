@@ -1,11 +1,11 @@
+using project1.Lesson_14_Assignment.Enums;
+
 namespace project1.Lesson_14_Assignment;
 
 public class Lesson14Main
 {
-    private static CoffeeFactory _espressoFactory = new EspressoFactory();
-    private static CoffeeFactory _cappuccinoFactory = new CappuccinoFactory();
-    private static CoffeeFactory _flatWhiteFactory = new FlatWhiteFactory();
-
+    private static CoffeeFactory _coffeeFactory = new();
+    
     static void AddSugar(Coffee coffee)
     {
         Console.WriteLine("How many sugar do you want to add?");
@@ -19,6 +19,7 @@ public class Lesson14Main
         coffee.AddSugar(amount);
         Console.WriteLine("Sugar was added.\n");
     }
+    
     static void AddMilk(Coffee coffee)
     {
         Console.WriteLine("How many milk do you want to add?");
@@ -36,19 +37,34 @@ public class Lesson14Main
         if (wasAdded) Console.WriteLine("Milk was added.\n");
         else Console.WriteLine("We don't have this milk type.\n");
     }
+    
     static Coffee OptionEspresso()
     {
-        return _espressoFactory.CreateCoffee();
+        return _coffeeFactory.CreateCoffee(CoffeeType.Espresso);
     }
 
     static Coffee OptionCappuccino()
     {
-        return _cappuccinoFactory.CreateCoffee();
+        return _coffeeFactory.CreateCoffee(CoffeeType.Cappuccino);
     }
 
     static Coffee OptionFlatWhite()
     {
-        return _flatWhiteFactory.CreateCoffee();
+        return _coffeeFactory.CreateCoffee(CoffeeType.FlatWhite);
+    }
+
+    static void AdditionalOptionAddSugar(Coffee coffee)
+    {
+        Console.WriteLine("Do you want to add sugar? (Y/n)");
+        string input = Console.ReadLine().ToLower();
+        if (input == "y") AddSugar(coffee);
+    }
+
+    static void AdditionalOptionAddMilk(Coffee coffee)
+    {
+        Console.WriteLine("Do you want to add more milk? (Y/n)");
+        string input = Console.ReadLine().ToLower();
+        if (input == "y") AddMilk(coffee);
     }
     
     static void PrintMenu()
@@ -84,15 +100,10 @@ public class Lesson14Main
                 continue;
             }
             
-            Console.WriteLine("Do you want to add sugar? (Y/n)");
-            input = Console.ReadLine().ToLower();
-            if (input == "y") AddSugar(coffee);
+            AdditionalOptionAddSugar(coffee);
+            AdditionalOptionAddMilk(coffee);
             
-            Console.WriteLine("Do you want to add more milk? (Y/n)");
-            input = Console.ReadLine().ToLower();
-            if (input == "y") AddMilk(coffee);
-            
-            Console.WriteLine($"Your coffee is made: {coffee}");
+            Console.WriteLine($"Your coffee was made: {coffee}");
             
             Console.WriteLine("Press Enter to continue...");
             Console.ReadLine();

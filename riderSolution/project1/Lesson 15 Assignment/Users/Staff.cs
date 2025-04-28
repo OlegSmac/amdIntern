@@ -11,7 +11,7 @@ public class Staff : ISubscriber
         Name = name;
     }
 
-    public void ReceiveMessage(string message)
+    public async Task ReceiveMessage(string message)
     {
         Console.WriteLine($"Staff {Name} received message: {message}");
     }

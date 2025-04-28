@@ -1,14 +1,17 @@
+using System.Text.Json;
 using project1.Lesson_15_Assignment.Enums;
 using project1.Lesson_15_Assignment.Orders;
+using project1.Lesson_15_Assignment.Services;
 using project1.Lesson_15_Assignment.Users;
 
 namespace project1.Lesson_15_Assignment.Shops;
 
 public abstract class Shop
 {
-    private List<ISubscriber> Customers = new List<ISubscriber>();
-    private List<ISubscriber> Staff = new List<ISubscriber>();
-    private Queue<Order> Orders = new Queue<Order>();
+    private List<ISubscriber> Customers = new();
+    private List<ISubscriber> Staff = new();
+    
+    private static readonly string _ordersFilePath = "/home/thinkpad/Amdaris/amdIntern/riderSolution/project1/Lesson 15 Assignment/BookOrders.json";
 
     public void Subscribe(ISubscriber subscriber, bool isCustomer)
     {
@@ -21,14 +24,42 @@ public abstract class Shop
         if (isCustomer) Customers.Remove(subscriber);
         else Staff.Remove(subscriber);
     }
-
-    public void PlaceOrder(Order order)
+    
+    private bool IsCustomerSubscribed(ISubscriber customer)
     {
-        Orders.Enqueue(order);
-        
-        if (IsCustomerSubscribed(order.Customer))
+        return Customers.Contains(customer);
+    }
+
+    private async Task<List<BookOrder>> LoadBookOrdersAsync()
+    {
+        try 
         {
-            Notify(order.Customer, $"Order #{order.Id} has been placed.");
+            string existingOrdersJson = await File.ReadAllTextAsync(_ordersFilePath);
+            return string.IsNullOrWhiteSpace(existingOrdersJson) ? new List<BookOrder>() : JsonSerializer.Deserialize<List<BookOrder>>(existingOrdersJson);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error reading orders: {e.Message}");
+            return new List<BookOrder>();
+        }
+    }
+
+    private async Task SaveBookOrderToFileAsync(BookOrder order)
+    {
+        List<BookOrder> ordersInFile = await LoadBookOrdersAsync();
+        ordersInFile.Add(order);
+        
+        string updatedOrdersJson = JsonSerializer.Serialize(ordersInFile);
+        await File.WriteAllTextAsync(_ordersFilePath, updatedOrdersJson);
+    }
+
+    public async Task PlaceOrder(Order order)
+    {
+        await SaveBookOrderToFileAsync((BookOrder)order);
+        
+        if (IsCustomerSubscribed(UserService.GetCustomer(order.CustomerId)))
+        {
+            Notify(UserService.GetCustomer(order.CustomerId), $"Order #{order.Id} has been placed.");
         }
         
         NotifyAll(Staff, $"Order #{order.Id} has been placed.");
@@ -39,37 +70,14 @@ public abstract class Shop
         order.Status = status;
     }
 
-    private bool IsCustomerSubscribed(ISubscriber customer)
+    public virtual async Task Notify(ISubscriber subscriber, string message)
     {
-        return Customers.Contains(customer);
+        await subscriber.ReceiveMessage(message);
     }
-
-    public void ProcessNextOrder()
+    
+    public async Task NotifyAll(List<ISubscriber> subscribers, string message)
     {
-        if (Orders.Count == 0)
-        {
-            Console.WriteLine("No orders to process.");
-            return;
-        }
-
-        var order = Orders.Dequeue();
-        ChangeOrderStatus(order, OrderStatus.ReadyForShipping);
-        
-        if (IsCustomerSubscribed(order.Customer))
-        {
-            Notify(order.Customer, $"Order '{order.Name}' is ready for shipping.");
-        }
-        NotifyAll(Staff, $"Order #{order.Id} ('{order.Name}') is ready for shipping.");
-        
-    }
-
-    public void NotifyAll(List<ISubscriber> subscribers, string message)
-    {
-        subscribers.ForEach(subscriber => Notify(subscriber, message));
-    }
-
-    public virtual void Notify(ISubscriber subscriber, string message)
-    {
-        subscriber.ReceiveMessage(message);
+        var tasks = subscribers.Select(subscriber => Task.Run(() => Notify(subscriber, message)));
+        await Task.WhenAll(tasks);
     }
 }

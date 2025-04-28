@@ -4,8 +4,8 @@ namespace project1.Lesson_15_Assignment.Shops;
 
 public class BookShop : Shop
 {
-    public override void Notify(ISubscriber subscriber, string message)
+    public override async Task Notify(ISubscriber subscriber, string message)
     {
-        subscriber.ReceiveMessage("Book shop notification: " + message);
+        await subscriber.ReceiveMessage("Book shop notification: " + message);
     }
 }

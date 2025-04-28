@@ -5,6 +5,7 @@ using project1.Lesson_12_Assignment;
 using project1.Lesson_13_Assignment;
 using project1.Lesson_14_Assignment;
 using project1.Lesson_15_Assignment;
+using project1.Lesson_16_Assignment;
 
 namespace project1;
 
@@ -24,8 +25,9 @@ public class Program
         //Lesson5Main.MainFunction();
         //Lesson10Main.MainFunction();
         //Lesson12Main.MainFunction();
-        Lesson13Main.MainFunction();
+        //Lesson13Main.MainFunction();
         //Lesson14Main.MainFunction();
-        //Lesson15Main.MainFunction();
+        await Lesson15Main.MainFunction();
+        //Lesson16Main.MainFunction();
     }
 }

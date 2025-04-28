@@ -1,116 +1,112 @@
 using System.Reflection.Metadata;
 using project1.Lesson_12_Assignment;
 using project1.Lesson_15_Assignment.Orders;
+using project1.Lesson_15_Assignment.Services;
 using project1.Lesson_15_Assignment.Shops;
 using project1.Lesson_15_Assignment.Users;
+using UserService = project1.Lesson_15_Assignment.Services.UserService;
 
 namespace project1.Lesson_15_Assignment;
 
 public class Lesson15Main
 {
-    private static Shop _bookShop = new BookShop();
-
-    private static List<Users.Customer> _customers = new List<Users.Customer>()
-    {
-        new Users.Customer(1, "Oleg"),
-        new Users.Customer(2, "Nikita"),
-    };
-    
-    private static List<Staff> _staff = new List<Staff>()
-    {
-        new Staff(1, "Goga"),
-        new Staff(2, "Petr"),
-    };
-
-    private static int ParseInputNum()
+    static int ParseInputNum()
     {
         string input = Console.ReadLine();
         int num;
     
         while (!int.TryParse(input, out num))
         {
-            Console.WriteLine("Input must be a number.");
+            Console.WriteLine("Input must be a number. Try again.");
             input = Console.ReadLine();
         }
 
         return num;
     }
 
-    private static void OptionSubscribeCustomer()
+    static void OptionSubscribeCustomer()
     {
         Console.WriteLine("Write customer id:");
         int id = ParseInputNum();
         
-        var customer = _customers.Find(customer => customer.Id == id);
+        var customer = UserService.GetCustomer(id);
         if (customer != null)
         {
-            _bookShop.Subscribe(customer, true);
+            BookService.Subscribe(customer, true);
             Console.WriteLine("Customer is subscribed.\n");
         }
         else Console.WriteLine("Customer is not subscribed. There isn't customer with this id.\n");
     }
     
-    private static void OptionSubscribeStaff()
+    static void OptionSubscribeStaff()
     {
         Console.WriteLine("Write staff id:");
         int id = ParseInputNum();
 
-        var staff = _staff.Find(staff => staff.Id == id);
+        var staff = UserService.GetStaff(id);
         if (staff != null)
         {
-            _bookShop.Subscribe(staff, false);
+            BookService.Subscribe(staff, false);
             Console.WriteLine("Staff is subscribed.\n");
         }
         else Console.WriteLine("Staff is not subscribed. There isn't staff member with this id.\n");
     }
     
-    private static void OptionUnsubscribeCustomer()
+    static void OptionUnsubscribeCustomer()
     {
         Console.WriteLine("Write customer id:");
         int id = ParseInputNum();
 
-        var customer = _customers.Find(customer => customer.Id == id);
+        var customer = UserService.GetCustomer(id);
         if (customer != null)
         {
-            _bookShop.Unsubscribe(customer, true);
+            BookService.Unsubscribe(customer, true);
             Console.WriteLine("Customer is unsubscribed.\n");
         }
         else Console.WriteLine("Customer is not unsubscribed. There isn't customer with this id.\n");
     }
 
-    private static void OptionUnsubscribeStaff()
+    static void OptionUnsubscribeStaff()
     {
         Console.WriteLine("Write staff id:");
         int id = ParseInputNum();
 
-        var staff = _staff.Find(staff => staff.Id == id);
+        var staff = UserService.GetStaff(id);
         if (staff != null)
         {
-            _bookShop.Unsubscribe(staff, false);
+            BookService.Unsubscribe(staff, false);
             Console.WriteLine("Staff is unsubscribed.\n");
         }
         else Console.WriteLine("Staff is not unsubscribed. There isn't staff member with this id.\n");
     }
-
-    private static void OptionOrderBook()
+    
+    static async Task AsyncBookStore(int bookId, string name, string author, int customerId)
     {
-        Console.WriteLine("Write order book id:");
-        int bookId = ParseInputNum();
-        Console.WriteLine("Write book name:");
-        string name = Console.ReadLine();
-        Console.WriteLine("Write book author:");
-        string author = Console.ReadLine();
-        Console.WriteLine("Write customer id:");
-        int customerId = ParseInputNum();
-        
-        _bookShop.PlaceOrder(new BookOrder(bookId, name, author, _customers.Find(c => c is Users.Customer customer && customer.Id == customerId)));
-        Console.WriteLine("Order book is placed.\n");
+        var order = await BookService.CreateBookOrder(bookId, name, author, customerId);
+        await BookService.PlaceOrder(order); 
     }
 
-    private static void OptionProcessOption()
+    static async Task OptionOrderBook()
     {
-        _bookShop.ProcessNextOrder();
-        Console.WriteLine();
+        try
+        {
+            Console.WriteLine("Write book order id:");
+            int bookId = ParseInputNum();
+            Console.WriteLine("Write book name:");
+            string name = Console.ReadLine();
+            Console.WriteLine("Write book author:");
+            string author = Console.ReadLine();
+            Console.WriteLine("Write customer id:");
+            int customerId = ParseInputNum();
+
+            await AsyncBookStore(bookId, name, author, customerId);
+
+            Console.WriteLine("Order book is placed.\n");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"An error occurred: {e.Message}");
+        }
     }
     
     static void PrintMenu()
@@ -120,11 +116,10 @@ public class Lesson15Main
         Console.WriteLine("3. Unsubscribe customer");
         Console.WriteLine("4. Unsubscribe staff");
         Console.WriteLine("5. Order a book");
-        Console.WriteLine("6. Process order");
         Console.WriteLine("0. Exit\n");
     }
     
-    internal static void MainFunction()
+    internal static async Task MainFunction()
     {
         while (true)
         {
@@ -142,14 +137,15 @@ public class Lesson15Main
             else if (choice == 2) OptionSubscribeStaff();
             else if (choice == 3) OptionUnsubscribeCustomer();
             else if (choice == 4) OptionUnsubscribeStaff();
-            else if (choice == 5) OptionOrderBook();
-            else if (choice == 6) OptionProcessOption();
+            else if (choice == 5) await OptionOrderBook();
             else
             {
                 Console.WriteLine("Unknown option. Try again.");
                 continue;
             }
-
+            
+            Console.WriteLine("Press Enter to continue...");
+            Console.ReadLine();
         }
     }
 }
