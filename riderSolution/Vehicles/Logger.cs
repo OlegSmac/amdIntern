@@ -1,10 +1,10 @@
-namespace project1;
+namespace Vehicles;
 
 public static class Logger
 {
     public static async Task Log(string methodName, bool success, string errorMessage = null)
     {
-        string logDir = "/home/thinkpad/Amdaris/amdIntern/riderSolution/project1/Vehicle hierarchy/logs";
+        string logDir = "/home/thinkpad/Amdaris/amdIntern/riderSolution/Vehicles/logs";
         if (!Directory.Exists(logDir)) Directory.CreateDirectory(logDir);
         
         DateTime dateTime = DateTime.Now;

@@ -1,4 +1,4 @@
-namespace project1.Exceptions;
+namespace Vehicles.Exceptions;
 
 public class VehicleAlreadyExistsException : Exception
 {

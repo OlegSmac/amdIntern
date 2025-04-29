@@ -1,60 +1,70 @@
-﻿using System.Reflection.Emit;
-using project1.Exceptions;
-using project1.Extensions;
+﻿using Vehicles;
+using Vehicles.Exceptions;
 
-namespace project1;
+namespace Vehicles;
 
-public class VehicleMain
+public class Program
 {
-    public delegate void PrintAllCarInformation(Car car);
-    internal static async Task MainFunction()
+    public static async Task Main()
     {
-        //--------------------------------------------- 7 assignment
-        var dealership1 = new VehicleDealership<Vehicle>();
-        
-        var car1 = new Car(1, "Volkswagen", "Golf 3", 1994);
-        var car2 = new Car(2, "Volkswagen", "Passat B4", 1997);
-
         try
         {
-            //car1.TakePassengers(2);
-            await dealership1.Add(car1);
-        }
-        catch (VehicleAlreadyExistsException e)
-        {
-            Console.WriteLine($"Vehicle already exists: {e.Message}. Change ID before adding in dealership.");
-            throw;
+            
         }
         catch (Exception e)
         {
-            Console.WriteLine("There is another exception: " + e.Message);
-            throw;
+            
         }
-        finally
-        {
-            Vehicle vehicleInDealership = dealership1.GetById(car1.GetId());
-#if DEBUG
-            Console.WriteLine($"The vehicle {car1.Info.Brand} {car1.Info.Model} was{(vehicleInDealership == null ? "'t" : "")} added to the dealership1.");
-#endif
-        }
-
-        try
-        {
-            await dealership1.Update(car2);
-        }
-        catch (VehicleNotFoundException e)
-        {
-            Console.WriteLine($"Vehicle not found: {e.Message}");
-            throw;
-        }
-        
-        var truck1 = new Truck(3, "Scania", "R22", 2004, 1000);
-        var car = dealership1.GetById(1);
-        
-        if (car != null)
-        {
-            await dealership1.ExcludeFromDealership(car);
-        }
+    }
+    
+    
+    // public delegate void PrintAllCarInformation(Car car);
+    // internal static async Task MainFunction()
+    // {
+    //     //--------------------------------------------- 7 assignment
+    //     var dealership1 = new VehicleDealership<Vehicle>();
+    //     
+    //     var car1 = new Car(1, "Volkswagen", "Golf 3", 1994);
+    //     var car2 = new Car(2, "Volkswagen", "Passat B4", 1997);
+    //
+    //     try
+    //     {
+    //         //car1.TakePassengers(2);
+    //         await dealership1.Add(car1);
+    //     }
+    //     catch (VehicleAlreadyExistsException e)
+    //     {
+    //         Console.WriteLine($"Vehicle already exists: {e.Message}. Change ID before adding in dealership.");
+    //         throw;
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Console.WriteLine("There is another exception: " + e.Message);
+    //         throw;
+    //     }
+    //     finally
+    //     {
+    //         Vehicle vehicleInDealership = dealership1.GetById(car1.GetId());
+    //         Console.WriteLine($"The vehicle {car1.Info.Brand} {car1.Info.Model} was{(vehicleInDealership == null ? "'t" : "")} added to the dealership1.");
+    //     }
+    //
+    //     try
+    //     {
+    //         await dealership1.Update(car2);
+    //     }
+    //     catch (VehicleNotFoundException e)
+    //     {
+    //         Console.WriteLine($"Vehicle not found: {e.Message}");
+    //         throw;
+    //     }
+    //     
+    //     var truck1 = new Truck(3, "Scania", "R22", 2004, 1000);
+    //     var car = dealership1.GetById(1);
+    //     
+    //     if (car != null)
+    //     {
+    //         await dealership1.ExcludeFromDealership(car);
+    //     }
         
         
         //--------------------------------------------- 8 assignment
@@ -167,5 +177,4 @@ public class VehicleMain
         //     }
         //     Console.WriteLine();
         // }
-    }
 }

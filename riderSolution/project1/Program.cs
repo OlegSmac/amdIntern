@@ -13,15 +13,6 @@ public class Program
 {
     static async Task Main()
     {
-        // try
-        // {
-        //     await VehicleMain.MainFunction();
-        // }
-        // catch (Exception e)
-        // {
-        //     Console.WriteLine(e.Message);
-        // }
-        
         //Lesson5Main.MainFunction();
         //Lesson10Main.MainFunction();
         //Lesson12Main.MainFunction();

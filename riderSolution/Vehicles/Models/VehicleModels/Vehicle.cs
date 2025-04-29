@@ -1,6 +1,6 @@
 using System;
 
-namespace project1;
+namespace Vehicles.Models.VehicleModels;
 
 public abstract class Vehicle : ICloneable
 {

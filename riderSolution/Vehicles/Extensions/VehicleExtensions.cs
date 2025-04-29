@@ -1,4 +1,6 @@
-namespace project1.Extensions;
+using Vehicles.Models.VehicleModels;
+
+namespace Vehicles.Extensions;
 
 public static class VehicleExtensions
 {

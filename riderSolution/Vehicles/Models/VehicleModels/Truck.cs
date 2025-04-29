@@ -1,6 +1,6 @@
-using project1.Exceptions;
+using Vehicles.Exceptions;
 
-namespace project1;
+namespace Vehicles.Models.VehicleModels;
 
 public record Cargo
 {

@@ -1,4 +1,4 @@
-namespace project1;
+namespace Vehicles.Models.UserModels;
 
 public class Customer
 {

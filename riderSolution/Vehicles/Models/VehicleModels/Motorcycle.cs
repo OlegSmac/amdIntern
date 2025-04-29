@@ -1,12 +1,12 @@
-using project1.Exceptions;
+using Vehicles.Exceptions;
 
-namespace project1;
+namespace Vehicles.Models.VehicleModels;
 
-public class Bike : Vehicle
+public class Motorcycle : Vehicle
 {
     public override int MaxSpeed { get; } = 180;
-    private bool HasSidecar { get; set; }
-    public Bike(int id, string brand, string model, int year, bool hasSidecar = false) : base(id, brand, model, year)
+    public bool HasSidecar { get; set; }
+    public Motorcycle(int id, string brand, string model, int year, bool hasSidecar = false) : base(id, brand, model, year)
     {
         HasSidecar = hasSidecar;
     }
@@ -29,13 +29,13 @@ public class Bike : Vehicle
 
     public override object Clone() 
     {
-        var clonedBike = (Bike)base.Clone();
+        var clonedMotorcycle = (Motorcycle)base.Clone();
         
-        return clonedBike;
+        return clonedMotorcycle;
     }
 
     public override string GetInfo()
     {
-        return $"This is the bike {Info.Brand} {Info.Model} {Info.Year} and it has" + (HasSidecar ? "" : "'t") + " sidecar.";
+        return $"This is the motorcycle {Info.Brand} {Info.Model} {Info.Year} and it has" + (HasSidecar ? "" : "'t") + " sidecar.";
     }
 }
