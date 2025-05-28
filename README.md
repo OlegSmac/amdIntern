@@ -1,2 +1,2 @@
 # amdIntern
-This file should be read after clonning.
+Project description: https://docs.google.com/document/d/1BKUmsS29t1UsLrGiC9WAKv-XYVYdqSzq7wBSJMniK30/edit?tab=t.0
