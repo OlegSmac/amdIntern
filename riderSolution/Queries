@@ -1,0 +1,33 @@
+SHOW databases;
+USE Vehicles;
+
+CREATE TABLE cars (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	brand VARCHAR(25) NOT NULL,
+	model VARCHAR(25) NOT NULL,
+	year INT NOT NULL,
+	max_speed INT,
+	passengers INT
+);
+
+CREATE TABLE motorcycles (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	brand VARCHAR(25) NOT NULL,
+	model VARCHAR(25) NOT NULL,
+	year INT NOT NULL,
+	max_speed INT,
+	has_sidecar BOOLEAN
+);
+
+CREATE TABLE trucks (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	brand VARCHAR(25) NOT NULL,
+	model VARCHAR(25) NOT NULL,
+	year INT NOT NULL,
+	max_speed INT,
+	max_load_kg INT
+);
+
+SHOW tables;
+
+

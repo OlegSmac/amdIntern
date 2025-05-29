@@ -41,7 +41,7 @@ public class OrderService
     {
         try
         {
-            await File.WriteAllTextAsync(_ordersFilePath, "");
+            await File.WriteAllTextAsync(_ordersFilePath, "{}");
         }
         catch (Exception ex)
         {
