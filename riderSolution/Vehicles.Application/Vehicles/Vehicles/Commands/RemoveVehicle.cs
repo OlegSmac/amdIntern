@@ -20,10 +20,20 @@ public class RemoveVehicleHandler : IRequestHandler<RemoveVehicle>
         ArgumentNullException.ThrowIfNull(request);
         
         var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Id);
-        if (vehicle != null)
+        if (vehicle == null) return;
+
+        try
         {
-            await _unitOfWork.VehicleRepository.RemoveAsync(vehicle);
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.VehicleRepository.RemoveAsync(vehicle);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

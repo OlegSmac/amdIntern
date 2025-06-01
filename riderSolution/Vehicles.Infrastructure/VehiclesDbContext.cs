@@ -6,6 +6,7 @@ using Vehicles.Domain.Posts.Models;
 using Vehicles.Domain.Users.Models;
 using Vehicles.Domain.Users.Relations;
 using Vehicles.Domain.VehicleTypes.Models;
+using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Infrastructure;
 
@@ -33,6 +34,11 @@ public class VehiclesDbContext : DbContext
     //Notifications
     public DbSet<CompanyNotification> CompanyNotifications { get; set; } = default!;
     public DbSet<UserNotification> UserNotifications { get; set; } = default!;
+    
+    //Vehicle models
+    public DbSet<Brand> Brands { get; set; } = default!;
+    public DbSet<Model> Models { get; set; } = default!;
+    public DbSet<Year> Years { get; set; } = default!;
 
     /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -100,6 +106,7 @@ public class VehiclesDbContext : DbContext
             .WithMany(u => u.Subscribers)
             .HasForeignKey(s => s.UserId);
 
-
+        //Vehicle models
+        modelBuilder.Entity<Year>().ToTable("ModelYears");
     }
 }

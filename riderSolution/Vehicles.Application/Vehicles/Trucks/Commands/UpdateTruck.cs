@@ -2,6 +2,7 @@ using MediatR;
 using Vehicles.Application.Abstractions;
 using Vehicles.Application.Vehicles.Trucks.Responses;
 using Vehicles.Domain.VehicleTypes.Models;
+using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Vehicles.Trucks.Commands;
 
@@ -18,32 +19,56 @@ public class UpdateTruckHandler : IRequestHandler<UpdateTruck, TruckDto>
         _unitOfWork = unitOfWork;
     }
 
+    private async Task UpdateTruckAsync(Truck truck, UpdateTruck request)
+    {
+        Brand brand = new Brand() { Name = request.Brand };
+        Model model = new Model() { Name = request.Model };
+        Year year = new Year() { YearNum = request.Year };
+
+        if (await _unitOfWork.ModelRepository.ExistsAsync(brand, model, year))
+        {
+            truck.Brand = request.Brand;
+            truck.Model = request.Model;
+            truck.Year = request.Year;
+            truck.MaxSpeed = request.MaxSpeed;
+            truck.TransmissionType = request.TransmissionType;
+            truck.EnginePower = request.EnginePower;
+            truck.EngineVolume = request.EngineVolume;
+            truck.FuelType = request.FuelType;
+            truck.FuelConsumption = request.FuelConsumption;
+            truck.Color = request.Color;
+            truck.Mileage = request.Mileage;
+            truck.CabinType = request.CabinType;
+            truck.LoadCapacity = request.LoadCapacity;
+        }
+        
+        throw new ArgumentException("This model does not exist");
+    }
+
     public async Task<TruckDto> Handle(UpdateTruck request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
         
         var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Id);
         if (vehicle is null) throw new KeyNotFoundException($"No vehicle with id {request.Id} exists.");
-        
-        Truck truck = (Truck)vehicle;
-        truck.Brand = request.Brand;
-        truck.Model = request.Model;
-        truck.Year = request.Year;
-        truck.MaxSpeed = request.MaxSpeed;
-        truck.TransmissionType = request.TransmissionType;
-        truck.EnginePower = request.EnginePower;
-        truck.EngineVolume = request.EngineVolume;
-        truck.FuelType = request.FuelType;
-        truck.FuelConsumption = request.FuelConsumption;
-        truck.Color = request.Color;
-        truck.Mileage = request.Mileage;
-        truck.CabinType = request.CabinType;
-        truck.LoadCapacity = request.LoadCapacity;
-        truck.TotalWeight = request.TotalWeight;
-        
-        await _unitOfWork.VehicleRepository.UpdateAsync(truck);
-        await _unitOfWork.SaveAsync();
 
+        if (vehicle is Truck truck) await UpdateTruckAsync(truck, request);
+        else throw new ArgumentException("This vehicle isn't a truck");
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.VehicleRepository.UpdateAsync(truck);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
         return TruckDto.FromTruck(truck);
     }
 }

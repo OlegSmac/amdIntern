@@ -19,10 +19,20 @@ public class RemoveUserHandler : IRequestHandler<RemoveUser>
         ArgumentNullException.ThrowIfNull(request);
         
         var user = await _unitOfWork.UserRepository.GetByIdAsync(request.Id);
-        if (user != null)
+        if (user == null) return;
+
+        try
         {
-            await _unitOfWork.UserRepository.RemoveAsync(request.Id);
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.UserRepository.RemoveAsync(request.Id);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

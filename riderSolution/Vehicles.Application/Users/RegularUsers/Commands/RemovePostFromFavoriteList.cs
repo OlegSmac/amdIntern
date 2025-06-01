@@ -25,10 +25,21 @@ public class RemovePostFromFavoriteListHandler : IRequestHandler<RemovePostFromF
             PostId = request.PostId
         };
 
-        if (await _unitOfWork.UserRepository.IsPostFavoriteAsync(favoritePost))
+        try
         {
-            await _unitOfWork.UserRepository.RemovePostFromFavoriteListAsync(favoritePost);
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                if (await _unitOfWork.UserRepository.IsPostFavoriteAsync(favoritePost))
+                {
+                    await _unitOfWork.UserRepository.RemovePostFromFavoriteListAsync(favoritePost);
+                    await _unitOfWork.SaveAsync();
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

@@ -19,9 +19,17 @@ public class GetAllCarsHandler : IRequestHandler<GetAllCars, List<CarDto>>
     public async Task<List<CarDto>> Handle(GetAllCars request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
-        
-        List<Car> vehicles = await _unitOfWork.VehicleRepository.GetAllCarsAsync();
-        
-        return vehicles.Select(CarDto.FromCar).ToList();
+
+        try
+        {
+            List<Car> vehicles = await _unitOfWork.VehicleRepository.GetAllCarsAsync();
+
+            return vehicles.Select(CarDto.FromCar).ToList();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

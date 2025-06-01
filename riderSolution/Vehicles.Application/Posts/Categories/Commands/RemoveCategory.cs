@@ -19,10 +19,20 @@ public class RemoveCategoryHandler : IRequestHandler<RemoveCategory>
         ArgumentNullException.ThrowIfNull(request);
         
         var category = await _unitOfWork.CategoryRepository.GetByIdAsync(request.Id);
-        if (category != null)
+        if (category == null) return;
+
+        try
         {
-            await _unitOfWork.CategoryRepository.RemoveAsync(request.Id);
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.CategoryRepository.RemoveAsync(request.Id);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

@@ -16,20 +16,36 @@ public class CreateUserHandler : IRequestHandler<CreateUser, RegularUserDto>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<RegularUserDto> Handle(CreateUser request, CancellationToken cancellationToken)
+    private async Task<RegularUser> CreateRegularUserAsync(CreateUser request)
     {
-        ArgumentNullException.ThrowIfNull(request);
-
-        var user = new RegularUser()
+        return new RegularUser()
         {
             Name = request.Name,
             Email = request.Email,
             Password = request.Password
         };
-        
-        await _unitOfWork.UserRepository.CreateAsync(user);
-        await _unitOfWork.SaveAsync();
-        
+    }
+
+    public async Task<RegularUserDto> Handle(CreateUser request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        RegularUser user = await CreateRegularUserAsync(request);
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.UserRepository.CreateAsync(user);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
         return RegularUserDto.FromRegularUser(user);
     }
 }

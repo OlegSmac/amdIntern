@@ -19,10 +19,20 @@ public class RemoveCompanyHandler : IRequestHandler<RemoveCompany>
         ArgumentNullException.ThrowIfNull(request);
         
         var company = await _unitOfWork.CompanyRepository.GetByIdAsync(request.Id);
-        if (_unitOfWork != null)
+        if (_unitOfWork == null) return;
+
+        try
         {
-            await _unitOfWork.CompanyRepository.RemoveAsync(request.Id);
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.CompanyRepository.RemoveAsync(request.Id);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

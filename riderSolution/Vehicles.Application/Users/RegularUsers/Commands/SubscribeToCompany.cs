@@ -16,6 +16,15 @@ public class SubscribeToCompanyHandler : IRequestHandler<SubscribeToCompany>
         _unitOfWork = unitOfWork;
     }
 
+    private Subscription CreateSubscription(RegularUser user, Company company)
+    {
+        return new Subscription()
+        {
+            User = user,
+            Company = company
+        };
+    }
+
     public async Task Handle(SubscribeToCompany request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -26,12 +35,20 @@ public class SubscribeToCompanyHandler : IRequestHandler<SubscribeToCompany>
         Company? company = await _unitOfWork.CompanyRepository.GetByIdAsync(request.CompanyId);
         if (company == null) throw new KeyNotFoundException($"Company with ID {request.CompanyId} not found");
 
-        Subscription subscription = new Subscription()
+        Subscription subscription = CreateSubscription(user, company);
+
+        try
         {
-            User = user,
-            Company = company
-        };
-        
-        await _unitOfWork.UserRepository.SubcribeAsync(subscription);
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.UserRepository.SubcribeAsync(subscription);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

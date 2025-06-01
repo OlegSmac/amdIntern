@@ -18,6 +18,15 @@ public class UpdatePostHandler : IRequestHandler<UpdatePost, PostDto>
         _unitOfWork = unitOfWork;
     }
 
+    private async Task UpdatePostAsync(Post post, UpdatePost request, Company company, Vehicle vehicle)
+    {
+        post.Title = request.Title;
+        post.Body = request.Body;
+        post.Date = request.Date;
+        post.Company = company;
+        post.Vehicle = vehicle;
+    }
+
     public async Task<PostDto> Handle(UpdatePost request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -29,16 +38,23 @@ public class UpdatePostHandler : IRequestHandler<UpdatePost, PostDto>
         
         Post? post = await _unitOfWork.PostRepository.GetByIdAsync(request.Id);
         if (post == null) throw new NullReferenceException($"Post with id {request.Id} not found.");
+
+        await UpdatePostAsync(post, request, company, vehicle);
         
-        post.Title = request.Title;
-        post.Body = request.Body;
-        post.Date = request.Date;
-        post.Company = company;
-        post.Vehicle = vehicle;
-        
-        await _unitOfWork.PostRepository.UpdateAsync(post);
-        await _unitOfWork.SaveAsync();
-        
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.PostRepository.UpdateAsync(post);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
         return PostDto.FromPost(post);
     }
 }

@@ -17,7 +17,19 @@ public class AddCategoryToPostHandler : IRequestHandler<AddCategoryToPost>
     public async Task Handle(AddCategoryToPost request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
-        
-        await _unitOfWork.PostRepository.AddCategoryToPostAsync(request.PostId, request.CategoryId);
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.PostRepository.AddCategoryToPostAsync(request.PostId, request.CategoryId);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

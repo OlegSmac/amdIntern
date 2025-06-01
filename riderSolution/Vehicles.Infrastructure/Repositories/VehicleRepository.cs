@@ -50,14 +50,12 @@ public class VehicleRepository : IVehicleRepository
         if (toDelete != null)
         {
             _context.Vehicles.Remove(toDelete);
-            await _context.SaveChangesAsync();
         }
     }
 
     public async Task<Vehicle> UpdateAsync(Vehicle vehicle)
     {
         _context.Vehicles.Update(vehicle);
-        await _context.SaveChangesAsync();
         return vehicle;
     }
 }

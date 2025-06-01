@@ -19,10 +19,20 @@ public class RemoveAdminHandler : IRequestHandler<RemoveAdmin>
         ArgumentNullException.ThrowIfNull(request);
         
         var admin = await _unitOfWork.AdminRepository.GetByIdAsync(request.Id);
-        if (admin != null)
+        if (admin == null) return;
+
+        try
         {
-            await _unitOfWork.AdminRepository.RemoveAsync(request.Id);
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.AdminRepository.RemoveAsync(request.Id);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

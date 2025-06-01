@@ -7,7 +7,6 @@ public class TruckDto : VehicleDto
 {
     public required string CabinType { get; set; }
     public required int LoadCapacity { get; set; }
-    public required int TotalWeight { get; set; }
 
     public static TruckDto FromTruck(Truck truck)
     {
@@ -26,8 +25,7 @@ public class TruckDto : VehicleDto
             Mileage = truck.Mileage,
             MaxSpeed = truck.MaxSpeed,
             CabinType = truck.CabinType,
-            LoadCapacity = truck.LoadCapacity,
-            TotalWeight = truck.TotalWeight
+            LoadCapacity = truck.LoadCapacity
         };
     }
 }

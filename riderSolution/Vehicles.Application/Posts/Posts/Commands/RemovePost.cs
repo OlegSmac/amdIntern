@@ -20,10 +20,20 @@ public class RemovePostHandler : IRequestHandler<RemovePost>
         ArgumentNullException.ThrowIfNull(request);
         
         Post? post = await _unitOfWork.PostRepository.GetByIdAsync(request.Id);
-        if (post != null)
+        if (post == null) return;
+
+        try
         {
-            await _unitOfWork.PostRepository.RemoveAsync(request.Id);
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.PostRepository.RemoveAsync(request.Id);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

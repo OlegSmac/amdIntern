@@ -29,6 +29,7 @@ public class Program
             .AddScoped<IAdminRepository, AdminRepository>()
             .AddScoped<ICategoryRepository, CategoryRepository>()
             .AddScoped<IPostRepository, PostRepository>()
+            .AddScoped<IModelRepository, ModelRepository>()
             .BuildServiceProvider();
         
         return diContainer.GetRequiredService<IMediator>();

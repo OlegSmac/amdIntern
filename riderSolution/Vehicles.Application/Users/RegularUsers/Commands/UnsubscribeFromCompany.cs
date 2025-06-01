@@ -15,6 +15,15 @@ public class UnsubscribeFromCompanyHandler : IRequestHandler<UnsubscribeFromComp
     {
         _unitOfWork = unitOfWork;
     }
+    
+    private Subscription CreateSubscription(RegularUser user, Company company)
+    {
+        return new Subscription()
+        {
+            User = user,
+            Company = company
+        };
+    }
 
     public async Task Handle(UnsubscribeFromCompany request, CancellationToken cancellationToken)
     {
@@ -26,12 +35,20 @@ public class UnsubscribeFromCompanyHandler : IRequestHandler<UnsubscribeFromComp
         Company? company = await _unitOfWork.CompanyRepository.GetByIdAsync(request.CompanyId);
         if (company == null) throw new KeyNotFoundException($"Company with ID {request.CompanyId} not found");
 
-        Subscription subscription = new Subscription()
+        Subscription subscription = CreateSubscription(user, company);
+
+        try
         {
-            User = user,
-            Company = company
-        };
-        
-        await _unitOfWork.UserRepository.UnsubcribeAsync(subscription);
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.UserRepository.UnsubcribeAsync(subscription);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

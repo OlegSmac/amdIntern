@@ -15,11 +15,9 @@ public class CreateUserNotificationHandler : IRequestHandler<CreateUserNotificat
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<UserNotification> Handle(CreateUserNotification request, CancellationToken cancellationToken)
+    private async Task<UserNotification> CreateUserNotificationAsync(CreateUserNotification request)
     {
-        ArgumentNullException.ThrowIfNull(request);
-
-        UserNotification notification = new UserNotification()
+        return new UserNotification()
         {
             Title = request.Title,
             Body = request.Body,
@@ -27,10 +25,28 @@ public class CreateUserNotificationHandler : IRequestHandler<CreateUserNotificat
             PostId = request.PostId,
             Date = DateTime.Now
         };
-        
-        await _unitOfWork.UserRepository.CreateUserNotification(notification);
-        await _unitOfWork.SaveAsync();
-        
+    }
+
+    public async Task<UserNotification> Handle(CreateUserNotification request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        UserNotification notification = await CreateUserNotificationAsync(request);
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.UserRepository.CreateUserNotification(notification);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
         return notification;
     }
 }

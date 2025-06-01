@@ -16,18 +16,34 @@ public class CreateCategoryHandler : IRequestHandler<CreateCategory, CategoryDto
         _unitOfWork = unitOfWork;
     }
 
+    public async Task<Category> CreateCategoryAsync(CreateCategory request)
+    {
+        return new Category()
+        {
+            Name = request.Name
+        };
+    }
+
     public async Task<CategoryDto> Handle(CreateCategory request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var category = new Category()
+        Category category = await CreateCategoryAsync(request);
+
+        try
         {
-            Name = request.Name
-        };
-        
-        await _unitOfWork.CategoryRepository.CreateAsync(category);
-        await _unitOfWork.SaveAsync();
-        
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.CategoryRepository.CreateAsync(category);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
         return CategoryDto.FromCategory(category);
     }
 }

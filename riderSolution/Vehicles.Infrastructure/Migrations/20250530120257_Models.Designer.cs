@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vehicles.Infrastructure;
 
@@ -11,9 +12,11 @@ using Vehicles.Infrastructure;
 namespace Vehicles.Infrastructure.Migrations
 {
     [DbContext(typeof(VehiclesDbContext))]
-    partial class VehiclesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250530120257_Models")]
+    partial class Models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,21 +38,6 @@ namespace Vehicles.Infrastructure.Migrations
                     b.HasIndex("PostsId");
 
                     b.ToTable("CategoryPost");
-                });
-
-            modelBuilder.Entity("ModelYear", b =>
-                {
-                    b.Property<int>("ModelsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("YearsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ModelsId", "YearsId");
-
-                    b.HasIndex("YearsId");
-
-                    b.ToTable("ModelYear");
                 });
 
             modelBuilder.Entity("Vehicles.Domain.Notifications.Models.CompanyNotification", b =>
@@ -356,63 +344,6 @@ namespace Vehicles.Infrastructure.Migrations
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("Vehicles.Domain.VehicleTypes.Models.VehicleModels.Brand", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Brands");
-                });
-
-            modelBuilder.Entity("Vehicles.Domain.VehicleTypes.Models.VehicleModels.Model", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BrandId");
-
-                    b.ToTable("Models");
-                });
-
-            modelBuilder.Entity("Vehicles.Domain.VehicleTypes.Models.VehicleModels.Year", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("YearNum")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ModelYears", (string)null);
-                });
-
             modelBuilder.Entity("Vehicles.Domain.VehicleTypes.Models.Car", b =>
                 {
                     b.HasBaseType("Vehicles.Domain.VehicleTypes.Models.Vehicle");
@@ -453,6 +384,9 @@ namespace Vehicles.Infrastructure.Migrations
                     b.Property<int>("LoadCapacity")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalWeight")
+                        .HasColumnType("int");
+
                     b.ToTable("Trucks");
                 });
 
@@ -467,21 +401,6 @@ namespace Vehicles.Infrastructure.Migrations
                     b.HasOne("Vehicles.Domain.Posts.Models.Post", null)
                         .WithMany()
                         .HasForeignKey("PostsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ModelYear", b =>
-                {
-                    b.HasOne("Vehicles.Domain.VehicleTypes.Models.VehicleModels.Model", null)
-                        .WithMany()
-                        .HasForeignKey("ModelsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vehicles.Domain.VehicleTypes.Models.VehicleModels.Year", null)
-                        .WithMany()
-                        .HasForeignKey("YearsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -581,17 +500,6 @@ namespace Vehicles.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Vehicles.Domain.VehicleTypes.Models.VehicleModels.Model", b =>
-                {
-                    b.HasOne("Vehicles.Domain.VehicleTypes.Models.VehicleModels.Brand", "Brand")
-                        .WithMany("Models")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Brand");
-                });
-
             modelBuilder.Entity("Vehicles.Domain.VehicleTypes.Models.Car", b =>
                 {
                     b.HasOne("Vehicles.Domain.VehicleTypes.Models.Vehicle", null)
@@ -638,11 +546,6 @@ namespace Vehicles.Infrastructure.Migrations
                     b.Navigation("Subscribers");
 
                     b.Navigation("UserNotifications");
-                });
-
-            modelBuilder.Entity("Vehicles.Domain.VehicleTypes.Models.VehicleModels.Brand", b =>
-                {
-                    b.Navigation("Models");
                 });
 #pragma warning restore 612, 618
         }

@@ -16,20 +16,36 @@ public class CreateCompanyHandler : IRequestHandler<CreateCompany, CompanyDto>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<CompanyDto> Handle(CreateCompany request, CancellationToken cancellationToken)
+    private async Task<Company> CreateCompanyAsync(CreateCompany request)
     {
-        ArgumentNullException.ThrowIfNull(request);
-
-        var company = new Company()
+        return new Company()
         {
             Name = request.Name,
             Email = request.Email,
             Password = request.Password,
             Description = request.Description
         };
+    } 
 
-        await _unitOfWork.CompanyRepository.CreateAsync(company);
-        await _unitOfWork.SaveAsync();
+    public async Task<CompanyDto> Handle(CreateCompany request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        Company company = await CreateCompanyAsync(request);
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.CompanyRepository.CreateAsync(company);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
 
         return CompanyDto.FromCompany(company);
     }

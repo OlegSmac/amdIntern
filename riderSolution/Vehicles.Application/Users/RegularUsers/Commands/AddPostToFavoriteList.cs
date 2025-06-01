@@ -6,9 +6,9 @@ using Vehicles.Domain.Users.Relations;
 
 namespace Vehicles.Application.Users.RegularUsers.Commands;
 
-public record AddPostToFavoriteList(int UserId, int PostId) : IRequest;
+public record AddPostToFavoriteList(int UserId, int PostId) : IRequest<bool>;
 
-public class AddPostToFavoriteListHandler : IRequestHandler<AddPostToFavoriteList>
+public class AddPostToFavoriteListHandler : IRequestHandler<AddPostToFavoriteList, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -17,7 +17,17 @@ public class AddPostToFavoriteListHandler : IRequestHandler<AddPostToFavoriteLis
         _unitOfWork = unitOfWork;
     }
 
-    public async Task Handle(AddPostToFavoriteList request, CancellationToken cancellationToken)
+    private async Task<FavoritePost> CreateFavoritePost(AddPostToFavoriteList request)
+    {
+        return new FavoritePost()
+        {
+            UserId = request.UserId,
+            PostId = request.PostId,
+            Date = DateTime.Now
+        };
+    }
+
+    public async Task<bool> Handle(AddPostToFavoriteList request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -27,13 +37,22 @@ public class AddPostToFavoriteListHandler : IRequestHandler<AddPostToFavoriteLis
         Post? post = await _unitOfWork.PostRepository.GetByIdAsync(request.PostId);
         if (post == null) throw new KeyNotFoundException($"Post with ID {request.PostId} not found");
         
-        FavoritePost favoritePost = new FavoritePost()
-        {
-            UserId = request.UserId,
-            PostId = request.PostId,
-            Date = DateTime.Now
-        };
+        FavoritePost favoritePost = await CreateFavoritePost(request);
 
-        await _unitOfWork.UserRepository.AddPostToFavoriteListAsync(favoritePost);
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.UserRepository.AddPostToFavoriteListAsync(favoritePost);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        return true;
     }
 }

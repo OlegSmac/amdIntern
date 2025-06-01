@@ -6,7 +6,6 @@ namespace Vehicles.Infrastructure;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly VehiclesDbContext _context;
-    private IDbContextTransaction? _transaction;
     
     public IVehicleRepository VehicleRepository { get; private set; }
     public IUserRepository UserRepository { get; private set; }
@@ -14,11 +13,12 @@ public class UnitOfWork : IUnitOfWork
     public IAdminRepository AdminRepository { get; private set; }
     public ICategoryRepository CategoryRepository { get; private set; }
     public IPostRepository PostRepository { get; private set; }
+    public IModelRepository ModelRepository { get; private set; }
     
 
     public UnitOfWork(VehiclesDbContext context, IVehicleRepository vehicleRepository, IUserRepository userRepository, 
         ICompanyRepository companyRepository, IAdminRepository adminRepository, ICategoryRepository categoryRepository, 
-        IPostRepository postRepository)
+        IPostRepository postRepository, IModelRepository modelRepository)
     {
         _context = context;
         VehicleRepository = vehicleRepository;
@@ -27,33 +27,21 @@ public class UnitOfWork : IUnitOfWork
         AdminRepository = adminRepository;
         CategoryRepository = categoryRepository;
         PostRepository = postRepository;
+        ModelRepository = modelRepository;
     }
 
-    public async Task BeginTransactionAsync()
+    public async Task ExecuteTransactionAsync(Func<Task> transaction)
     {
-        if (_transaction == null)
+        try
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            await _context.Database.BeginTransactionAsync();
+            await transaction();
+            await _context.Database.CommitTransactionAsync();
         }
-    }
-
-    public async Task CommitTransactionAsync()
-    {
-        if (_transaction != null)
+        catch (Exception e)
         {
-            await _transaction.CommitAsync();
-            await _transaction.DisposeAsync();
-            _transaction = null;
-        }
-    }
-
-    public async Task RollbackTransactionAsync()
-    {
-        if (_transaction != null)
-        {
-            await _transaction.RollbackAsync();
-            await _transaction.DisposeAsync();
-            _transaction = null;
+            await _context.Database.RollbackTransactionAsync();
+            throw;
         }
     }
 

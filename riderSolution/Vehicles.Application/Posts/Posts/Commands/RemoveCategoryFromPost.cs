@@ -17,7 +17,19 @@ public class RemoveCategoryFromPostHandler : IRequestHandler<RemoveCategoryFromP
     public async Task Handle(RemoveCategoryFromPost request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
-        
-        await _unitOfWork.PostRepository.RemoveCategoryFromPostAsync(request.PostId, request.CategoryId);
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.PostRepository.RemoveCategoryFromPostAsync(request.PostId, request.CategoryId);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

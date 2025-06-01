@@ -16,20 +16,36 @@ public class CreateAdminHandler : IRequestHandler<CreateAdmin, AdminDto>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<AdminDto> Handle(CreateAdmin request, CancellationToken cancellationToken)
+    private async Task<Admin> CreateAdminAsync(CreateAdmin request)
     {
-        ArgumentNullException.ThrowIfNull(request);
-
-        var admin = new Admin()
+        return new Admin()
         {
             Name = request.Name,
             Email = request.Email,
             Password = request.Password
         };
-        
-        await _unitOfWork.AdminRepository.CreateAsync(admin);
-        await _unitOfWork.SaveAsync();
-        
+    }
+
+    public async Task<AdminDto> Handle(CreateAdmin request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        Admin admin = await CreateAdminAsync(request);
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.AdminRepository.CreateAsync(admin);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
         return AdminDto.FromAdmin(admin);
     }
 }

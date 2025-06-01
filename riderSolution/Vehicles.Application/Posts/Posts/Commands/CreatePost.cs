@@ -18,16 +18,9 @@ public class CreatePostHandler : IRequestHandler<CreatePost, PostDto>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<PostDto> Handle(CreatePost request, CancellationToken cancellationToken)
+    private async Task<Post> CreatePostAsync(CreatePost request, Company company,  Vehicle vehicle)
     {
-        ArgumentNullException.ThrowIfNull(request);
-        
-        Company? company = await _unitOfWork.CompanyRepository.GetByIdAsync(request.CompanyId);
-        Vehicle? vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.VehicleId);
-        
-        if (company is null || vehicle is null) throw new NullReferenceException("Both Company and Vehicle are required.");
-
-        var post = new Post()
+        return new Post()
         {
             Title = request.Title,
             Body = request.Body,
@@ -37,9 +30,32 @@ public class CreatePostHandler : IRequestHandler<CreatePost, PostDto>
             Company = company,
             Vehicle = vehicle
         };
+    }
+
+    public async Task<PostDto> Handle(CreatePost request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
         
-        await _unitOfWork.PostRepository.CreateAsync(post);
-        await _unitOfWork.SaveAsync();
+        Company? company = await _unitOfWork.CompanyRepository.GetByIdAsync(request.CompanyId);
+        Vehicle? vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.VehicleId);
+        
+        if (company is null || vehicle is null) throw new NullReferenceException("Both Company and Vehicle are required.");
+
+        Post post = await CreatePostAsync(request, company, vehicle);
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.PostRepository.CreateAsync(post);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
 
         return PostDto.FromPost(post);
     }

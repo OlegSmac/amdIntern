@@ -4,35 +4,48 @@ namespace Vehicles.Domain.VehicleTypes.Models;
 
 public class Car : Vehicle
 {
+    private string _bodyType;
+
     [MaxLength(40)]
     [Required]
-    public required string BodyType { get; set; }
-    
-    [Required]
-    public required int Seats { get; set; }
-    
-    [Required]
-    public required int Doors { get; set; }
-    
-    public void UpdateFrom(
-        string brand, string model, int year, int maxSpeed, string transmissionType,
-        double engineVolume, int enginePower, string fuelType, double fuelConsumption,
-        string color, int mileage, string bodyType, int seats, int doors)
+    public required string BodyType
     {
-        Brand = brand;
-        Model = model;
-        Year = year;
-        MaxSpeed = maxSpeed;
-        TransmissionType = transmissionType;
-        EngineVolume = engineVolume;
-        EnginePower = enginePower;
-        FuelType = fuelType;
-        FuelConsumption = fuelConsumption;
-        Color = color;
-        Mileage = mileage;
-        BodyType = bodyType;
-        Seats = seats;
-        Doors = doors;
+        get => _bodyType;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Body type is required.");
+            if (value.Length > 50) throw new ArgumentException("Body type cannot exceed 50 characters.");
+            
+            _bodyType = value;
+        }
     }
 
+    private int _seats;
+
+    [Required]
+    public required int Seats
+    {
+        get => _seats;
+        set
+        {
+            if (value < 0) throw new ArgumentException("Seats cannot be less than zero.");
+            
+            _seats = value;
+        }
+    }
+
+    private int _doors;
+
+    [Required]
+    public required int Doors
+    {
+        get => _doors;
+        set
+        {
+            if (value < 0) throw new ArgumentException("Doors cannot be less than zero.");
+            
+            _doors = value;
+        }
+    }
+    
 }

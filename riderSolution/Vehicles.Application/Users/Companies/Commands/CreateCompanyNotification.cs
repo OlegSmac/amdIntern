@@ -16,11 +16,9 @@ public class CreateCompanyNotificationHandler : IRequestHandler<CreateCompanyNot
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<CompanyNotification> Handle(CreateCompanyNotification request, CancellationToken cancellationToken)
+    private async Task<CompanyNotification> CreateCompanyNotificationAsync(CreateCompanyNotification request)
     {
-        ArgumentNullException.ThrowIfNull(request);
-
-        CompanyNotification notification = new CompanyNotification()
+        return new CompanyNotification()
         {
             Title = request.Title,
             Body = request.Body,
@@ -28,10 +26,28 @@ public class CreateCompanyNotificationHandler : IRequestHandler<CreateCompanyNot
             PostId = request.PostId,
             Date = DateTime.Now
         };
-        
-        await _unitOfWork.CompanyRepository.CreateCompanyNotification(notification);
-        await _unitOfWork.SaveAsync();
-        
+    }
+
+    public async Task<CompanyNotification> Handle(CreateCompanyNotification request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        CompanyNotification notification = await CreateCompanyNotificationAsync(request);
+
+        try
+        {
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.CompanyRepository.CreateCompanyNotification(notification);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
         return notification;
     }
 }

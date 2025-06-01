@@ -2,6 +2,7 @@ using MediatR;
 using Vehicles.Application.Abstractions;
 using Vehicles.Application.Vehicles.Cars.Responses;
 using Vehicles.Domain.VehicleTypes.Models;
+using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Vehicles.Cars.Commands;
 
@@ -18,32 +19,56 @@ public class CreateCarHandler : IRequestHandler<CreateCar, CarDto>
         _unitOfWork = unitOfWork;
     }
 
+    private async Task<Car> CreateCarAsync(CreateCar request)
+    {
+        Brand brand = new Brand() { Name = request.Brand };
+        Model model = new Model() { Name = request.Model };
+        Year year = new Year() { YearNum = request.Year };
+
+        if (await _unitOfWork.ModelRepository.ExistsAsync(brand, model, year))
+        {
+            return new Car()
+            {
+                Brand = request.Brand,
+                Model = request.Model,
+                Year = request.Year,
+                TransmissionType = request.TransmissionType,
+                EngineVolume = request.EngineVolume,
+                EnginePower = request.EnginePower,
+                FuelType = request.FuelType,
+                FuelConsumption = request.FuelConsumption,
+                Color = request.Color,
+                Mileage = request.Mileage,
+                MaxSpeed = request.MaxSpeed,
+                BodyType = request.BodyType,
+                Seats = request.Seats,
+                Doors = request.Doors
+            };
+        }
+        
+        throw new ArgumentException("This model does not exist");
+    }
+
     public async Task<CarDto> Handle(CreateCar request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
         
-        var car = new Car()
+        Car car = await CreateCarAsync(request);
+
+        try
         {
-            Brand = request.Brand,
-            Model = request.Model,
-            Year = request.Year,
-            TransmissionType = request.TransmissionType,
-            EngineVolume = request.EngineVolume,
-            EnginePower = request.EnginePower,
-            FuelType = request.FuelType,
-            FuelConsumption = request.FuelConsumption,
-            Color = request.Color,
-            Mileage = request.Mileage,
-            MaxSpeed = request.MaxSpeed,
-            BodyType = request.BodyType,
-            Seats = request.Seats,
-            Doors = request.Doors
-        };
-
-        await _unitOfWork.VehicleRepository.CreateAsync(car);
-        await _unitOfWork.SaveAsync();
-        await _unitOfWork.CommitTransactionAsync();
-
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.VehicleRepository.CreateAsync(car);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
         return CarDto.FromCar(car);
     }
 }

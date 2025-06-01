@@ -8,9 +8,9 @@ public interface IUnitOfWork
     public IAdminRepository AdminRepository { get; }
     public ICategoryRepository CategoryRepository { get; }
     public IPostRepository PostRepository { get; }
+    public IModelRepository ModelRepository { get; }
     
+    
+    Task ExecuteTransactionAsync(Func<Task> transaction);
     Task SaveAsync();
-    Task BeginTransactionAsync();
-    Task CommitTransactionAsync();
-    Task RollbackTransactionAsync();
 }

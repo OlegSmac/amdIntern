@@ -19,4 +19,6 @@ public interface IVehicleRepository
     Task RemoveAsync(Vehicle vehicle);
     
     Task<Vehicle> UpdateAsync(Vehicle vehicle);
+    
+    
 }
