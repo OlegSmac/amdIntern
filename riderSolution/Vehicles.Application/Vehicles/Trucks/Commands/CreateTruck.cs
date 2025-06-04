@@ -6,9 +6,7 @@ using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Vehicles.Trucks.Commands;
 
-public record CreateTruck(string Brand, string Model, int Year, int MaxSpeed, string TransmissionType, 
-    double EngineVolume, int EnginePower, string FuelType, double FuelConsumption, string Color, int Mileage,
-    string CabinType, int LoadCapacity, int TotalWeight) : IRequest<TruckDto>;
+public record CreateTruck(Truck Truck) : IRequest<TruckDto>;
 
 public class CreateTruckHandler : IRequestHandler<CreateTruck, TruckDto>
 {
@@ -21,31 +19,28 @@ public class CreateTruckHandler : IRequestHandler<CreateTruck, TruckDto>
 
     private async Task<Truck> CreateTruckAsync(CreateTruck request)
     {
-        Brand brand = new Brand() { Name = request.Brand };
-        Model model = new Model() { Name = request.Model };
-        Year year = new Year() { YearNum = request.Year };
+        Brand brand = new Brand() { Name = request.Truck.Brand };
+        Model model = new Model() { Name = request.Truck.Model };
+        Year year = new Year() { YearNum = request.Truck.Year };
 
-        if (await _unitOfWork.ModelRepository.ExistsAsync(brand, model, year))
-        {
-            return new Truck()
-            {
-                Brand = request.Brand,
-                Model = request.Model,
-                Year = request.Year,
-                TransmissionType = request.TransmissionType,
-                EngineVolume = request.EngineVolume,
-                EnginePower = request.EnginePower,
-                FuelType = request.FuelType,
-                FuelConsumption = request.FuelConsumption,
-                Color = request.Color,
-                Mileage = request.Mileage,
-                MaxSpeed = request.MaxSpeed,
-                CabinType = request.CabinType,
-                LoadCapacity = request.LoadCapacity
-            };
-        }
+        if (!await _unitOfWork.ModelRepository.ExistsAsync(brand, model, year)) throw new ArgumentException("This model does not exist");
         
-        throw new ArgumentException("This model does not exist");
+        return new Truck()
+        {
+            Brand = request.Truck.Brand,
+            Model = request.Truck.Model,
+            Year = request.Truck.Year,
+            TransmissionType = request.Truck.TransmissionType,
+            EngineVolume = request.Truck.EngineVolume,
+            EnginePower = request.Truck.EnginePower,
+            FuelType = request.Truck.FuelType,
+            FuelConsumption = request.Truck.FuelConsumption,
+            Color = request.Truck.Color,
+            Mileage = request.Truck.Mileage,
+            MaxSpeed = request.Truck.MaxSpeed,
+            CabinType = request.Truck.CabinType,
+            LoadCapacity = request.Truck.LoadCapacity
+        };
     }
 
     public async Task<TruckDto> Handle(CreateTruck request, CancellationToken cancellationToken)

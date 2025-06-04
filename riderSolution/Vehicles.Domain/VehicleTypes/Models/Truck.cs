@@ -8,7 +8,7 @@ public class Truck : Vehicle
 
     [MaxLength(50)]
     [Required]
-    public required string CabinType
+    public string CabinType
     {
         get => _cabinType;
         set
@@ -23,7 +23,7 @@ public class Truck : Vehicle
     private int _loadCapacity;
 
     [Required]
-    public required int LoadCapacity
+    public int LoadCapacity
     {
         get => _loadCapacity;
         set

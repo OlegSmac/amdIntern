@@ -8,7 +8,7 @@ public class Car : Vehicle
 
     [MaxLength(40)]
     [Required]
-    public required string BodyType
+    public string BodyType
     {
         get => _bodyType;
         set
@@ -23,7 +23,7 @@ public class Car : Vehicle
     private int _seats;
 
     [Required]
-    public required int Seats
+    public int Seats
     {
         get => _seats;
         set
@@ -37,7 +37,7 @@ public class Car : Vehicle
     private int _doors;
 
     [Required]
-    public required int Doors
+    public int Doors
     {
         get => _doors;
         set

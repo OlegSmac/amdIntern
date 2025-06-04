@@ -6,9 +6,7 @@ using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Vehicles.Cars.Commands;
 
-public record CreateCar(string Brand, string Model, int Year, int MaxSpeed, string TransmissionType, 
-    double EngineVolume, int EnginePower, string FuelType, double FuelConsumption, string Color, int Mileage,
-    string BodyType, int Seats, int Doors) : IRequest<CarDto>;
+public record CreateCar(Car Car) : IRequest<CarDto>;
 
 public class CreateCarHandler : IRequestHandler<CreateCar, CarDto>
 {
@@ -21,32 +19,29 @@ public class CreateCarHandler : IRequestHandler<CreateCar, CarDto>
 
     private async Task<Car> CreateCarAsync(CreateCar request)
     {
-        Brand brand = new Brand() { Name = request.Brand };
-        Model model = new Model() { Name = request.Model };
-        Year year = new Year() { YearNum = request.Year };
+        Brand brand = new Brand() { Name = request.Car.Brand };
+        Model model = new Model() { Name = request.Car.Model };
+        Year year = new Year() { YearNum = request.Car.Year };
 
-        if (await _unitOfWork.ModelRepository.ExistsAsync(brand, model, year))
-        {
-            return new Car()
-            {
-                Brand = request.Brand,
-                Model = request.Model,
-                Year = request.Year,
-                TransmissionType = request.TransmissionType,
-                EngineVolume = request.EngineVolume,
-                EnginePower = request.EnginePower,
-                FuelType = request.FuelType,
-                FuelConsumption = request.FuelConsumption,
-                Color = request.Color,
-                Mileage = request.Mileage,
-                MaxSpeed = request.MaxSpeed,
-                BodyType = request.BodyType,
-                Seats = request.Seats,
-                Doors = request.Doors
-            };
-        }
+        if (!await _unitOfWork.ModelRepository.ExistsAsync(brand, model, year)) throw new ArgumentException("This model does not exist");
         
-        throw new ArgumentException("This model does not exist");
+        return new Car()
+        {
+            Brand = request.Car.Brand,
+            Model = request.Car.Model,
+            Year = request.Car.Year,
+            TransmissionType = request.Car.TransmissionType,
+            EngineVolume = request.Car.EngineVolume,
+            EnginePower = request.Car.EnginePower,
+            FuelType = request.Car.FuelType,
+            FuelConsumption = request.Car.FuelConsumption,
+            Color = request.Car.Color,
+            Mileage = request.Car.Mileage,
+            MaxSpeed = request.Car.MaxSpeed,
+            BodyType = request.Car.BodyType,
+            Seats = request.Car.Seats,
+            Doors = request.Car.Doors
+        };
     }
 
     public async Task<CarDto> Handle(CreateCar request, CancellationToken cancellationToken)

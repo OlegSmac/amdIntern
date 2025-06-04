@@ -10,7 +10,7 @@ public abstract class Vehicle
 
     [MaxLength(50)]
     [Required]
-    public required string Brand
+    public string Brand
     {
         get => _brand;
         set
@@ -26,7 +26,7 @@ public abstract class Vehicle
 
     [MaxLength(50)]
     [Required]
-    public required string Model
+    public string Model
     {
         get => _model;
         set
@@ -42,7 +42,7 @@ public abstract class Vehicle
 
     [MaxLength(50)]
     [Required]
-    public required string TransmissionType
+    public string TransmissionType
     {
         get => _transmission;
         set
@@ -58,7 +58,7 @@ public abstract class Vehicle
 
     [MaxLength(50)]
     [Required]
-    public required string FuelType
+    public string FuelType
     {
         get => _fuelType;
         set
@@ -74,7 +74,7 @@ public abstract class Vehicle
 
     [MaxLength(30)]
     [Required]
-    public required string Color
+    public string Color
     {
         get => _color;
         set
@@ -89,7 +89,7 @@ public abstract class Vehicle
     private int _year;
 
     [Required]
-    public required int Year
+    public int Year
     {
         get => _year;
         set
@@ -103,7 +103,7 @@ public abstract class Vehicle
     private int _enginePower;
 
     [Required]
-    public required int EnginePower
+    public int EnginePower
     {
         get => _enginePower;
         set
@@ -117,7 +117,7 @@ public abstract class Vehicle
     private int _mileage;
 
     [Required]
-    public required int Mileage
+    public int Mileage
     {
         get => _mileage;
         set
@@ -131,7 +131,7 @@ public abstract class Vehicle
     private int _maxSpeed;
 
     [Required]
-    public required int MaxSpeed
+    public int MaxSpeed
     {
         get => _maxSpeed;
         set
@@ -145,7 +145,7 @@ public abstract class Vehicle
     private double _engineVolume;
 
     [Required]
-    public required double EngineVolume
+    public double EngineVolume
     {
         get => _engineVolume;
         set
@@ -159,7 +159,7 @@ public abstract class Vehicle
     private double _fuelConsumption;
 
     [Required]
-    public required double FuelConsumption
+    public double FuelConsumption
     {
         get => _fuelConsumption;
         set
