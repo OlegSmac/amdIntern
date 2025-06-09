@@ -1,12 +1,12 @@
 using MediatR;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Vehicles.Vehicles.Responses;
+using DomainVehicle = Vehicles.Domain.VehicleTypes.Models.Vehicle;
 
 namespace Vehicles.Application.Vehicles.Vehicle.Queries;
 
-public record GetVehicleById(int Id) : IRequest<VehicleDto>;
+public record GetVehicleById(int Id) : IRequest<DomainVehicle>;
 
-public class GetVehicleByIdHandler : IRequestHandler<GetVehicleById, VehicleDto>
+public class GetVehicleByIdHandler : IRequestHandler<GetVehicleById, DomainVehicle>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -15,13 +15,13 @@ public class GetVehicleByIdHandler : IRequestHandler<GetVehicleById, VehicleDto>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<VehicleDto> Handle(GetVehicleById request, CancellationToken cancellationToken)
+    public async Task<DomainVehicle> Handle(GetVehicleById request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
         
         Domain.VehicleTypes.Models.Vehicle? vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Id);
         if (vehicle == null) throw new KeyNotFoundException($"Vehicle with id: {request.Id} not found");
         
-        return VehicleDto.FromVehicle(vehicle);
+        return vehicle;
     }
 }

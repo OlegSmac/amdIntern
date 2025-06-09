@@ -1,11 +1,14 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Vehicles.API.DTOs.Responses;
+using Vehicles.API.Models.Requests.Users;
 using Vehicles.Application.Users.Admins.Commands;
 using Vehicles.Application.Users.Admins.Queries;
 using Vehicles.Application.Users.Companies.Commands;
 using Vehicles.Application.Users.Companies.Queries;
-using Vehicles.Application.Users.RegularUsers.Commands;
-using Vehicles.Application.Users.RegularUsers.Queries;
+using Vehicles.Application.Users.Users.Commands;
+using Vehicles.Application.Users.Users.Queries;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.API.Controllers;
@@ -15,60 +18,67 @@ namespace Vehicles.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public UsersController(IMediator mediator)
+    public UsersController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
 
-    [HttpPost("regularUsers")]
-    public async Task<IActionResult> CreateRegularUser(RegularUser user)
+    [HttpPost("users")]
+    public async Task<IActionResult> CreateUser(CreateUserRequest userRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         
+        var user = _mapper.Map<User>(userRequest);
         var command = new CreateUser(user.Name, user.Email, user.Password);
-        var result = await _mediator.Send(command);
-        
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<UserDTO>(response);
+            
         return Ok(result);
     }
 
-    [HttpPut("regularUsers")]
-    public async Task<IActionResult> UpdateRegularUser(RegularUser user)
+    [HttpPut("users")]
+    public async Task<IActionResult> UpdateUser(UpdateUser userRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         
-        var command = new UpdateUser(user.Id, user.Name, user.Email, user.Password);
-        var result = await _mediator.Send(command);
+        var command = new UpdateUser(userRequest.Id, userRequest.Name, userRequest.Email, userRequest.Password);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<UserDTO>(response);
         
         return Ok(result);
     }
 
-    [HttpGet("regularUsers/{id}")]
-    public async Task<IActionResult> GetRegularUserById([FromRoute] int id)
+    [HttpGet("users/{id}")]
+    public async Task<IActionResult> GetUserById([FromRoute] int id)
     {
         var command = new GetUserById(id);
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<UserDTO>(response);
         
         return Ok(result);
     }
 
-    [HttpGet("regularUsers")]
-    public async Task<IActionResult> GetAllRegularUsers()
+    [HttpGet("users")]
+    public async Task<IActionResult> GetAllUsers()
     {
         var command = new GetAllUsers();
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<List<UserDTO>>(response);
         
         return Ok(result);
     }
 
-    [HttpDelete("regularUsers/{id}")]
-    public async Task<IActionResult> DeleteRegularUserById([FromRoute] int id)
+    [HttpDelete("users/{id}")]
+    public async Task<IActionResult> DeleteUserById([FromRoute] int id)
     {
         var command = new RemoveUser(id);
         await _mediator.Send(command);
@@ -77,29 +87,33 @@ public class UsersController : ControllerBase
     }
     
     [HttpPost("companies")]
-    public async Task<IActionResult> CreateCompany(Company company)
+    public async Task<IActionResult> CreateCompany(CreateCompanyRequest companyRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         
+        var company = _mapper.Map<Company>(companyRequest);
         var command = new CreateCompany(company.Name, company.Email, company.Password, company.Description);
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<CompanyDTO>(response);
         
         return Ok(result);
     }
 
     [HttpPut("companies")]
-    public async Task<IActionResult> UpdateCompany(Company company)
+    public async Task<IActionResult> UpdateCompany(UpdateCompany companyRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         
+        var company = _mapper.Map<Company>(companyRequest);
         var command = new UpdateCompany(company.Id, company.Name, company.Email, company.Password, company.Description);
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<CompanyDTO>(response);
         
         return Ok(result);
     }
@@ -108,7 +122,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetComapanyById([FromRoute] int id)
     {
         var command = new GetCompanyById(id);
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<CompanyDTO>(response);
         
         return Ok(result);
     }
@@ -117,7 +132,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetAllCompanies()
     {
         var command = new GetAllCompanies();
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<List<CompanyDTO>>(response);
         
         return Ok(result);
     }
@@ -132,29 +148,33 @@ public class UsersController : ControllerBase
     }
     
     [HttpPost("admins")]
-    public async Task<IActionResult> CreateAdmin(Admin admin)
+    public async Task<IActionResult> CreateAdmin(CreateAdminRequest adminRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         
+        var admin = _mapper.Map<Admin>(adminRequest);
         var command = new CreateAdmin(admin.Name, admin.Email, admin.Password);
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<AdminDTO>(response);
         
         return Ok(result);
     }
 
     [HttpPut("admins")]
-    public async Task<IActionResult> UpdateAdmin(Admin admin)
+    public async Task<IActionResult> UpdateAdmin(UpdateAdminRequest adminRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         
+        var admin = _mapper.Map<Admin>(adminRequest);
         var command = new UpdateAdmin(admin.Id, admin.Name, admin.Email, admin.Password);
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<AdminDTO>(response);
         
         return Ok(result);
     }
@@ -163,7 +183,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetAdminById([FromRoute] int id)
     {
         var command = new GetAdminById(id);
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<AdminDTO>(response);
         
         return Ok(result);
     }
@@ -172,7 +193,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetAllAdmins()
     {
         var command = new GetAllAdmins();
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<List<AdminDTO>>(response);
         
         return Ok(result);
     }

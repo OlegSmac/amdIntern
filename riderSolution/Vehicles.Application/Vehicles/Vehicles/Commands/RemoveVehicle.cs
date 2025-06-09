@@ -1,6 +1,6 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Vehicles.Vehicles.Responses;
 
 namespace Vehicles.Application.Vehicles.Vehicles.Commands;
 
@@ -9,14 +9,17 @@ public record RemoveVehicle(int Id) : IRequest;
 public class RemoveVehicleHandler : IRequestHandler<RemoveVehicle>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<RemoveVehicleHandler> _logger;
 
-    public RemoveVehicleHandler(IUnitOfWork unitOfWork)
+    public RemoveVehicleHandler(IUnitOfWork unitOfWork, ILogger<RemoveVehicleHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task Handle(RemoveVehicle request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation($"RemoveVehicle was called");
         ArgumentNullException.ThrowIfNull(request);
         
         var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Id);

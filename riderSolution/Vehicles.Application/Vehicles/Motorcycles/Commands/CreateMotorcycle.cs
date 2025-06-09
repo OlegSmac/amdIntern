@@ -1,20 +1,22 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Vehicles.Motorcycles.Responses;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Vehicles.Motorcycles.Commands;
 
-public record CreateMotorcycle(Motorcycle Motorcycle) : IRequest<MotorcycleDto>;
+public record CreateMotorcycle(Motorcycle Motorcycle) : IRequest<Motorcycle>;
 
-public class CreateMotorcycleHandler : IRequestHandler<CreateMotorcycle, MotorcycleDto>
+public class CreateMotorcycleHandler : IRequestHandler<CreateMotorcycle, Motorcycle>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<CreateMotorcycleHandler> _logger;
 
-    public CreateMotorcycleHandler(IUnitOfWork unitOfWork)
+    public CreateMotorcycleHandler(IUnitOfWork unitOfWork, ILogger<CreateMotorcycleHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     private async Task<Motorcycle> CreateMotorcycleAsync(CreateMotorcycle request)
@@ -42,26 +44,27 @@ public class CreateMotorcycleHandler : IRequestHandler<CreateMotorcycle, Motorcy
         };
     }
     
-    public async Task<MotorcycleDto> Handle(CreateMotorcycle request, CancellationToken cancellationToken)
+    public async Task<Motorcycle> Handle(CreateMotorcycle request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("CreateMotorcycle was called");
         ArgumentNullException.ThrowIfNull(request);
-        
-        Motorcycle motorcycle = await CreateMotorcycleAsync(request);
 
         try
         {
+            Motorcycle motorcycle = await CreateMotorcycleAsync(request);
+            
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
                 await _unitOfWork.VehicleRepository.CreateAsync(motorcycle);
                 await _unitOfWork.SaveAsync();
             });
+            
+            return motorcycle;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
-
-        return MotorcycleDto.FromMotorcycle(motorcycle);
     }
 }

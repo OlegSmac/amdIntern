@@ -12,7 +12,7 @@ public class FavoritePost
     
     [Required]
     public int UserId { get; set; }
-    public RegularUser User { get; set; }
+    public User User { get; set; }
     
     [Required]
     public DateTime Date { get; set; }

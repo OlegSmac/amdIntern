@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 
 namespace Vehicles.Application.Posts.Categories.Commands;
@@ -8,21 +9,24 @@ public record RemoveCategory(int Id) : IRequest;
 public class RemoveCategoryHandler : IRequestHandler<RemoveCategory>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<RemoveCategoryHandler> _logger;
 
-    public RemoveCategoryHandler(IUnitOfWork unitOfWork)
+    public RemoveCategoryHandler(IUnitOfWork unitOfWork, ILogger<RemoveCategoryHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task Handle(RemoveCategory request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("RemoveCategory was called");
         ArgumentNullException.ThrowIfNull(request);
-        
-        var category = await _unitOfWork.CategoryRepository.GetByIdAsync(request.Id);
-        if (category == null) return;
 
         try
         {
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(request.Id);
+            if (category == null) return;
+            
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
                 await _unitOfWork.CategoryRepository.RemoveAsync(request.Id);
@@ -31,7 +35,7 @@ public class RemoveCategoryHandler : IRequestHandler<RemoveCategory>
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
     }

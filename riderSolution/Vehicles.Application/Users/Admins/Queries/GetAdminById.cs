@@ -1,28 +1,31 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Users.Admins.Responses;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Admins.Queries;
 
-public record GetAdminById(int Id) : IRequest<AdminDto>;
+public record GetAdminById(int Id) : IRequest<Admin>;
 
-public class GetAdminByIdHandler : IRequestHandler<GetAdminById, AdminDto>
+public class GetAdminByIdHandler : IRequestHandler<GetAdminById, Admin>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<GetAdminByIdHandler> _logger;
 
-    public GetAdminByIdHandler(IUnitOfWork unitOfWork)
+    public GetAdminByIdHandler(IUnitOfWork unitOfWork, ILogger<GetAdminByIdHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
-    public async Task<AdminDto> Handle(GetAdminById request, CancellationToken cancellationToken)
+    public async Task<Admin> Handle(GetAdminById request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("GetAdminById was called");
         ArgumentNullException.ThrowIfNull(request);
 
         Admin? admin = await _unitOfWork.AdminRepository.GetByIdAsync(request.Id);
         if (admin == null) throw new KeyNotFoundException($"Admin with id: {request.Id} not found");
         
-        return AdminDto.FromAdmin(admin);
+        return admin;
     }
 }

@@ -1,20 +1,22 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Vehicles.Trucks.Responses;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Vehicles.Trucks.Commands;
 
-public record CreateTruck(Truck Truck) : IRequest<TruckDto>;
+public record CreateTruck(Truck Truck) : IRequest<Truck>;
 
-public class CreateTruckHandler : IRequestHandler<CreateTruck, TruckDto>
+public class CreateTruckHandler : IRequestHandler<CreateTruck, Truck>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<CreateTruckHandler> _logger;
 
-    public CreateTruckHandler(IUnitOfWork unitOfWork)
+    public CreateTruckHandler(IUnitOfWork unitOfWork, ILogger<CreateTruckHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     private async Task<Truck> CreateTruckAsync(CreateTruck request)
@@ -43,26 +45,26 @@ public class CreateTruckHandler : IRequestHandler<CreateTruck, TruckDto>
         };
     }
 
-    public async Task<TruckDto> Handle(CreateTruck request, CancellationToken cancellationToken)
+    public async Task<Truck> Handle(CreateTruck request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("CreateTruck was called");
         ArgumentNullException.ThrowIfNull(request);
-        
-        Truck truck = await CreateTruckAsync(request);
 
         try
         {
+            Truck truck = await CreateTruckAsync(request);
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
                 await _unitOfWork.VehicleRepository.CreateAsync(truck);
                 await _unitOfWork.SaveAsync();
             });
+            
+            return truck;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
-        
-        return TruckDto.FromTruck(truck);
     }
 }

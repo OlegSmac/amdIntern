@@ -1,19 +1,21 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Users.Companies.Responses;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Companies.Commands;
 
-public record CreateCompany(string Name, string Email, string Password, string Description) : IRequest<CompanyDto>;
+public record CreateCompany(string Name, string Email, string Password, string Description) : IRequest<Company>;
 
-public class CreateCompanyHandler : IRequestHandler<CreateCompany, CompanyDto>
+public class CreateCompanyHandler : IRequestHandler<CreateCompany, Company>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<CreateCompanyHandler> _logger;
 
-    public CreateCompanyHandler(IUnitOfWork unitOfWork)
+    public CreateCompanyHandler(IUnitOfWork unitOfWork, ILogger<CreateCompanyHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     private async Task<Company> CreateCompanyAsync(CreateCompany request)
@@ -27,26 +29,26 @@ public class CreateCompanyHandler : IRequestHandler<CreateCompany, CompanyDto>
         };
     } 
 
-    public async Task<CompanyDto> Handle(CreateCompany request, CancellationToken cancellationToken)
+    public async Task<Company> Handle(CreateCompany request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("CreateCompany was called");
         ArgumentNullException.ThrowIfNull(request);
-
-        Company company = await CreateCompanyAsync(request);
 
         try
         {
+            Company company = await CreateCompanyAsync(request);
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
                 await _unitOfWork.CompanyRepository.CreateAsync(company);
                 await _unitOfWork.SaveAsync();
             });
+            
+            return company;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
-
-        return CompanyDto.FromCompany(company);
     }
 }

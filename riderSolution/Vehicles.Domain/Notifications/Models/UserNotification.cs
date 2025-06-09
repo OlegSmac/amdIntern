@@ -8,7 +8,7 @@ public class UserNotification : Notification
 {
     [Required]
     public int UserId { get; set; }
-    public RegularUser User { get; set; }
+    public User User { get; set; }
     
     [Required]
     public int? PostId { get; set; }

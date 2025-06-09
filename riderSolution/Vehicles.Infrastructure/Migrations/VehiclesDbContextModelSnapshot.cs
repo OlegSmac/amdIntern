@@ -202,7 +202,8 @@ namespace Vehicles.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -232,14 +233,15 @@ namespace Vehicles.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("Vehicles.Domain.Users.Models.RegularUser", b =>
+            modelBuilder.Entity("Vehicles.Domain.Users.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,11 +260,12 @@ namespace Vehicles.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("RegularUsers");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Vehicles.Domain.Users.Relations.FavoritePost", b =>
@@ -513,7 +516,7 @@ namespace Vehicles.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Vehicles.Domain.Users.Models.RegularUser", "User")
+                    b.HasOne("Vehicles.Domain.Users.Models.User", "User")
                         .WithMany("UserNotifications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -551,7 +554,7 @@ namespace Vehicles.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vehicles.Domain.Users.Models.RegularUser", "User")
+                    b.HasOne("Vehicles.Domain.Users.Models.User", "User")
                         .WithMany("FavoritePosts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -570,7 +573,7 @@ namespace Vehicles.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vehicles.Domain.Users.Models.RegularUser", "User")
+                    b.HasOne("Vehicles.Domain.Users.Models.User", "User")
                         .WithMany("Subscribers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -631,7 +634,7 @@ namespace Vehicles.Infrastructure.Migrations
                     b.Navigation("Subscribers");
                 });
 
-            modelBuilder.Entity("Vehicles.Domain.Users.Models.RegularUser", b =>
+            modelBuilder.Entity("Vehicles.Domain.Users.Models.User", b =>
                 {
                     b.Navigation("FavoritePosts");
 

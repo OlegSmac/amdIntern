@@ -16,33 +16,33 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<RegularUser> CreateAsync(RegularUser user)
+    public async Task<User> CreateAsync(User user)
     {
-        await _context.RegularUsers.AddAsync(user);
+        await _context.Users.AddAsync(user);
         return user;
     }
 
-    public async Task<RegularUser?> GetByIdAsync(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
-        return await _context.RegularUsers.FirstOrDefaultAsync(u => u.Id == id);
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<List<RegularUser>> GetAllAsync()
+    public async Task<List<User>> GetAllAsync()
     {
-        return await _context.RegularUsers.ToListAsync();
+        return await _context.Users.ToListAsync();
     }
 
     public async Task RemoveAsync(int id)
     {
-        var toDelete = await _context.RegularUsers.FirstOrDefaultAsync(u => u.Id == id);
+        var toDelete = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (toDelete != null)
         {
-            _context.RegularUsers.Remove(toDelete);
+            _context.Users.Remove(toDelete);
             await _context.SaveChangesAsync();
         }
     }
 
-    public async Task<RegularUser> UpdateAsync(RegularUser user)
+    public async Task<User> UpdateAsync(User user)
     {
         _context.Update(user);
         await _context.SaveChangesAsync();

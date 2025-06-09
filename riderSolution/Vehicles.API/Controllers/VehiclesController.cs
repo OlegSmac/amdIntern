@@ -1,13 +1,13 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Vehicles.Application.Vehicles.Vehicles.Queries;
 using Vehicles.Domain.VehicleTypes.Models;
 using Microsoft.AspNetCore.Mvc;
-using Vehicles.API.Factories;
-using Vehicles.API.Requests;
-using Vehicles.Application.Vehicles.Cars.Commands;
-using Vehicles.Application.Vehicles.Motorcycles.Commands;
-using Vehicles.Application.Vehicles.Trucks.Commands;
+using Vehicles.API.Models.DTOs.Vehicles;
+using Vehicles.API.Models.Factories;
+using Vehicles.API.Models.Requests.Vehicles;
+using Vehicles.API.Models.DTOs.Vehicles;
 using Vehicles.Application.Vehicles.Vehicle.Queries;
 using Vehicles.Application.Vehicles.Vehicles.Commands;
 
@@ -18,36 +18,40 @@ namespace Vehicles.API.Controllers;
 public class VehiclesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public VehiclesController(IMediator mediator)
+    public VehiclesController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
     
     [HttpPost("cars")]
-    public async Task<IActionResult> CreateVehicle(VehicleRequest vehicleRequest)
+    public async Task<IActionResult> CreateVehicle(CreateVehicleRequest vehicleRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var command = VehicleCommandFactory.CreateCommand(vehicleRequest);
-        var result = await _mediator.Send(command);
+        var command = VehicleCommandFactory.CreateCommand(vehicleRequest, _mapper);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<VehicleDTO>(response);
         
         return Ok(result);
     }
 
     [HttpPut("cars")]
-    public async Task<IActionResult> UpdateVehicle(VehicleRequest vehicleRequest)
+    public async Task<IActionResult> UpdateVehicle(UpdateVehicleRequest vehicleRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var command = VehicleCommandFactory.UpdateCommand(vehicleRequest);
-        var result = await _mediator.Send(command);
+        var command = VehicleCommandFactory.UpdateCommand(vehicleRequest, _mapper);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<VehicleDTO>(response);
         
         return Ok(result);
     }
@@ -56,16 +60,26 @@ public class VehiclesController : ControllerBase
     public async Task<IActionResult> GetAllVehicles()
     {
         var command = new GetAllVehicles();
-        var result = await _mediator.Send(command);
-        
+        var response = await _mediator.Send(command);
+
+        var result = response
+            .Select(vehicle =>
+            {
+                var dtoType = VehicleType.GetDtoType(vehicle);
+                return _mapper.Map(vehicle, vehicle.GetType(), dtoType);
+            })
+            .ToList();
+
         return Ok(result);
     }
+
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetVehicleById([FromRoute] int id)
     {
         var command = new GetVehicleById(id);
-        var result = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
+        var result = _mapper.Map<VehicleDTO>(response);
         
         return Ok(result);
     }

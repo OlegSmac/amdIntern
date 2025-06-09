@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Vehicles.Vehicles.Responses;
+using Vehicles.Application.Vehicles.Models.Responses;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Infrastructure.Repositories;
@@ -14,7 +14,7 @@ public class ModelRepository : IModelRepository
         _context = context;
     }
     
-    public async Task<ModelDto> CreateAsync(Brand brand, Model model, Year year)
+    public async Task<VehicleModel> CreateAsync(Brand brand, Model model, Year year)
     {
         var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name == brand.Name);
         if (existingBrand == null)
@@ -43,7 +43,7 @@ public class ModelRepository : IModelRepository
             existingModel.Years.Add(existingYear);
         }
 
-        return new ModelDto
+        return new VehicleModel
         {
             Brand = existingBrand.Name,
             Model = existingModel.Name,

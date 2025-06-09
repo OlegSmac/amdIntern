@@ -1,27 +1,30 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Posts.Categories.Responses;
 using Vehicles.Domain.Posts.Models;
 
 namespace Vehicles.Application.Posts.Categories.Queries;
 
-public record GetAllCategories() : IRequest<List<CategoryDto>>;
+public record GetAllCategories() : IRequest<List<Category>>;
 
-public class GetAllCategoriesHandler : IRequestHandler<GetAllCategories, List<CategoryDto>>
+public class GetAllCategoriesHandler : IRequestHandler<GetAllCategories, List<Category>>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<GetAllCategoriesHandler> _logger;
 
-    public GetAllCategoriesHandler(IUnitOfWork unitOfWork)
+    public GetAllCategoriesHandler(IUnitOfWork unitOfWork, ILogger<GetAllCategoriesHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
-    public async Task<List<CategoryDto>> Handle(GetAllCategories request, CancellationToken cancellationToken)
+    public async Task<List<Category>> Handle(GetAllCategories request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("GetAllCategories was called");
         ArgumentNullException.ThrowIfNull(request);
 
         List<Category> categories = await _unitOfWork.CategoryRepository.GetAllAsync();
-        
-        return categories.Select(CategoryDto.FromCategory).ToList();
+
+        return categories;
     }
 }

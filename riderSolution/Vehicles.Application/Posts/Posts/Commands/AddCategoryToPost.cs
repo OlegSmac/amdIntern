@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 
 namespace Vehicles.Application.Posts.Posts.Commands;
@@ -8,14 +9,17 @@ public record AddCategoryToPost(int PostId, int CategoryId) : IRequest;
 public class AddCategoryToPostHandler : IRequestHandler<AddCategoryToPost>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<AddCategoryToPostHandler> _logger;
 
-    public AddCategoryToPostHandler(IUnitOfWork unitOfWork)
+    public AddCategoryToPostHandler(IUnitOfWork unitOfWork, ILogger<AddCategoryToPostHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task Handle(AddCategoryToPost request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("AddCategoryToPost was called");
         ArgumentNullException.ThrowIfNull(request);
 
         try
@@ -28,7 +32,7 @@ public class AddCategoryToPostHandler : IRequestHandler<AddCategoryToPost>
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
     }

@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.Posts.Models;
 
@@ -9,21 +10,24 @@ public record RemovePost(int Id) : IRequest;
 public class RemovePostHandler : IRequestHandler<RemovePost>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<RemovePostHandler> _logger;
 
-    public RemovePostHandler(IUnitOfWork unitOfWork)
+    public RemovePostHandler(IUnitOfWork unitOfWork, ILogger<RemovePostHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
     
     public async Task Handle(RemovePost request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("RemovePost was called");
         ArgumentNullException.ThrowIfNull(request);
-        
-        Post? post = await _unitOfWork.PostRepository.GetByIdAsync(request.Id);
-        if (post == null) return;
 
         try
         {
+            Post? post = await _unitOfWork.PostRepository.GetByIdAsync(request.Id);
+            if (post == null) return;
+            
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
                 await _unitOfWork.PostRepository.RemoveAsync(request.Id);
@@ -32,7 +36,7 @@ public class RemovePostHandler : IRequestHandler<RemovePost>
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
     }

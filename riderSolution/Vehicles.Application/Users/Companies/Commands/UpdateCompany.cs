@@ -1,20 +1,22 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Users.Companies.Responses;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Companies.Commands;
 
 public record UpdateCompany(int Id, string Name, string Email, string Password, string Description)
-    : IRequest<CompanyDto>;
+    : IRequest<Company>;
 
-public class UpdateCompanyHandler : IRequestHandler<UpdateCompany, CompanyDto>
+public class UpdateCompanyHandler : IRequestHandler<UpdateCompany, Company>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<UpdateCompanyHandler> _logger;
 
-    public UpdateCompanyHandler(IUnitOfWork unitOfWork)
+    public UpdateCompanyHandler(IUnitOfWork unitOfWork, ILogger<UpdateCompanyHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     private async Task UpdateCompanyAsync(Company company, UpdateCompany request)
@@ -25,29 +27,30 @@ public class UpdateCompanyHandler : IRequestHandler<UpdateCompany, CompanyDto>
         company.Description = request.Description;
     }
 
-    public async Task<CompanyDto> Handle(UpdateCompany request, CancellationToken cancellationToken)
+    public async Task<Company> Handle(UpdateCompany request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("UpdateCompany was called");
         ArgumentNullException.ThrowIfNull(request);
-        
-        var company = await _unitOfWork.CompanyRepository.GetByIdAsync(request.Id);
-        if (company is null) throw new KeyNotFoundException($"Company with id {request.Id} does not exist.");
-        
-        await UpdateCompanyAsync(company, request);
 
         try
         {
+            var company = await _unitOfWork.CompanyRepository.GetByIdAsync(request.Id);
+            if (company is null) throw new KeyNotFoundException($"Company with id {request.Id} does not exist.");
+        
+            await UpdateCompanyAsync(company, request);
+            
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
                 await _unitOfWork.CompanyRepository.UpdateAsync(company);
                 await _unitOfWork.SaveAsync();
             });
+            
+            return company;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
-
-        return CompanyDto.FromCompany(company);
     }
 }

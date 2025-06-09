@@ -21,7 +21,7 @@ public class VehiclesDbContext : DbContext
     public DbSet<Truck> Trucks { get; set; } = default!;
     
     //Users
-    public DbSet<RegularUser> RegularUsers { get; set; } = default!;
+    public DbSet<User> Users { get; set; } = default!;
     public DbSet<Company> Companies { get; set; } = default!;
     public DbSet<Admin> Admins { get; set; } = default!;
     public DbSet<Subscription> Subscriptions { get; set; } = default!;
@@ -52,7 +52,7 @@ public class VehiclesDbContext : DbContext
         modelBuilder.Entity<Vehicle>().ToTable("Vehicles").UseTptMappingStrategy();
         
         //Users description
-        modelBuilder.Entity<RegularUser>();
+        modelBuilder.Entity<User>();
         modelBuilder.Entity<Company>();
         modelBuilder.Entity<Admin>();
         

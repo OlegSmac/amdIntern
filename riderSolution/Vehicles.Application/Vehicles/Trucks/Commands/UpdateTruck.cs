@@ -1,20 +1,22 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Vehicles.Trucks.Responses;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Vehicles.Trucks.Commands;
 
-public record UpdateTruck(Truck Truck) : IRequest<TruckDto>;
+public record UpdateTruck(Truck Truck) : IRequest<Truck>;
 
-public class UpdateTruckHandler : IRequestHandler<UpdateTruck, TruckDto>
+public class UpdateTruckHandler : IRequestHandler<UpdateTruck, Truck>
 {
-    public IUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<UpdateTruckHandler> _logger;
 
-    public UpdateTruckHandler(IUnitOfWork unitOfWork)
+    public UpdateTruckHandler(IUnitOfWork unitOfWork, ILogger<UpdateTruckHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     private async Task UpdateTruckAsync(Truck truck, UpdateTruck request)
@@ -40,30 +42,31 @@ public class UpdateTruckHandler : IRequestHandler<UpdateTruck, TruckDto>
         truck.LoadCapacity = request.Truck.LoadCapacity;
     }
 
-    public async Task<TruckDto> Handle(UpdateTruck request, CancellationToken cancellationToken)
+    public async Task<Truck> Handle(UpdateTruck request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("UpdateTruck was called");
         ArgumentNullException.ThrowIfNull(request);
-        
-        var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Truck.Id);
-        if (vehicle is null) throw new KeyNotFoundException($"No vehicle with id {request.Truck.Id} exists.");
-
-        if (vehicle is Truck truck) await UpdateTruckAsync(truck, request);
-        else throw new ArgumentException("This vehicle isn't a truck");
 
         try
         {
+            var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Truck.Id);
+            if (vehicle is null) throw new KeyNotFoundException($"No vehicle with id {request.Truck.Id} exists.");
+
+            if (vehicle is Truck truck) await UpdateTruckAsync(truck, request);
+            else throw new ArgumentException("This vehicle isn't a truck");
+            
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
                 await _unitOfWork.VehicleRepository.UpdateAsync(truck);
                 await _unitOfWork.SaveAsync();
             });
+            
+            return truck;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
-        
-        return TruckDto.FromTruck(truck);
     }
 }

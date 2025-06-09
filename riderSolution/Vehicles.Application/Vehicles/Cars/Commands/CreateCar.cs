@@ -1,20 +1,22 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Vehicles.Cars.Responses;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Vehicles.Cars.Commands;
 
-public record CreateCar(Car Car) : IRequest<CarDto>;
+public record CreateCar(Car Car) : IRequest<Car>;
 
-public class CreateCarHandler : IRequestHandler<CreateCar, CarDto>
+public class CreateCarHandler : IRequestHandler<CreateCar, Car>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<CreateCarHandler> _logger;
 
-    public CreateCarHandler(IUnitOfWork unitOfWork)
+    public CreateCarHandler(IUnitOfWork unitOfWork, ILogger<CreateCarHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     private async Task<Car> CreateCarAsync(CreateCar request)
@@ -44,26 +46,26 @@ public class CreateCarHandler : IRequestHandler<CreateCar, CarDto>
         };
     }
 
-    public async Task<CarDto> Handle(CreateCar request, CancellationToken cancellationToken)
+    public async Task<Car> Handle(CreateCar request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("CreateCar was called");
         ArgumentNullException.ThrowIfNull(request);
         
-        Car car = await CreateCarAsync(request);
-
         try
         {
+            Car car = await CreateCarAsync(request);
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
                 await _unitOfWork.VehicleRepository.CreateAsync(car);
                 await _unitOfWork.SaveAsync();
             });
+            
+            return car;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
-        
-        return CarDto.FromCar(car);
     }
 }

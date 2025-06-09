@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
@@ -9,14 +10,17 @@ public record RemoveModel(string Brand, string Model, int Year) : IRequest;
 public class RemoveModelHandler : IRequestHandler<RemoveModel> 
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<RemoveModelHandler> _logger;
 
-    public RemoveModelHandler(IUnitOfWork unitOfWork)
+    public RemoveModelHandler(IUnitOfWork unitOfWork, ILogger<RemoveModelHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task Handle(RemoveModel request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("RemoveModel was called");
         ArgumentNullException.ThrowIfNull(request);
         
         var brand = new Brand() { Name = request.Brand };
@@ -33,7 +37,7 @@ public class RemoveModelHandler : IRequestHandler<RemoveModel>
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e.Message);
             throw;
         }
     }

@@ -3,9 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Vehicles.Application.Abstractions;
 using Vehicles.Application.Vehicles.Cars.Commands;
-using Vehicles.Application.Vehicles.Vehicle.Queries;
-using Vehicles.Application.Vehicles.Vehicles.Commands;
-using Vehicles.Application.Vehicles.Vehicles.Responses;
 using Vehicles.Infrastructure;
 using Vehicles.Infrastructure.Repositories;
 

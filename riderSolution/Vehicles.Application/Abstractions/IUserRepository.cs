@@ -7,15 +7,15 @@ namespace Vehicles.Application.Abstractions;
 
 public interface IUserRepository
 {
-    Task<RegularUser> CreateAsync(RegularUser user);
+    Task<User> CreateAsync(User user);
 
-    Task<RegularUser?> GetByIdAsync(int id);
+    Task<User?> GetByIdAsync(int id);
     
-    Task<List<RegularUser>> GetAllAsync();
+    Task<List<User>> GetAllAsync();
     
     Task RemoveAsync(int id);
     
-    Task<RegularUser> UpdateAsync(RegularUser user);
+    Task<User> UpdateAsync(User user);
 
     Task SubcribeAsync(Subscription subscription);
     
