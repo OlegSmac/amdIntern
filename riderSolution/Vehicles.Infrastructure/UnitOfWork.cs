@@ -13,12 +13,13 @@ public class UnitOfWork : IUnitOfWork
     public IAdminRepository AdminRepository { get; private set; }
     public ICategoryRepository CategoryRepository { get; private set; }
     public IPostRepository PostRepository { get; private set; }
+    public IImageRepository ImageRepository { get; private set; }
     public IModelRepository ModelRepository { get; private set; }
-    
+    public INotificationRepository NotificationRepository { get; private set; }
 
     public UnitOfWork(VehiclesDbContext context, IVehicleRepository vehicleRepository, IUserRepository userRepository, 
         ICompanyRepository companyRepository, IAdminRepository adminRepository, ICategoryRepository categoryRepository, 
-        IPostRepository postRepository, IModelRepository modelRepository)
+        IPostRepository postRepository, IImageRepository imageRepository, IModelRepository modelRepository, INotificationRepository notificationRepository)
     {
         _context = context;
         VehicleRepository = vehicleRepository;
@@ -27,7 +28,9 @@ public class UnitOfWork : IUnitOfWork
         AdminRepository = adminRepository;
         CategoryRepository = categoryRepository;
         PostRepository = postRepository;
+        ImageRepository = imageRepository;
         ModelRepository = modelRepository;
+        NotificationRepository = notificationRepository;
     }
 
     public async Task ExecuteTransactionAsync(Func<Task> transaction)

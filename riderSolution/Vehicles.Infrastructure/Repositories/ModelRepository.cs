@@ -102,4 +102,30 @@ public class ModelRepository : IModelRepository
         return existingModel != null;
     }
 
+    public async Task<List<string>> GetAllBrandsAsync()
+    {
+        return await _context.Models
+            .Select(m => m.Brand.Name)
+            .Distinct()
+            .ToListAsync();
+    }
+
+    public async Task<List<string>> GetAllModelsByBrandAsync(string brand)
+    {
+        return await _context.Models
+            .Where(m => m.Brand.Name == brand)
+            .Select(m => m.Name)
+            .Distinct()
+            .ToListAsync();
+    }
+
+    public async Task<List<int>> GetAllYearsByBrandAndModelAsync(string brand, string model)
+    {
+        return await _context.Models
+            .Where(m => m.Brand.Name == brand && m.Name == model)
+            .SelectMany(m => m.Years.Select(y => y.YearNum))
+            .Distinct()
+            .ToListAsync();
+    }
+
 }

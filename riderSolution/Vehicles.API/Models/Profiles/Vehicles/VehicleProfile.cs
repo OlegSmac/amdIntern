@@ -37,6 +37,7 @@ public class VehicleProfile : Profile
             .ForMember(dest => dest.FuelConsumption, src => src.MapFrom(x => x.FuelConsumption));
 
         CreateMap<Vehicle, VehicleDTO>()
+            .ForMember(dest => dest.Id, src => src.MapFrom(x => x.Id))
             .ForMember(dest => dest.Brand, src => src.MapFrom(x => x.Brand))
             .ForMember(dest => dest.Model, src => src.MapFrom(x => x.Model))
             .ForMember(dest => dest.TransmissionType, src => src.MapFrom(x => x.TransmissionType))
@@ -47,6 +48,10 @@ public class VehicleProfile : Profile
             .ForMember(dest => dest.Mileage, src => src.MapFrom(x => x.Mileage))
             .ForMember(dest => dest.MaxSpeed, src => src.MapFrom(x => x.MaxSpeed))
             .ForMember(dest => dest.EngineVolume, src => src.MapFrom(x => x.EngineVolume))
-            .ForMember(dest => dest.FuelConsumption, src => src.MapFrom(x => x.FuelConsumption));
+            .ForMember(dest => dest.FuelConsumption, src => src.MapFrom(x => x.FuelConsumption))
+            .ForMember(dest => dest.VehicleType, src => src.MapFrom(x => x.GetType().Name.ToLower()))
+            .Include<Car, CarDTO>()
+            .Include<Motorcycle, MotorcycleDTO>()
+            .Include<Truck, TruckDTO>();
     }
 }

@@ -24,8 +24,8 @@ public class CreateVehicleRequest
 public class CarInfo
 {
     public string BodyType { get; set; }
-    public int Seats { get; set; }
-    public int Doors { get; set; }
+    public int? Seats { get; set; }
+    public int? Doors { get; set; }
 }
 
 public class MotorcycleInfo
@@ -36,5 +36,5 @@ public class MotorcycleInfo
 public class TruckInfo
 {
     public string CabinType { get; set; }
-    public int LoadCapacity { get; set; }
+    public int? LoadCapacity { get; set; }
 }

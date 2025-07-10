@@ -10,5 +10,10 @@ public interface IModelRepository
     Task RemoveAsync(Brand brand, Model model, Year year);
     
     Task<bool> ExistsAsync(Brand brand, Model model, Year year);
+
+    Task<List<string>> GetAllBrandsAsync();
     
+    Task<List<string>> GetAllModelsByBrandAsync(string brand);
+    
+    Task<List<int>> GetAllYearsByBrandAndModelAsync(string brand, string model);
 }

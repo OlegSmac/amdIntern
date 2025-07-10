@@ -3,12 +3,13 @@ using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
+using DomainVehicle = Vehicles.Domain.VehicleTypes.Models.Vehicle;
 
 namespace Vehicles.Application.Vehicles.Cars.Commands;
 
 public record UpdateCar(Car Car) : IRequest<Car>;
 
-public class UpdateCarHandler : IRequestHandler<UpdateCar, Car>
+public class UpdateCarHandler : IRequestHandler<UpdateCar, DomainVehicle>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateCarHandler> _logger;
@@ -43,31 +44,23 @@ public class UpdateCarHandler : IRequestHandler<UpdateCar, Car>
         car.Doors = request.Car.Doors;
     }
 
-    public async Task<Car> Handle(UpdateCar request, CancellationToken cancellationToken)
+    public async Task<DomainVehicle> Handle(UpdateCar request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("UpdateCar was called");
         ArgumentNullException.ThrowIfNull(request);
         
-        try
+        var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync<Car>(request.Car.Id);
+        if (vehicle is null) throw new KeyNotFoundException($"No vehicle with id {request.Car.Id} exists.");
+        
+        if (vehicle is Car car) await UpdateCarAsync(car, request);
+        else throw new ArgumentException("This vehicle isn't a car.");
+        
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Car.Id);
-            if (vehicle is null) throw new KeyNotFoundException($"No vehicle with id {request.Car.Id} exists.");
-            
-            if (vehicle is Car car) await UpdateCarAsync(car, request);
-            else throw new ArgumentException("This vehicle isn't a car.");
-            
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.VehicleRepository.UpdateAsync(car);
-                await _unitOfWork.SaveAsync();
-            });
-            
-            return car;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            throw;
-        }
+            _unitOfWork.VehicleRepository.Update<Car>(car);
+            await _unitOfWork.SaveAsync();
+        });
+        
+        return car;
     }
 }

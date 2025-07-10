@@ -5,9 +5,9 @@ using Vehicles.Domain.Users.Relations;
 
 namespace Vehicles.Application.Users.Users.Commands;
 
-public record RemovePostFromFavoriteList(int UserId, int PostId) : IRequest;
+public record RemovePostFromFavoriteList(string UserId, int PostId) : IRequest<bool>;
 
-public class RemovePostFromFavoriteListHandler : IRequestHandler<RemovePostFromFavoriteList>
+public class RemovePostFromFavoriteListHandler : IRequestHandler<RemovePostFromFavoriteList, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RemovePostFromFavoriteListHandler> _logger;
@@ -18,7 +18,7 @@ public class RemovePostFromFavoriteListHandler : IRequestHandler<RemovePostFromF
         _logger = logger;
     }
 
-    public async Task Handle(RemovePostFromFavoriteList request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(RemovePostFromFavoriteList request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("RemovePostFromFavoriteList was called");
         ArgumentNullException.ThrowIfNull(request);
@@ -33,12 +33,14 @@ public class RemovePostFromFavoriteListHandler : IRequestHandler<RemovePostFromF
         {
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {
-                if (await _unitOfWork.UserRepository.IsPostFavoriteAsync(favoritePost))
+                if (await _unitOfWork.UserRepository.IsPostFavoriteAsync(request.UserId, request.PostId))
                 {
                     await _unitOfWork.UserRepository.RemovePostFromFavoriteListAsync(favoritePost);
                     await _unitOfWork.SaveAsync();
                 }
             });
+            
+            return true;
         }
         catch (Exception e)
         {

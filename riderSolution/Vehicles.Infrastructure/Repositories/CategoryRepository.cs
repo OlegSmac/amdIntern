@@ -19,9 +19,9 @@ public class CategoryRepository : ICategoryRepository
         return category;
     }
 
-    public async Task<Category?> GetByIdAsync(int id)
+    public async Task<Category?> GetByNameAsync(string name)
     {
-        return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        return await _context.Categories.FirstOrDefaultAsync(c => c.Name == name);
     }
 
     public async Task<List<Category>> GetAllAsync()
@@ -29,9 +29,9 @@ public class CategoryRepository : ICategoryRepository
         return await _context.Categories.ToListAsync();        
     }
 
-    public async Task RemoveAsync(int id)
+    public async Task RemoveAsync(string name)
     {
-        var toDelete = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        var toDelete = await _context.Categories.FirstOrDefaultAsync(c => c.Name == name);
         if (toDelete != null)
         {
             _context.Categories.Remove(toDelete);

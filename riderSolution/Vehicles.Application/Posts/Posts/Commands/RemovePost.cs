@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.Posts.Models;
+using Vehicles.Domain.VehicleTypes.Models;
 
 namespace Vehicles.Application.Posts.Posts.Commands;
 
@@ -23,21 +24,17 @@ public class RemovePostHandler : IRequestHandler<RemovePost>
         _logger.LogInformation("RemovePost was called");
         ArgumentNullException.ThrowIfNull(request);
 
-        try
+        var post = await _unitOfWork.PostRepository.GetByIdAsync<Post>(request.Id);
+        if (post == null) return;
+
+        var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync<Vehicle>(post.VehicleId);
+        if (vehicle == null) return;
+        
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            Post? post = await _unitOfWork.PostRepository.GetByIdAsync(request.Id);
-            if (post == null) return;
-            
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.PostRepository.RemoveAsync(request.Id);
-                await _unitOfWork.SaveAsync();
-            });
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            throw;
-        }
+            await _unitOfWork.VehicleRepository.DeleteAsync<Vehicle>(vehicle.Id);
+            await _unitOfWork.PostRepository.DeleteAsync<Post>(request.Id);
+            await _unitOfWork.SaveAsync();
+        });
     }
 }

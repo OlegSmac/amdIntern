@@ -6,11 +6,9 @@ public interface IAdminRepository
 {
     Task<Admin> CreateAsync(Admin admin);
 
-    Task<Admin?> GetByIdAsync(int id);
+    Task<Admin?> GetByIdAsync(string id);
     
-    Task<List<Admin>> GetAllAsync();
-    
-    Task RemoveAsync(int id);
+    Task RemoveAsync(string id);
     
     Task<Admin> UpdateAsync(Admin admin);
 }

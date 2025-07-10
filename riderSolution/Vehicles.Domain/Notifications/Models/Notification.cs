@@ -2,10 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Vehicles.Domain.Notifications.Models;
 
-public class Notification
+public class Notification : BaseEntity
 {
-    public int Id { get; set; }
-
     private string _title;
 
     [Required]
@@ -15,8 +13,8 @@ public class Notification
         get => _title;
         set
         {
-            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Title type is required.");
-            if (value.Length > 150) throw new ArgumentException("Title type cannot exceed 150 characters.");
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Title is required.");
+            if (value.Length > 150) throw new ArgumentException("Title cannot exceed 150 characters.");
             
             _title = value;
         }
@@ -30,23 +28,15 @@ public class Notification
         get => _body;
         set
         {
-            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Body type is required.");
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Body is required.");
             
             _body = value;
         }
     }
 
-    private DateTime _date;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    [Required]
-    public DateTime Date
-    {
-        get => _date;
-        set
-        {
-            if (value > DateTime.Now) throw new ArgumentException("Date cannot be in the future.");
-            
-            _date = value;
-        }
-    }
+    public bool IsSent { get; set; } = false;
+
+    public bool IsRead { get; set; } = false;
 }

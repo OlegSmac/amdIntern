@@ -5,7 +5,7 @@ using Vehicles.Domain.Notifications.Models;
 
 namespace Vehicles.Application.Users.Companies.Commands;
 
-public record CreateCompanyNotification(string Title, string Body, int CompanyId, int PostId)
+public record CreateCompanyNotification(string Title, string Body, string CompanyId, int PostId)
     : IRequest<CompanyNotification>;
 
 public class CreateCompanyNotificationHandler : IRequestHandler<CreateCompanyNotification, CompanyNotification>
@@ -25,9 +25,7 @@ public class CreateCompanyNotificationHandler : IRequestHandler<CreateCompanyNot
         {
             Title = request.Title,
             Body = request.Body,
-            CompanyId = request.CompanyId,
-            PostId = request.PostId,
-            Date = DateTime.Now
+            CompanyId = request.CompanyId
         };
     }
 

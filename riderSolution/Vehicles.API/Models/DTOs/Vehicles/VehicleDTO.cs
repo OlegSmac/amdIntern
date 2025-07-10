@@ -2,6 +2,7 @@ namespace Vehicles.API.Models.DTOs.Vehicles;
 
 public class VehicleDTO
 {
+    public int Id { get; set; }
     public string Brand { get; set; } = string.Empty;
     public string Model { get; set; } = string.Empty;
     public int Year { get; set; }
@@ -13,4 +14,5 @@ public class VehicleDTO
     public string Color { get; set; } = string.Empty;
     public int Mileage { get; set; }
     public int MaxSpeed { get; set; }
+    public string VehicleType { get; set; } = string.Empty;
 }

@@ -3,12 +3,13 @@ using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
+using DomainVehicle = Vehicles.Domain.VehicleTypes.Models.Vehicle;
 
 namespace Vehicles.Application.Vehicles.Cars.Commands;
 
 public record CreateCar(Car Car) : IRequest<Car>;
 
-public class CreateCarHandler : IRequestHandler<CreateCar, Car>
+public class CreateCarHandler : IRequestHandler<CreateCar, DomainVehicle>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateCarHandler> _logger;
@@ -26,46 +27,22 @@ public class CreateCarHandler : IRequestHandler<CreateCar, Car>
         Year year = new Year() { YearNum = request.Car.Year };
 
         if (!await _unitOfWork.ModelRepository.ExistsAsync(brand, model, year)) throw new ArgumentException("This model does not exist");
-        
-        return new Car()
-        {
-            Brand = request.Car.Brand,
-            Model = request.Car.Model,
-            Year = request.Car.Year,
-            TransmissionType = request.Car.TransmissionType,
-            EngineVolume = request.Car.EngineVolume,
-            EnginePower = request.Car.EnginePower,
-            FuelType = request.Car.FuelType,
-            FuelConsumption = request.Car.FuelConsumption,
-            Color = request.Car.Color,
-            Mileage = request.Car.Mileage,
-            MaxSpeed = request.Car.MaxSpeed,
-            BodyType = request.Car.BodyType,
-            Seats = request.Car.Seats,
-            Doors = request.Car.Doors
-        };
+
+        return request.Car;
     }
 
-    public async Task<Car> Handle(CreateCar request, CancellationToken cancellationToken)
+    public async Task<DomainVehicle> Handle(CreateCar request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("CreateCar was called");
         ArgumentNullException.ThrowIfNull(request);
         
-        try
+        Car car = await CreateCarAsync(request);
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            Car car = await CreateCarAsync(request);
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.VehicleRepository.CreateAsync(car);
-                await _unitOfWork.SaveAsync();
-            });
-            
-            return car;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            throw;
-        }
+            _unitOfWork.VehicleRepository.Add<Car>(car);
+            await _unitOfWork.SaveAsync();
+        });
+        
+        return car;
     }
 }

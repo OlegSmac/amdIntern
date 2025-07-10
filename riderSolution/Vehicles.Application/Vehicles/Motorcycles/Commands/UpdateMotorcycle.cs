@@ -3,12 +3,13 @@ using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
+using DomainVehicle = Vehicles.Domain.VehicleTypes.Models.Vehicle;
 
 namespace Vehicles.Application.Vehicles.Motorcycles.Commands;
 
-public record UpdateMotorcycle(Motorcycle Motorcycle) : IRequest<Motorcycle>;
+public record UpdateMotorcycle(Motorcycle Motorcycle) : IRequest<DomainVehicle>;
 
-public class UpdateMotorcycleHandler : IRequestHandler<UpdateMotorcycle, Motorcycle>
+public class UpdateMotorcycleHandler : IRequestHandler<UpdateMotorcycle, DomainVehicle>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateMotorcycleHandler> _logger;
@@ -41,31 +42,23 @@ public class UpdateMotorcycleHandler : IRequestHandler<UpdateMotorcycle, Motorcy
         motorcycle.HasSidecar = request.Motorcycle.HasSidecar;
     }
 
-    public async Task<Motorcycle> Handle(UpdateMotorcycle request, CancellationToken cancellationToken)
+    public async Task<DomainVehicle> Handle(UpdateMotorcycle request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("UpdateMotorcycle was called");
         ArgumentNullException.ThrowIfNull(request);
 
-        try
-        {
-            var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Motorcycle.Id);
-            if (vehicle is null) throw new KeyNotFoundException($"No vehicle with id {request.Motorcycle.Id} exists.");
+        var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync<Motorcycle>(request.Motorcycle.Id);
+        if (vehicle is null) throw new KeyNotFoundException($"No vehicle with id {request.Motorcycle.Id} exists.");
 
-            if (vehicle is Motorcycle motorcycle) await UpdateMotorcycleAsync(motorcycle, request);
-            else throw new ArgumentException("This vehicle isn't a motorcycle");
-            
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.VehicleRepository.UpdateAsync(motorcycle);
-                await _unitOfWork.SaveAsync();
-            });
-            
-            return motorcycle;
-        }
-        catch (Exception e)
+        if (vehicle is Motorcycle motorcycle) await UpdateMotorcycleAsync(motorcycle, request);
+        else throw new ArgumentException("This vehicle isn't a motorcycle");
+        
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            _logger.LogError(e.Message);
-            throw;
-        }
+            _unitOfWork.VehicleRepository.Update<Motorcycle>(motorcycle);
+            await _unitOfWork.SaveAsync();
+        });
+        
+        return motorcycle;
     }
 }

@@ -5,7 +5,7 @@ using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Admins.Queries;
 
-public record GetAdminById(int Id) : IRequest<Admin>;
+public record GetAdminById(string Id) : IRequest<Admin>;
 
 public class GetAdminByIdHandler : IRequestHandler<GetAdminById, Admin>
 {

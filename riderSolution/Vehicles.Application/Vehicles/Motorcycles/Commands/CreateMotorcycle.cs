@@ -3,12 +3,13 @@ using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
+using DomainVehicle = Vehicles.Domain.VehicleTypes.Models.Vehicle;
 
 namespace Vehicles.Application.Vehicles.Motorcycles.Commands;
 
 public record CreateMotorcycle(Motorcycle Motorcycle) : IRequest<Motorcycle>;
 
-public class CreateMotorcycleHandler : IRequestHandler<CreateMotorcycle, Motorcycle>
+public class CreateMotorcycleHandler : IRequestHandler<CreateMotorcycle, DomainVehicle>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateMotorcycleHandler> _logger;
@@ -44,27 +45,19 @@ public class CreateMotorcycleHandler : IRequestHandler<CreateMotorcycle, Motorcy
         };
     }
     
-    public async Task<Motorcycle> Handle(CreateMotorcycle request, CancellationToken cancellationToken)
+    public async Task<DomainVehicle> Handle(CreateMotorcycle request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("CreateMotorcycle was called");
         ArgumentNullException.ThrowIfNull(request);
 
-        try
+        Motorcycle motorcycle = await CreateMotorcycleAsync(request);
+        
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            Motorcycle motorcycle = await CreateMotorcycleAsync(request);
-            
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.VehicleRepository.CreateAsync(motorcycle);
-                await _unitOfWork.SaveAsync();
-            });
-            
-            return motorcycle;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            throw;
-        }
+            _unitOfWork.VehicleRepository.Add<Motorcycle>(motorcycle);
+            await _unitOfWork.SaveAsync();
+        });
+        
+        return motorcycle;
     }
 }

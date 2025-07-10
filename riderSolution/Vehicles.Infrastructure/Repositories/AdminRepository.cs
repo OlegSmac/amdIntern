@@ -19,17 +19,12 @@ public class AdminRepository : IAdminRepository
         return admin;
     }
 
-    public async Task<Admin?> GetByIdAsync(int id)
+    public async Task<Admin?> GetByIdAsync(string id)
     {
         return await _context.Admins.FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    public async Task<List<Admin>> GetAllAsync()
-    {
-        return await _context.Admins.ToListAsync();
-    }
-
-    public async Task RemoveAsync(int id)
+    public async Task RemoveAsync(string id)
     {
         var toDelete = await _context.Admins.FirstOrDefaultAsync(a => a.Id == id);
         if (toDelete != null)

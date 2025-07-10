@@ -4,7 +4,7 @@ using Vehicles.Application.Abstractions;
 
 namespace Vehicles.Application.Users.Users.Commands;
 
-public record RemoveUser(int Id) : IRequest;
+public record RemoveUser(string Id) : IRequest;
 
 public class RemoveUserHandler : IRequestHandler<RemoveUser>
 {

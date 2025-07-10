@@ -8,11 +8,6 @@ namespace Vehicles.Domain.Notifications.Models;
 public class CompanyNotification : Notification
 {
     [Required]
-    public int CompanyId { get; set; }
+    public string CompanyId { get; set; }
     public Company Company { get; set; }
-    
-    
-    [Required]
-    public int? PostId { get; set; }
-    public Post Post { get; set; }
 }

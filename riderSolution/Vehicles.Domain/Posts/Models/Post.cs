@@ -6,15 +6,13 @@ using Vehicles.Domain.VehicleTypes.Models;
 
 namespace Vehicles.Domain.Posts.Models;
 
-public class Post
+public class Post : BaseEntity
 {
-    public int Id { get; set; }
-
     private string _title;
 
     [MaxLength(100)]
     [Required]
-    public required string Title
+    public string Title
     {
         get => _title;
         set
@@ -29,7 +27,7 @@ public class Post
     private string _body;
 
     [Required]
-    public required string Body
+    public string Body
     {
         get => _body;
         set
@@ -43,7 +41,7 @@ public class Post
     private DateTime _date;
 
     [Required]
-    public required DateTime Date
+    public DateTime Date
     {
         get => _date;
         set
@@ -54,12 +52,11 @@ public class Post
         }
     }
     
-    public required bool IsHidden { get; set; }
-
-
+    public bool IsHidden { get; set; }
+    
     private int _views;
 
-    public required int Views
+    public int Views
     {
         get => _views;
         set
@@ -69,8 +66,23 @@ public class Post
             _views = value;
         }
     }
+
+    private int _price;
+
+    public int Price
+    {
+        get => _price;
+        set
+        {
+            if (value < 0) throw new ArgumentException("Price cannot be negative.");
+            
+            _price = value;
+        }
+    }
+
+    public List<PostImage> Images { get; set; } = new();
     
-    public int CompanyId { get; set; }
+    public string CompanyId { get; set; }
     public Company Company { get; set; }
     
     public int VehicleId { get; set; }

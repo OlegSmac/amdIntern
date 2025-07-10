@@ -15,7 +15,7 @@ public class UpdateVehicleRequest
     public double EngineVolume { get; set; }
     public double FuelConsumption { get; set; }
 
-    public string VehicleType { get; set; } // "car", "motorcycle", "truck"
+    public string VehicleType { get; set; }
 
     public CarInfo? CarInfo { get; set; }
     public MotorcycleInfo? MotorcycleInfo { get; set; }

@@ -1,0 +1,44 @@
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Vehicles.Application.Abstractions;
+using Vehicles.Application.Posts.Posts.Commands;
+using Vehicles.Domain.Notifications.Models;
+using Vehicles.Domain.Posts.Models;
+
+namespace Vehicles.Application.Notifications.Commands;
+
+public record SendAdminNotification(string Company, string Brand, string Model, int Year): IRequest;
+
+public class SendAdminNotificationHandler : IRequestHandler<SendAdminNotification>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<SendAdminNotificationHandler> _logger;
+
+    public SendAdminNotificationHandler(IUnitOfWork unitOfWork, ILogger<SendAdminNotificationHandler> logger)
+    {
+        _unitOfWork = unitOfWork;
+        _logger = logger;
+    }
+
+    public async Task Handle(SendAdminNotification request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("SendAdminNotificaiton was called");
+        ArgumentNullException.ThrowIfNull(request);
+
+        var adminNotification = new AdminNotification
+        {
+            Title = "Request to add new Model.",
+            Body = $"\"{request.Company}\" sent request to add this model: {request.Brand} {request.Model} {request.Year}.",
+            AdminId = "6740eff2-9536-4074-919d-185fd61506d9",
+            Brand = request.Brand,
+            Model = request.Model,
+            Year = request.Year
+        };
+
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
+        {
+            _unitOfWork.PostRepository.Add<AdminNotification>(adminNotification);
+            await _unitOfWork.SaveAsync();
+        });
+    }
+}

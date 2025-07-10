@@ -5,7 +5,7 @@ using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Users.Queries;
 
-public record GetUserById(int Id) : IRequest<User>;
+public record GetUserById(string Id) : IRequest<User>;
 
 public class GetUserByIdHandler : IRequestHandler<GetUserById, User>
 {

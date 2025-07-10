@@ -5,7 +5,7 @@ using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Admins.Commands;
 
-public record CreateAdmin(string Name, string Email, string Password) : IRequest<Admin>;
+public record CreateAdmin(string Id, string FirstName, string LastName) : IRequest<Admin>;
 
 public class CreateAdminHandler : IRequestHandler<CreateAdmin, Admin>
 {
@@ -22,9 +22,9 @@ public class CreateAdminHandler : IRequestHandler<CreateAdmin, Admin>
     {
         return new Admin()
         {
-            Name = request.Name,
-            Email = request.Email,
-            Password = request.Password
+            Id = request.Id,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
         };
     }
 

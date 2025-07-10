@@ -5,7 +5,7 @@ using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Companies.Commands;
 
-public record UpdateCompany(int Id, string Name, string Email, string Password, string Description)
+public record UpdateCompany(string Id, string Name, string Description)
     : IRequest<Company>;
 
 public class UpdateCompanyHandler : IRequestHandler<UpdateCompany, Company>
@@ -22,8 +22,6 @@ public class UpdateCompanyHandler : IRequestHandler<UpdateCompany, Company>
     private async Task UpdateCompanyAsync(Company company, UpdateCompany request)
     {
         company.Name = request.Name;
-        company.Email = request.Email;
-        company.Password = request.Password;
         company.Description = request.Description;
     }
 

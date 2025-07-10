@@ -4,7 +4,7 @@ using Vehicles.Application.Abstractions;
 
 namespace Vehicles.Application.Users.Companies.Commands;
 
-public record RemoveCompany(int Id) : IRequest;
+public record RemoveCompany(string Id) : IRequest;
 
 public class RemoveCompanyHandler : IRequestHandler<RemoveCompany>
 {

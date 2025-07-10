@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Domain.Users.Relations;
@@ -6,10 +7,12 @@ namespace Vehicles.Domain.Users.Relations;
 public class Subscription
 {
     [Required]
-    public int UserId { get; set; }
+    [ForeignKey(nameof(User))]
+    public string UserId { get; set; }
     public User User { get; set; }
 
     [Required]
-    public int CompanyId { get; set; }
+    [ForeignKey(nameof(Company))]
+    public string CompanyId { get; set; }
     public Company Company { get; set; }
 }

@@ -5,7 +5,7 @@ using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Users.Commands;
 
-public record CreateUser(string Name, string Email, string Password) : IRequest<User>;
+public record CreateUser(string Id, string FirstName, string LastName) : IRequest<User>;
 
 public class CreateUserHandler : IRequestHandler<CreateUser, User>
 {
@@ -22,9 +22,9 @@ public class CreateUserHandler : IRequestHandler<CreateUser, User>
     {
         return new User()
         {
-            Name = request.Name,
-            Email = request.Email,
-            Password = request.Password
+            Id = request.Id,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
         };
     }
 

@@ -2,10 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Vehicles.Domain.VehicleTypes.Models;
 
-public abstract class Vehicle
+public abstract class Vehicle : BaseEntity
 {
-    public int Id { get; init; }
-
     private string _brand;
 
     [MaxLength(50)]

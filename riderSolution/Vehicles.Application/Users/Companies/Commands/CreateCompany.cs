@@ -5,7 +5,7 @@ using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Companies.Commands;
 
-public record CreateCompany(string Name, string Email, string Password, string Description) : IRequest<Company>;
+public record CreateCompany(string Id, string Name, string Description) : IRequest<Company>;
 
 public class CreateCompanyHandler : IRequestHandler<CreateCompany, Company>
 {
@@ -22,9 +22,8 @@ public class CreateCompanyHandler : IRequestHandler<CreateCompany, Company>
     {
         return new Company()
         {
+            Id = request.Id,
             Name = request.Name,
-            Email = request.Email,
-            Password = request.Password,
             Description = request.Description
         };
     } 

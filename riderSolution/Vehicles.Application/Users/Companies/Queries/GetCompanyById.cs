@@ -5,7 +5,7 @@ using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Companies.Queries;
 
-public record GetCompanyById(int Id) : IRequest<Company>;
+public record GetCompanyById(string Id) : IRequest<Company>;
 
 public class GetCompanyByIdHandler : IRequestHandler<GetCompanyById, Company>
 {

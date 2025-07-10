@@ -3,12 +3,13 @@ using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.VehicleTypes.Models;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
+using DomainVehicle = Vehicles.Domain.VehicleTypes.Models.Vehicle;
 
 namespace Vehicles.Application.Vehicles.Trucks.Commands;
 
 public record CreateTruck(Truck Truck) : IRequest<Truck>;
 
-public class CreateTruckHandler : IRequestHandler<CreateTruck, Truck>
+public class CreateTruckHandler : IRequestHandler<CreateTruck, DomainVehicle>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateTruckHandler> _logger;
@@ -45,26 +46,18 @@ public class CreateTruckHandler : IRequestHandler<CreateTruck, Truck>
         };
     }
 
-    public async Task<Truck> Handle(CreateTruck request, CancellationToken cancellationToken)
+    public async Task<DomainVehicle> Handle(CreateTruck request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("CreateTruck was called");
         ArgumentNullException.ThrowIfNull(request);
 
-        try
+        Truck truck = await CreateTruckAsync(request);
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            Truck truck = await CreateTruckAsync(request);
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.VehicleRepository.CreateAsync(truck);
-                await _unitOfWork.SaveAsync();
-            });
-            
-            return truck;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            throw;
-        }
+            _unitOfWork.VehicleRepository.Add<Truck>(truck);
+            await _unitOfWork.SaveAsync();
+        });
+        
+        return truck;
     }
 }

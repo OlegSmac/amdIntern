@@ -1,0 +1,153 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background: #f9f9f9;
+}
+
+/* Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  background-color: #39536d;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+}
+
+.left-group {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-right: 40px;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 35px;
+  font-weight: 500;
+}
+
+.auth-buttons button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #3498db;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-buttons button:hover {
+  background-color: #2980b9;
+}
+
+/* Welcome Title */
+.welcome-title {
+  text-align: center;
+  margin: 40px 0 20px;
+  font-size: 3rem;
+  color: #2c3e50;
+}
+
+/* Main Image */
+.main-image img {
+  display: block;
+  margin: 0 auto;
+  height: 470px;
+  width: auto;
+}
+
+/* Latest Posts */
+.latest-posts {
+  max-width: 1600px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.latest-posts h2 {
+  margin-bottom: 24px;
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+.car-posts-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+}
+
+.car-post {
+  position: relative;
+  flex: 1 1 calc(20% - 20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  min-width: 240px;
+}
+
+.car-post .date {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.85rem;
+  color: #888;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.car-post img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.car-post h3 {
+  margin: 12px 0 8px;
+  font-size: 1.1rem;
+  color: #333;
+  text-align: center;
+}
+
+.car-post p {
+  font-size: 0.95rem;
+  color: #555;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.car-post .view-more {
+  margin-top: auto;
+  align-self: center;
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.car-post .view-more:hover {
+  background-color: #2980b9;
+}
+

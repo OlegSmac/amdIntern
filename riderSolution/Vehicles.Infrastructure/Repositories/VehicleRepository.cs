@@ -1,61 +1,12 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.VehicleTypes.Models;
 
 namespace Vehicles.Infrastructure.Repositories;
 
-public class VehicleRepository : IVehicleRepository
+public class VehicleRepository : EFCoreRepository, IVehicleRepository
 {
-    private readonly VehiclesDbContext _context;
-
-    public VehicleRepository(VehiclesDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<Vehicle> CreateAsync(Vehicle vehicle)
-    {
-        await _context.Vehicles.AddAsync(vehicle);
-        return vehicle;
-    }
-
-    public async Task<Vehicle?> GetByIdAsync(int id)
-    {
-        return await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id);
-    }
-
-    public async Task<List<Vehicle>> GetAllAsync()
-    {
-        return await _context.Vehicles.ToListAsync();
-    }
-
-    public async Task<List<Car>> GetAllCarsAsync()
-    {
-        return await _context.Cars.ToListAsync();
-    }
-    
-    public async Task<List<Motorcycle>> GetAllMotorcyclesAsync()
-    {
-        return await _context.Motorcycles.ToListAsync();
-    }
-    
-    public async Task<List<Truck>> GetAllTrucksAsync()
-    {
-        return await _context.Trucks.ToListAsync();
-    }
-
-    public async Task RemoveAsync(Vehicle vehicle)
-    {
-        var toDelete = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == vehicle.Id);
-        if (toDelete != null)
-        {
-            _context.Vehicles.Remove(toDelete);
-        }
-    }
-
-    public async Task<Vehicle> UpdateAsync(Vehicle vehicle)
-    {
-        _context.Vehicles.Update(vehicle);
-        return vehicle;
-    }
+    public VehicleRepository(VehiclesDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+    { }
 }

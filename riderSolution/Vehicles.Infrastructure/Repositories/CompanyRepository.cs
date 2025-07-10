@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Vehicles.Application.Abstractions;
+using Vehicles.Application.PaginationModels;
 using Vehicles.Domain.Notifications.Models;
 using Vehicles.Domain.Users.Models;
 
@@ -20,17 +21,14 @@ public class CompanyRepository : ICompanyRepository
         return company;
     }
 
-    public async Task<Company?> GetByIdAsync(int id)
+    public async Task<Company?> GetByIdAsync(string id)
     {
-        return await _context.Companies.FirstOrDefaultAsync(c => c.Id == id);
+        return await _context.Companies
+            .Include(c => c.ApplicationUser)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task<List<Company>> GetAllAsync()
-    {
-        return await _context.Companies.ToListAsync();
-    }
-
-    public async Task RemoveAsync(int id)
+    public async Task RemoveAsync(string id)
     {
         var toDelete = await _context.Companies.FirstOrDefaultAsync(c => c.Id == id);
         if (toDelete != null)
@@ -51,5 +49,34 @@ public class CompanyRepository : ICompanyRepository
     {
         await _context.CompanyNotifications.AddAsync(notification);
         return notification;
+    }
+    
+    public async Task<PaginatedResult<Company>> GetPagedCompanies(int pageIndex, int pageSize)
+    {
+        var query = _context.Companies.AsQueryable();
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .OrderBy(c => c.Name)
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PaginatedResult<Company>
+        {
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            Total = total,
+            Items = items
+        };
+    }
+
+    public async Task<List<string>> GetCompanySubscribers(string companyId)
+    {
+        return await _context.Subscriptions
+            .Where(s => s.CompanyId == companyId)
+            .Select(s => s.User.Id)
+            .ToListAsync();
     }
 }

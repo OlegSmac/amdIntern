@@ -1,11 +1,21 @@
 using System.Diagnostics;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Serilog;
+using Vehicles.API.Extensions;
 using Vehicles.API.Middlewares;
+using Vehicles.API.Options;
+using Vehicles.API.Services;
 using Vehicles.Application;
 using Vehicles.Infrastructure;
 using Vehicles.Infrastructure.Repositories;
 using Vehicles.Application.Abstractions;
+using Vehicles.Application.Auth.Commands;
+using Vehicles.Application.Notifications.Queries;
+using Vehicles.Application.PaginationModels;
+using Vehicles.Domain.Notifications.Models;
+using DotNetEnv;
 
 namespace Vehicles.API;
 
@@ -13,35 +23,40 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = CreateBuilder(args);
-
-        ConfigureServices(builder);
-
-        // Logging configuration
+        Env.Load();
+        
+        var builder = WebApplication.CreateBuilder(args);
+        
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
             .Enrich.FromLogContext()
             .CreateLogger();
 
         builder.Host.UseSerilog();
+        
+        ConfigureServices(builder); 
 
-        var app = CreateWebApplication(builder);
+        var app = builder.Build();
         Configure(app);
-
         app.Run();
     }
 
-    public static WebApplicationBuilder CreateBuilder(string[] args) =>
-        WebApplication.CreateBuilder(args);
-
     public static void ConfigureServices(WebApplicationBuilder builder)
     {
-        // Add DbContext and repositories:
+        var connectionString = Environment.GetEnvironmentVariable("VEHICLES_DB_CONNECTION");
+        
         builder.Services.AddDbContext<VehiclesDbContext>(options =>
-            options.UseSqlServer("Server=localhost,1433;Database=Vehicles;User Id=sa;Password=olegandilie100S&;TrustServerCertificate=true"));
+            options.UseSqlServer(connectionString));
 
+        builder.RegisterAuthentication();
+        builder.Services.AddSwagger();
+        
         builder.Services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyMarker).Assembly));
+        
+        builder.Services.AddTransient<IRequestHandler<GetNotificationsPaged<UserNotification>, PaginatedResult<UserNotification>>, GetNotificationsPagedHandler<UserNotification>>();
+        builder.Services.AddTransient<IRequestHandler<GetNotificationsPaged<CompanyNotification>, PaginatedResult<CompanyNotification>>, GetNotificationsPagedHandler<CompanyNotification>>();
+        builder.Services.AddTransient<IRequestHandler<GetNotificationsPaged<AdminNotification>, PaginatedResult<AdminNotification>>, GetNotificationsPagedHandler<AdminNotification>>();
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
@@ -50,17 +65,45 @@ public class Program
         builder.Services.AddScoped<IAdminRepository, AdminRepository>();
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
+        builder.Services.AddScoped<IImageRepository, ImageRepository>();
         builder.Services.AddScoped<IModelRepository, ModelRepository>();
+        builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+        builder.Services.AddScoped<IdentityService>();
+        
+        builder.Services.AddScoped<IRegistrationHandler, UserRegistrationHandler>();
+        builder.Services.AddScoped<IRegistrationHandler, CompanyRegistrationHandler>();
+        builder.Services.AddScoped<IRegistrationHandler, AdminRegistrationHandler>();
+        builder.Services.AddScoped<RegistrationHandlerFactory>();
+        builder.Services.AddScoped<RegistrationService>();
+        
+        builder.Services.Configure<MinioSettings>(options =>
+        {
+            builder.Configuration.GetSection("Minio").Bind(options);
+            options.AccessKey = Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY") ?? options.AccessKey;
+            options.SecretKey = Environment.GetEnvironmentVariable("MINIO_SECRET_KEY") ?? options.SecretKey;
+        });
+        builder.Services.AddSingleton<MinioService>();
+        
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
+        
+        builder.Services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.TypeNameHandling = TypeNameHandling.None;
+            });
 
-        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     }
-
-    public static WebApplication CreateWebApplication(WebApplicationBuilder builder) =>
-        builder.Build();
 
     public static void Configure(WebApplication app)
     {
@@ -88,7 +131,11 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseCors();
+        
+        app.UseAuthentication(); 
         app.UseAuthorization();
+        
         app.MapControllers();
     }
 }

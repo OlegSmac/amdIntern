@@ -19,7 +19,7 @@ public class GetVehicleByIdHandler : IRequestHandler<GetVehicleById, DomainVehic
     {
         ArgumentNullException.ThrowIfNull(request);
         
-        Domain.VehicleTypes.Models.Vehicle? vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Id);
+        DomainVehicle? vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync<DomainVehicle>(request.Id);
         if (vehicle == null) throw new KeyNotFoundException($"Vehicle with id: {request.Id} not found");
         
         return vehicle;

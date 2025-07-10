@@ -4,7 +4,7 @@ using Vehicles.Application.Abstractions;
 
 namespace Vehicles.Application.Posts.Categories.Commands;
 
-public record RemoveCategory(int Id) : IRequest;
+public record RemoveCategory(string Name) : IRequest;
 
 public class RemoveCategoryHandler : IRequestHandler<RemoveCategory>
 {
@@ -21,22 +21,14 @@ public class RemoveCategoryHandler : IRequestHandler<RemoveCategory>
     {
         _logger.LogInformation("RemoveCategory was called");
         ArgumentNullException.ThrowIfNull(request);
-
-        try
+        
+        var category = await _unitOfWork.CategoryRepository.GetByNameAsync(request.Name);
+        if (category == null) return;
+        
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(request.Id);
-            if (category == null) return;
-            
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.CategoryRepository.RemoveAsync(request.Id);
-                await _unitOfWork.SaveAsync();
-            });
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            throw;
-        }
+            await _unitOfWork.CategoryRepository.RemoveAsync(request.Name);
+            await _unitOfWork.SaveAsync();
+        });
     }
 }

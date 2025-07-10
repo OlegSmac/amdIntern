@@ -12,8 +12,7 @@ public static class VehicleCommandFactory
 {
     public static IRequest<Vehicle> CreateCommand(CreateVehicleRequest request, IMapper mapper)
     {
-        if (string.IsNullOrWhiteSpace(request.VehicleType))
-            throw new ArgumentException("VehicleType is required.");
+        if (string.IsNullOrWhiteSpace(request.VehicleType)) throw new ArgumentException("VehicleType is required.");
 
         return request.VehicleType.ToLower() switch
         {
@@ -26,8 +25,7 @@ public static class VehicleCommandFactory
 
     public static IRequest<Vehicle> UpdateCommand(UpdateVehicleRequest request, IMapper mapper)
     {
-        if (string.IsNullOrWhiteSpace(request.VehicleType))
-            throw new ArgumentException("VehicleType is required.");
+        if (string.IsNullOrWhiteSpace(request.VehicleType)) throw new ArgumentException("VehicleType is required.");
 
         return request.VehicleType.ToLower() switch
         {

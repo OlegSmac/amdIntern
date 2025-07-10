@@ -5,7 +5,7 @@ using Vehicles.Domain.Notifications.Models;
 
 namespace Vehicles.Application.Users.Users.Commands;
 
-public record CreateUserNotification(string Title, string Body, int UserId, int PostId) : IRequest<UserNotification>;
+public record CreateUserNotification(string Title, string Body, string UserId, int PostId) : IRequest<UserNotification>;
 
 public class CreateUserNotificationHandler : IRequestHandler<CreateUserNotification, UserNotification>
 {
@@ -24,9 +24,7 @@ public class CreateUserNotificationHandler : IRequestHandler<CreateUserNotificat
         {
             Title = request.Title,
             Body = request.Body,
-            UserId = request.UserId,
-            PostId = request.PostId,
-            Date = DateTime.Now
+            UserId = request.UserId
         };
     }
 

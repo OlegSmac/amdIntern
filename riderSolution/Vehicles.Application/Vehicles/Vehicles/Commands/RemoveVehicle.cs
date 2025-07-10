@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
+using DomainVehicle = Vehicles.Domain.VehicleTypes.Models.Vehicle;
 
 namespace Vehicles.Application.Vehicles.Vehicles.Commands;
 
@@ -22,21 +23,13 @@ public class RemoveVehicleHandler : IRequestHandler<RemoveVehicle>
         _logger.LogInformation($"RemoveVehicle was called");
         ArgumentNullException.ThrowIfNull(request);
         
-        var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(request.Id);
+        var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync<DomainVehicle>(request.Id);
         if (vehicle == null) return;
-
-        try
+        
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.VehicleRepository.RemoveAsync(vehicle);
-                await _unitOfWork.SaveAsync();
-            });
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+            await _unitOfWork.VehicleRepository.DeleteAsync<DomainVehicle>(request.Id);
+            await _unitOfWork.SaveAsync();
+        });
     }
 }

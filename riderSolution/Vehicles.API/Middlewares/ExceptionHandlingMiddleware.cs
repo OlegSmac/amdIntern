@@ -6,11 +6,12 @@ namespace Vehicles.API.Middlewares;
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
-    //private readonly ILogger _logger;
+    private readonly ILogger _logger;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next)
+    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -21,6 +22,8 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception e)
         {
+            _logger.LogError(e, e.Message);
+            
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             var error = new Error()

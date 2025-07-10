@@ -6,7 +6,7 @@ using Vehicles.Domain.Users.Relations;
 
 namespace Vehicles.Application.Users.Users.Commands;
 
-public record UnsubscribeFromCompany(int UserId, int CompanyId) : IRequest;
+public record UnsubscribeFromCompany(string UserId, string CompanyId) : IRequest;
 
 public class UnsubscribeFromCompanyHandler : IRequestHandler<UnsubscribeFromCompany>
 {
@@ -18,15 +18,6 @@ public class UnsubscribeFromCompanyHandler : IRequestHandler<UnsubscribeFromComp
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
-    
-    private Subscription CreateSubscription(User user, Company company)
-    {
-        return new Subscription()
-        {
-            User = user,
-            Company = company
-        };
-    }
 
     public async Task Handle(UnsubscribeFromCompany request, CancellationToken cancellationToken)
     {
@@ -35,13 +26,8 @@ public class UnsubscribeFromCompanyHandler : IRequestHandler<UnsubscribeFromComp
 
         try
         {
-            User? user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId);
-            if (user == null) throw new KeyNotFoundException($"User with ID {request.UserId} not found");
-        
-            Company? company = await _unitOfWork.CompanyRepository.GetByIdAsync(request.CompanyId);
-            if (company == null) throw new KeyNotFoundException($"Company with ID {request.CompanyId} not found");
-
-            Subscription subscription = CreateSubscription(user, company);
+            Subscription subscription = await _unitOfWork.UserRepository.FindSubscriptionsAsync(request.UserId, request.CompanyId);
+            if (subscription == null) throw new InvalidOperationException("Subscription not found");
             
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {

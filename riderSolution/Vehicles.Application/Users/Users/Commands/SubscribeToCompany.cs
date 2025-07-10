@@ -6,7 +6,7 @@ using Vehicles.Domain.Users.Relations;
 
 namespace Vehicles.Application.Users.Users.Commands;
 
-public record SubscribeToCompany(int UserId, int CompanyId) : IRequest;
+public record SubscribeToCompany(string UserId, string CompanyId) : IRequest;
 
 public class SubscribeToCompanyHandler : IRequestHandler<SubscribeToCompany>
 {

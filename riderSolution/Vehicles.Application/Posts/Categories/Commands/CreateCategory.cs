@@ -30,23 +30,15 @@ public class CreateCategoryHandler : IRequestHandler<CreateCategory, Category>
     {
         _logger.LogInformation("CreateCategory was called");
         ArgumentNullException.ThrowIfNull(request);
-
-        try
+        
+        Category category = await CreateCategoryAsync(request);
+        
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            Category category = await CreateCategoryAsync(request);
-            
-            await _unitOfWork.ExecuteTransactionAsync(async () =>
-            {
-                await _unitOfWork.CategoryRepository.CreateAsync(category);
-                await _unitOfWork.SaveAsync();
-            });
-            
-            return category;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            throw;
-        }
+            await _unitOfWork.CategoryRepository.CreateAsync(category);
+            await _unitOfWork.SaveAsync();
+        });
+        
+        return category;
     }
 }

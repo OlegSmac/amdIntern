@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
-namespace Vehicles.Application.Vehicles.Vehicles.Commands;
+namespace Vehicles.Application.Vehicles.Models.Commands;
 
 public record RemoveModel(string Brand, string Model, int Year) : IRequest;
 

@@ -5,7 +5,7 @@ using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Application.Users.Users.Commands;
 
-public record UpdateUser(int Id, string Name, string Email, string Password) : IRequest<User>;
+public record UpdateUser(string Id, string FirstName, string LastName) : IRequest<User>;
 
 public class UpdateUserHandler : IRequestHandler<UpdateUser, User>
 {
@@ -20,9 +20,8 @@ public class UpdateUserHandler : IRequestHandler<UpdateUser, User>
 
     private async Task UpdateUserAsync(User user, UpdateUser request)
     {
-        user.Name = request.Name;
-        user.Email = request.Email;
-        user.Password = request.Password;
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
     }
 
     public async Task<User> Handle(UpdateUser request, CancellationToken cancellationToken)

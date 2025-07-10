@@ -4,7 +4,7 @@ using Vehicles.Application.Abstractions;
 
 namespace Vehicles.Application.Users.Admins.Commands;
 
-public record RemoveAdmin(int Id) : IRequest;
+public record RemoveAdmin(string Id) : IRequest;
 
 public class RemoveAdminHandler : IRequestHandler<RemoveAdmin>
 {

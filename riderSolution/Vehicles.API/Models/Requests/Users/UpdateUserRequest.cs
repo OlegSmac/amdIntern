@@ -2,8 +2,16 @@ namespace Vehicles.API.Models.Requests.Users;
 
 public class UpdateUserRequest
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    public string Id { get; set; }
+
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+
+    public string? CompanyName { get; set; }
+    public string? Description { get; set; }
+
+    public string? Phone { get; set; }
+
+    public string? CurrentPassword { get; set; }
+    public string? NewPassword { get; set; }
 }
