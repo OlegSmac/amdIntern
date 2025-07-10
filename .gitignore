@@ -226,3 +226,6 @@ AppPackages/
 #####
 
 ProjectStructure.drawio
+
+#environment 
+riderSolution/Vehicles.API/.env
