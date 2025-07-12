@@ -7,15 +7,11 @@ public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IEmailService _emailService;
 
-    public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider, IUnitOfWork unitOfWork, IEmailService emailService)
+    public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
-        _unitOfWork = unitOfWork;
-        _emailService = emailService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -27,14 +23,16 @@ public class Worker : BackgroundService
             try
             {
                 using var scope = _serviceProvider.CreateScope();
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
-                var unsentNotifications = await _unitOfWork.NotificationRepository.GetUnsentNotificationsAsync();
+                var unsentNotifications = await unitOfWork.NotificationRepository.GetUnsentNotificationsAsync();
 
                 foreach (var notification in unsentNotifications)
                 {
                     try
                     {
-                        await _emailService.SendAsync(notification);
+                        await emailService.SendAsync(notification);
                         notification.IsSent = true;
                         _logger.LogInformation($"Notification {notification.Id} sent.");
                     }
@@ -44,7 +42,7 @@ public class Worker : BackgroundService
                     }
                 }
                 
-                await _unitOfWork.SaveAsync();
+                await unitOfWork.SaveAsync();
                 await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
             catch (Exception ex)

@@ -1,6 +1,6 @@
 using AutoMapper;
 using MediatR;
-using Vehicles.API.Models.Requests.Vehicles;
+using Vehicles.API.Contracts.Requests.Vehicles;
 using Vehicles.Application.Vehicles.Cars.Commands;
 using Vehicles.Application.Vehicles.Motorcycles.Commands;
 using Vehicles.Application.Vehicles.Trucks.Commands;

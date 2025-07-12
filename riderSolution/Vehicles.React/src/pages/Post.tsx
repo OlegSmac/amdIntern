@@ -49,7 +49,7 @@ const Post = () => {
         const fetchRole = async () => {
             if (isAuthenticated) {
                 try {
-                    const roleResponse = await axios.post('/api/accounts/getRoleFromToken', {
+                    const roleResponse = await axios.post('/api/application-users/getRoleFromToken', {
                         token: localStorage.getItem('authToken'),
                     });
                     setRole(roleResponse.data);
@@ -85,7 +85,7 @@ const Post = () => {
         const checkFavoriteStatus = async () => {
         if (isAuthenticated && userId && id) {
             try {
-                const response = await axios.get(`/api/accounts/isPostFavorite/${userId}/${id}`);
+                const response = await axios.get(`/api/users/isPostFavorite/${userId}/${id}`);
                 setIsFavorite(response.data);
             } catch (error) {
                 console.error('Failed to check favorite status:', error);
@@ -113,7 +113,7 @@ const Post = () => {
     const handleAddFavorite = async () => {
         if (!userId || !id) return;
         try {
-            await axios.post(`/api/accounts/addPostToFavorite/${userId}/${id}`);
+            await axios.post(`/api/users/addPostToFavorite/${userId}/${id}`);
             setIsFavorite(true);
         } catch (error) {
             console.error('Failed to add to favorite:', error);
@@ -123,7 +123,7 @@ const Post = () => {
     const handleRemoveFavorite = async () => {
         if (!userId || !id) return;
         try {
-            await axios.delete(`/api/accounts/removePostFromFavorite/${userId}/${id}`);
+            await axios.delete(`/api/users/removePostFromFavorite/${userId}/${id}`);
             setIsFavorite(false);
         } catch (error) {
             console.error('Failed to remove from favorite:', error);
@@ -134,7 +134,7 @@ const Post = () => {
         const fetchUserEmail = async () => {
             if (userId) {
                 try {
-                    const response = await axios.get(`/api/accounts/${userId}`);
+                    const response = await axios.get(`/api/application-users/${userId}`);
                     setUserEmail(response.data.email);
                 } catch (error) {
                     console.error('Failed to load user email:', error);

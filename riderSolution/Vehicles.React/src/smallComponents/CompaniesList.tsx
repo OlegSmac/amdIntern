@@ -28,7 +28,7 @@ const CompaniesList: FC<CompaniesListProps> = ({ companies, subscribeIds }) => {
         const fetchUserEmail = async () => {
             if (userId) {
                 try {
-                    const response = await axios.get(`/api/accounts/${userId}`);
+                    const response = await axios.get(`/api/application-users/${userId}`);
                     setUserEmail(response.data.email);
                 } catch (error) {
                     console.error('Failed to load user email:', error);
@@ -41,7 +41,7 @@ const CompaniesList: FC<CompaniesListProps> = ({ companies, subscribeIds }) => {
     
     const handleSubscribe = async (companyId: string) => {
         const payload = { userId, companyId };
-        console.log("Sending subscribe payload:", payload);
+        
         try {
             await axios.post("/api/subscriptions", payload);
             setSubscribedIds(prev => [...prev, companyId]);
@@ -52,7 +52,7 @@ const CompaniesList: FC<CompaniesListProps> = ({ companies, subscribeIds }) => {
 
     const handleUnsubscribe = async (companyId: string) => {
         const payload = { userId, companyId };
-        console.log("Sending subscribe payload:", payload);
+        
         try {
             await axios.delete("/api/subscriptions", {
                 data: payload

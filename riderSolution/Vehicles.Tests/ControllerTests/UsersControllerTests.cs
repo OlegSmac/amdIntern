@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Vehicles.API;
-using Vehicles.API.Models.DTOs.Vehicles;
+using Vehicles.API.Contracts.DTOs.Vehicles;
 using Xunit;
 
 namespace Vehicles.Tests.ControllerTests;

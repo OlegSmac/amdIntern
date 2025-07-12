@@ -16,6 +16,9 @@ using Vehicles.Application.Notifications.Queries;
 using Vehicles.Application.PaginationModels;
 using Vehicles.Domain.Notifications.Models;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Vehicles.API;
 
@@ -47,7 +50,7 @@ public class Program
         
         builder.Services.AddDbContext<VehiclesDbContext>(options =>
             options.UseSqlServer(connectionString));
-
+        
         builder.RegisterAuthentication();
         builder.Services.AddSwagger();
         

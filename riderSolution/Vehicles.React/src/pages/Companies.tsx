@@ -25,7 +25,7 @@ const Companies = () => {
                     }
                 };
 
-                const response = await axiosInstance.post("/api/accounts/getPagedCompanies", requestBody);
+                const response = await axiosInstance.post("/api/companies/getPagedCompanies", requestBody);
 
                 setCompanies(response.data.items);
                 setTotalPages(Math.ceil(response.data.total / pageSize));
@@ -42,7 +42,7 @@ const Companies = () => {
         const fetchSubscribeIds = async () => {
             try {
                 const userId = localStorage.getItem('userId');
-                const response = await axiosInstance.get(`/api/accounts/getUserSubscriptions/${userId}`);
+                const response = await axiosInstance.get(`/api/users/getUserSubscriptions/${userId}`);
                 setSubscribeIds(response.data);
             } catch (error) {
                 console.log("Failed to fetch user subscriptions", error);

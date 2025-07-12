@@ -1,7 +1,5 @@
 using AutoMapper;
-using Vehicles.API.Models.DTOs;
-using Vehicles.API.Models.DTOs.Posts;
-using Vehicles.API.Options;
+using Vehicles.API.Contracts.DTOs.Posts;
 using Vehicles.API.Services;
 using Vehicles.Domain.Posts.Models;
 

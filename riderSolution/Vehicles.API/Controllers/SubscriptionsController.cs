@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Vehicles.API.Models.Requests.Users;
+using Vehicles.API.Contracts.Requests.Users;
 using Vehicles.Application.Users.Users.Commands;
 
 namespace Vehicles.API.Controllers;

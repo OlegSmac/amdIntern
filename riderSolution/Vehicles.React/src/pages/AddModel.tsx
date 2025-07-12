@@ -1,6 +1,6 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useEffect, useState, type ChangeEvent } from "react";
-import axios from "../api/axios";
+import axios, { axiosPrivate } from "../api/axios";
 
 type Request = {
     company: string;
@@ -42,7 +42,7 @@ const AddModel = () => {
         console.log("Submit:", form);
 
         try {
-            const res = axios.post("api/notifications/sendAdminNotification", form);
+            const res = axiosPrivate.post("api/notifications/sendAdminNotification", form);
         } catch (err) {
             console.log(err);
         }

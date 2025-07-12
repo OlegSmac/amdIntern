@@ -1,6 +1,6 @@
 using AutoMapper;
-using Vehicles.API.Models.DTOs.Users;
-using Vehicles.API.Models.Requests.Users;
+using Vehicles.API.Contracts.DTOs.Users;
+using Vehicles.API.Contracts.Requests.Users;
 using Vehicles.Application.Auth.Requests;
 using Vehicles.Domain.Users.Models;
 

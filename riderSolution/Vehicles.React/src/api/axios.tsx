@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5078';
+export const BASE_URL = 'http://localhost:5078';
 export const MINIO_URL = 'http://localhost:9000/images/';
 
 const axiosInstance = axios.create({

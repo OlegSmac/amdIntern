@@ -47,7 +47,7 @@ const Notifications = () => {
     useEffect(() => {
         const fetchRole = async () => {
             try {
-                const roleResponse = await axios.post('/api/accounts/getRoleFromToken', {
+                const roleResponse = await axios.post('/api/application-users/getRoleFromToken', {
                     token: localStorage.getItem('authToken'),
                 });
                 setRole(roleResponse.data);

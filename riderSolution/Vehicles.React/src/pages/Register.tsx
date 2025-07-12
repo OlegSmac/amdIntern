@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Alert, Box, Button, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from '../api/axios';
+import axios, { BASE_URL } from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
 
 const Register = () => {
@@ -67,8 +68,8 @@ const Register = () => {
         <Box 
             maxWidth="400px" 
             mx="auto" 
-            mt={10} 
-            sx={{p: 5, border: 1, borderRadius: 1, backgroundColor: '#f1f1f1'}}
+            mt={11} 
+            sx={{p: 4, border: 1, borderRadius: 1, backgroundColor: '#f1f1f1'}}
         >
             <Typography variant="h5" mb={2}>Register</Typography>
             <form onSubmit={formik.handleSubmit}>
@@ -208,16 +209,29 @@ const Register = () => {
                     Register
                 </Button>
 
-                <Button 
-                    fullWidth 
-                    component={Link} 
-                    to="/login" 
-                    variant="outlined" 
-                    color="primary" 
-                    sx={{mt: 2, height: 40}}
-                >
-                    Login
-                </Button>
+                <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                    <Button 
+                        component={Link} 
+                        to="/login" 
+                        variant="outlined" 
+                        color="primary" 
+                        sx={{mt: 2, height: 40, width: 250 }}
+                    >
+                        Login
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        sx={{ mt: 2, height: 40, width: 250, background: 'white', color: 'black' }}
+                        onClick={() => {
+                            window.location.href = `${BASE_URL}/api/google/google-login?prompt=select_account`;
+                        }}
+                        endIcon={<GoogleIcon />}
+                    >
+                        Google
+                    </Button>
+                </Box>
 
             </form>
         </Box>

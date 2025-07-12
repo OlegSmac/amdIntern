@@ -22,6 +22,7 @@ import Notifications from './pages/Notifications';
 import Footer from './smallComponents/Footer';
 import { Box } from '@mui/material';
 import { PageContextProvider } from './contexts/PageContext';
+import GoogleCallback from './pages/GoogleCallback';
 
 function App() {
   return (
@@ -59,6 +60,8 @@ function App() {
                   <Route path='/addModel' element={<AddModel />} />
 
                   <Route path='/companies' element={<Companies />} />
+
+                  <Route path="/google-callback" element={<GoogleCallback />} />
                 </Routes>
               </Box>
 

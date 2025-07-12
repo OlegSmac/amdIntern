@@ -30,7 +30,7 @@ const User = () => {
             if (!userId) return;
 
             try {
-                const userResponse = await axios.get(`/api/accounts/${userId}`);
+                const userResponse = await axios.get(`/api/application-users/${userId}`);
                 setUserData(userResponse.data);
 
                 setForm({
@@ -43,7 +43,7 @@ const User = () => {
                     newPassword: '',
                 });
 
-                const roleResponse = await axios.post('/api/accounts/getRoleFromToken', {
+                const roleResponse = await axios.post('/api/application-users/getRoleFromToken', {
                     token: localStorage.getItem('authToken'),
                 });
                 setRole(roleResponse.data);
@@ -64,7 +64,7 @@ const User = () => {
 
     const handleSave = async () => {
         try {
-            const response = await axios.put('/api/accounts/update', {
+            const response = await axios.put('/api/application-users/update', {
                 id: userId,
                 firstName: form.firstName,
                 lastName: form.lastName,

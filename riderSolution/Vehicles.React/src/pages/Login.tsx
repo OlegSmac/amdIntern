@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Alert, Box, Button, Snackbar, TextField, Typography } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from '../api/axios';
+import axios, { BASE_URL } from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
@@ -99,16 +100,29 @@ const Login = () => {
                         Login
                     </Button>
 
-                    <Button 
-                        fullWidth 
-                        component={Link} 
-                        to="/register"
-                        variant="outlined" 
-                        color="primary" 
-                        sx={{mt: 2, height: 40}}
-                    >
-                        Register
-                    </Button>
+                    <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                        <Button 
+                            component={Link} 
+                            to="/register"
+                            variant="outlined" 
+                            color="primary" 
+                            sx={{mt: 2, height: 40, width: 250}}
+                        >
+                            Register
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            sx={{ mt: 2, height: 40, width: 250, background: 'white', color: 'black' }}
+                            onClick={() => {
+                                window.location.href = `${BASE_URL}/api/google/google-login`;
+                            }}
+                            endIcon={<GoogleIcon />}
+                        >
+                            Google
+                        </Button>
+                    </Box>
 
                 </form>
             </Box>

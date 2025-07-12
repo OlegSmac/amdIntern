@@ -1,5 +1,5 @@
 using System.Net;
-using Vehicles.API.Contracts;
+using Vehicles.API.Models;
 
 namespace Vehicles.API.Middlewares;
 
@@ -29,7 +29,7 @@ public class ExceptionHandlingMiddleware
             var error = new Error()
             {
                 StatusCode = context.Response.StatusCode.ToString(),
-                Message = e.Message
+                Message = "Sorry an error on the server occured"
             };
             
             await context.Response.WriteAsync(error.ToString());

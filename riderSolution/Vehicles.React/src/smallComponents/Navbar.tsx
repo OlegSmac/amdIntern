@@ -17,7 +17,7 @@ const Navbar = () => {
         const fetchRole = async () => {
             if (isAuthenticated && localStorage.getItem('authToken')) {
                 try {
-                    const roleResponse = await axios.post('/api/accounts/getRoleFromToken', {
+                    const roleResponse = await axios.post('/api/application-users/getRoleFromToken', {
                         token: localStorage.getItem('authToken'),
                     });
                     

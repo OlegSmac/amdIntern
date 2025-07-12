@@ -2,8 +2,8 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Vehicles.API.Models.DTOs.Notifications;
-using Vehicles.API.Models.Requests.Notifications;
+using Vehicles.API.Contracts.DTOs.Notifications;
+using Vehicles.API.Contracts.Requests.Notifications;
 using Vehicles.Application.Notifications.Commands;
 using Vehicles.Application.Notifications.Queries;
 using Vehicles.Application.PaginationModels;
@@ -46,7 +46,7 @@ public class NotificationsController : ControllerBase
     }
 
     [HttpPost("sendAdminNotification")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Company, Admin")]
     public async Task<IActionResult> SendAdminNotification([FromBody] AdminNotificationRequest request)
     {
         var command = new SendAdminNotification(request.Company, request.Brand, request.Model, request.Year);

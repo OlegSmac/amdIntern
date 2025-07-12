@@ -50,17 +50,19 @@ const SendEmailForm: FC<Props> = ({ from, to, onClose }) => {
     }, [success]);
 
     return (
-        <Box sx={{
-            position: 'fixed',
-            bottom: 60,
-            left: '74%',
-            width: 400,
-            bgcolor: 'white',
-            boxShadow: 5,
-            p: 3,
-            borderRadius: 2,
-            zIndex: 1,
-        }}>
+        <Box 
+            sx={{
+                position: 'fixed',
+                bottom: 60,
+                left: '74%',
+                width: 400,
+                bgcolor: 'white',
+                boxShadow: 5,
+                p: 3,
+                borderRadius: 2,
+                zIndex: 1,
+            }}
+        >
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6">Send Email</Typography>
                 <IconButton onClick={onClose}><CloseIcon /></IconButton>

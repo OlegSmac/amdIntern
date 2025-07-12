@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Vehicles.API.Models.Requests.Emails;
+using Vehicles.API.Contracts.Requests.Emails;
 using Vehicles.Application.Emails.Commands;
 
 namespace Vehicles.API.Controllers;

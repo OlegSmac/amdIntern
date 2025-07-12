@@ -1,5 +1,5 @@
 using AutoMapper;
-using Vehicles.API.Models.DTOs.Notifications;
+using Vehicles.API.Contracts.DTOs.Notifications;
 using Vehicles.Domain.Notifications.Models;
 
 namespace Vehicles.API.Models.Profiles.Notifications;

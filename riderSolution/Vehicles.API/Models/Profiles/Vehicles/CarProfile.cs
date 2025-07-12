@@ -1,6 +1,6 @@
 using AutoMapper;
-using Vehicles.API.Models.DTOs.Vehicles;
-using Vehicles.API.Models.Requests.Vehicles;
+using Vehicles.API.Contracts.DTOs.Vehicles;
+using Vehicles.API.Contracts.Requests.Vehicles;
 using Vehicles.Domain.VehicleTypes.Models;
 
 namespace Vehicles.API.Models.Profiles.Vehicles;

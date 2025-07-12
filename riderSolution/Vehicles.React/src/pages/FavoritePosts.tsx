@@ -60,7 +60,7 @@ const FavoritePosts = () => {
         if (!postToDelete) return;
 
         try {
-            await axiosInstance.delete(`/api/accounts/removePostFromFavorite/${userId}/${postToDelete}`);
+            await axiosInstance.delete(`/api/users/removePostFromFavorite/${userId}/${postToDelete}`);
             
             setPosts(prevList => prevList.filter(post => post.id !== postToDelete));
         } catch (error) {

@@ -37,7 +37,7 @@ const NotificationsList: FC<PropsNotificationsList> = ({ notifications }) => {
                     model: notification.model,
                     year: notification.year,
                 };
-                await axios.post("/api/models", modelData);
+                await axiosPrivate.post("/api/models", modelData);
             }
             await axiosPrivate.post(`/api/notifications/setResolved/${notification.id}`);
             markResolvedLocally(notification.id);

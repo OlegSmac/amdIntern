@@ -1,4 +1,6 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -16,14 +18,9 @@ public static class WebApplicationBuilderExtensions
         var jwtSettings = new JwtSettings();
         builder.Configuration.Bind(nameof(JwtSettings), jwtSettings);
         
-        var signingKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
-        if (!string.IsNullOrWhiteSpace(signingKey)) jwtSettings.SigningKey = signingKey;
-
-        var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-        if (!string.IsNullOrWhiteSpace(issuer)) jwtSettings.Issuer = issuer;
-
-        var audiencesEnv = Environment.GetEnvironmentVariable("JWT_AUDIENCES");
-        if (!string.IsNullOrWhiteSpace(audiencesEnv)) jwtSettings.Audiences = audiencesEnv.Split(';');
+        jwtSettings.SigningKey = Environment.GetEnvironmentVariable("JWT_SIGNING_KEY");
+        jwtSettings.Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+        jwtSettings.Audiences = Environment.GetEnvironmentVariable("JWT_AUDIENCES")?.Split(';');
         
         builder.Services.Configure<JwtSettings>(options =>
         {
@@ -33,13 +30,20 @@ public static class WebApplicationBuilderExtensions
         });
 
         builder.Services
-            .AddAuthentication(a =>
+            .AddAuthentication(options =>
             {
-                a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                a.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(jwt =>
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie("External")
+            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            {
+                options.SignInScheme = "External";
+                options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+                options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwt =>
             {
                 jwt.SaveToken = true;
                 jwt.TokenValidationParameters = new TokenValidationParameters
@@ -51,7 +55,7 @@ public static class WebApplicationBuilderExtensions
                     ValidIssuer = jwtSettings.Issuer,
                     ValidateAudience = true,
                     ValidAudiences = jwtSettings.Audiences,
-                    RequireExpirationTime = false,
+                    RequireExpirationTime = true,
                     ValidateLifetime = true,
                 };
                 jwt.Audience = jwtSettings.Audiences?[0];
