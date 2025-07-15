@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vehicles.API.Contracts.DTOs.Posts;
 using Vehicles.API.Contracts.Requests.Posts;
+using Vehicles.API.Extensions;
 using Vehicles.API.Models.Factories;
 using Vehicles.API.Services;
 using Vehicles.Application.PaginationModels;
@@ -82,18 +83,7 @@ public class PostsController : ControllerBase
     {
         var command = new GetPostsPaged { PagedRequest = pagedRequest};
         var response = await _mediator.Send(command);
-        
-        var dtoItems = response.Items
-            .Select(post => _mapper.Map<PostDTO>(post))
-            .ToList();
-        
-        var result = new PaginatedResult<PostDTO>
-        {
-            Items = dtoItems,
-            PageIndex = response.PageIndex,
-            PageSize = response.PageSize,
-            Total = response.Total
-        };
+        var result = response.MapPaginatedResult<Post, PostDTO>(_mapper);
         
         return Ok(result);
     }

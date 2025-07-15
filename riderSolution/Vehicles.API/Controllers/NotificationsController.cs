@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vehicles.API.Contracts.DTOs.Notifications;
 using Vehicles.API.Contracts.Requests.Notifications;
+using Vehicles.API.Extensions;
 using Vehicles.Application.Notifications.Commands;
 using Vehicles.Application.Notifications.Queries;
 using Vehicles.Application.PaginationModels;
@@ -76,15 +77,7 @@ public class NotificationsController : ControllerBase
         prop.SetValue(command, request);
 
         var response = await _mediator.Send(command);
-
-        var dtoItems = response.Items.Select(item => _mapper.Map<TDto>(item)).ToList();
-        var result = new PaginatedResult<TDto>
-        {
-            Items = dtoItems,
-            PageIndex = response.PageIndex,
-            PageSize = response.PageSize,
-            Total = response.Total
-        };
+        var result = response.MapPaginatedResult<TEntity, TDto>(_mapper);
 
         return Ok(result);
     }
