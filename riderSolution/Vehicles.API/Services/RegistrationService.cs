@@ -58,14 +58,10 @@ public class RegistrationService
         };
     }
 
-    public async Task<ApplicationUser?> RegisterGoogleAsync(string email, string? name)
+    public async Task<ApplicationUser?> RegisterOrLoginGoogleAsync(string email, string? name)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        if (user != null)
-        {
-            _logger.LogError("User with this email already exists in application.");
-            return null;
-        }
+        if (user != null) return user;
 
         user = CreateGoogleApplicationUser(email, name);
 

@@ -32,7 +32,7 @@ public class GoogleAuthenticationController : ControllerBase
         var redirectUri = Environment.GetEnvironmentVariable("REDIRECT_URI");
         var properties = new AuthenticationProperties
         {
-            RedirectUri = "/api/accounts/google-response?returnUrl=" + Uri.EscapeDataString(redirectUri!)
+            RedirectUri = "/api/google/google-response?returnUrl=" + Uri.EscapeDataString(redirectUri!)
         };
 
         if (!string.IsNullOrEmpty(prompt)) properties.Items["prompt"] = prompt; //new account registration
@@ -51,7 +51,8 @@ public class GoogleAuthenticationController : ControllerBase
         var name = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
         if (string.IsNullOrEmpty(email)) return BadRequest("Email claim not found.");
 
-        var user = await _registrationService.RegisterGoogleAsync(email, name);
+        var user = await _registrationService.RegisterOrLoginGoogleAsync(email, name);
+        if (user == null) return NoContent();
         
         var roles = await _userManager.GetRolesAsync(user);
         var claimsIdentity = ClaimsService.CreateFromLogin(user, new List<Claim>(), roles);
