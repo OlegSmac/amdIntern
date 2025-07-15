@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
+using Vehicles.Application.PaginationModels;
 using Vehicles.Domain.Notifications.Models;
 using Vehicles.Domain.Posts.Models;
 using Vehicles.Domain.Users.Models;
@@ -14,11 +15,13 @@ public class CreatePostHandler : IRequestHandler<CreatePost, Post>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreatePostHandler> _logger;
+    private readonly INotificationSender _notificationSender;
 
-    public CreatePostHandler(IUnitOfWork unitOfWork, ILogger<CreatePostHandler> logger)
+    public CreatePostHandler(IUnitOfWork unitOfWork, ILogger<CreatePostHandler> logger, INotificationSender notificationSender)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _notificationSender = notificationSender;
     }
 
     private async Task<Post> CreatePostAsync(CreatePost request, Company company, Vehicle vehicle)
@@ -60,6 +63,27 @@ public class CreatePostHandler : IRequestHandler<CreatePost, Post>
                     };
 
                     _unitOfWork.NotificationRepository.Add<UserNotification>(userNotification);
+                    
+                    //sending SignalR notification
+                    var unreadCountRequest = new PagedRequest
+                    {
+                        PageIndex = 0,
+                        PageSize = 99,
+                        ColumnNameForSorting = "",
+                        SortDirection = "asc",
+                        RequestFilters = new RequestFilters
+                        {
+                            Filters = new List<Filter>
+                            {
+                                new Filter { Path = "userId", Value = userId },
+                                new Filter { Path = "isRead", Value = "false" }
+                            }
+                        }
+                    };
+
+                    var resultUnreadCountRequest = await _unitOfWork.NotificationRepository.GetPagedDataAsync<UserNotification>(unreadCountRequest);
+                    int unreadCount = resultUnreadCountRequest.Items.Count;
+                    await _notificationSender.SendUnreadCountAsync(userId, unreadCount + 1);
                 }
 
                 await _unitOfWork.SaveAsync();

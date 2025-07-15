@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
+using Vehicles.Application.PaginationModels;
 using Vehicles.Application.Posts.Posts.Commands;
 using Vehicles.Domain.Notifications.Models;
 using Vehicles.Domain.Posts.Models;
@@ -13,11 +14,13 @@ public class SendAdminNotificationHandler : IRequestHandler<SendAdminNotificatio
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SendAdminNotificationHandler> _logger;
+    private readonly INotificationSender _notificationSender;
 
-    public SendAdminNotificationHandler(IUnitOfWork unitOfWork, ILogger<SendAdminNotificationHandler> logger)
+    public SendAdminNotificationHandler(IUnitOfWork unitOfWork, ILogger<SendAdminNotificationHandler> logger, INotificationSender notificationSender)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _notificationSender = notificationSender;
     }
 
     public async Task Handle(SendAdminNotification request, CancellationToken cancellationToken)
@@ -34,6 +37,27 @@ public class SendAdminNotificationHandler : IRequestHandler<SendAdminNotificatio
             Model = request.Model,
             Year = request.Year
         };
+        
+        //sending SignalR notification
+        var unreadCountRequest = new PagedRequest
+        {
+            PageIndex = 0,
+            PageSize = 99,
+            ColumnNameForSorting = "",
+            SortDirection = "asc",
+            RequestFilters = new RequestFilters
+            {
+                Filters = new List<Filter>
+                {
+                    new Filter { Path = "adminId", Value = "6740eff2-9536-4074-919d-185fd61506d9" },
+                    new Filter { Path = "isRead", Value = "false" }
+                }
+            }
+        };
+
+        var resultUnreadCountRequest = await _unitOfWork.NotificationRepository.GetPagedDataAsync<AdminNotification>(unreadCountRequest);
+        int unreadCount = resultUnreadCountRequest.Items.Count;
+        await _notificationSender.SendUnreadCountAsync("6740eff2-9536-4074-919d-185fd61506d9", unreadCount + 1);
 
         await _unitOfWork.ExecuteTransactionAsync(async () =>
         {

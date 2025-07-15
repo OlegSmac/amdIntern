@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
+using Vehicles.Application.PaginationModels;
 using Vehicles.Domain.Notifications.Models;
 using Vehicles.Domain.Posts.Models;
 using Vehicles.Domain.Users.Models;
@@ -14,11 +15,13 @@ public class AddPostToFavoriteListHandler : IRequestHandler<AddPostToFavoriteLis
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AddPostToFavoriteListHandler> _logger;
+    private readonly INotificationSender _notificationSender;
 
-    public AddPostToFavoriteListHandler(IUnitOfWork unitOfWork, ILogger<AddPostToFavoriteListHandler> logger)
+    public AddPostToFavoriteListHandler(IUnitOfWork unitOfWork, ILogger<AddPostToFavoriteListHandler> logger, INotificationSender notificationSender)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _notificationSender = notificationSender;
     }
 
     private async Task<FavoritePost> CreateFavoritePost(AddPostToFavoriteList request)
@@ -46,16 +49,37 @@ public class AddPostToFavoriteListHandler : IRequestHandler<AddPostToFavoriteLis
         
             FavoritePost favoritePost = await CreateFavoritePost(request);
             
-            Console.WriteLine($"username: {user.ApplicationUser.UserName}");
-            
             //Notification for company
             var company = await _unitOfWork.CompanyRepository.GetByIdAsync(post.CompanyId);
+            if (company == null) throw new KeyNotFoundException($"Company with ID {post.CompanyId} not found");
+            
             var companyNotification = new CompanyNotification
             {
                 Title = $"{user.ApplicationUser.UserName} added this post to favorite list!",
                 Body = $"<p>User <strong>{user.FirstName} {user.LastName}</strong> added post \"{post.Title}\" to favorite list.</p> <p><a href='http://localhost:5173/post/{post.Id}'>Click here to view the post</a></p>",
                 CompanyId = post.CompanyId
             };
+            
+            //sending SignalR notification
+            var unreadCountRequest = new PagedRequest
+            {
+                PageIndex = 0,
+                PageSize = 99,
+                ColumnNameForSorting = "",
+                SortDirection = "asc",
+                RequestFilters = new RequestFilters
+                {
+                    Filters = new List<Filter>
+                    {
+                        new Filter { Path = "companyId", Value = company.Id },
+                        new Filter { Path = "isRead", Value = "false" }
+                    }
+                }
+            };
+
+            var resultUnreadCountRequest = await _unitOfWork.NotificationRepository.GetPagedDataAsync<CompanyNotification>(unreadCountRequest);
+            int unreadCount = resultUnreadCountRequest.Items.Count;
+            await _notificationSender.SendUnreadCountAsync(company.Id, unreadCount + 1);
             
             await _unitOfWork.ExecuteTransactionAsync(async () =>
             {

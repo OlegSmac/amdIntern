@@ -19,6 +19,7 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Vehicles.API.Hubs;
 
 namespace Vehicles.API;
 
@@ -71,6 +72,7 @@ public class Program
         builder.Services.AddScoped<IImageRepository, ImageRepository>();
         builder.Services.AddScoped<IModelRepository, ModelRepository>();
         builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+        builder.Services.AddScoped<INotificationSender, NotificationService>();
         builder.Services.AddScoped<IdentityService>();
         
         builder.Services.AddScoped<IRegistrationHandler, UserRegistrationHandler>();
@@ -106,6 +108,8 @@ public class Program
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        
+        builder.Services.AddSignalR();
     }
 
     public static void Configure(WebApplication app)
@@ -138,6 +142,8 @@ public class Program
         
         app.UseAuthentication(); 
         app.UseAuthorization();
+        
+        app.MapHub<NotificationHub>("/hubs/notifications");
         
         app.MapControllers();
     }

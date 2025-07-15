@@ -11,6 +11,7 @@ public class ClaimsService
     {
         var claimsIdentity = new ClaimsIdentity(new[]
         {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(JwtRegisteredClaimNames.Sub, user.Email ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new Claim(ClaimTypes.Role, result.Role)
@@ -24,6 +25,7 @@ public class ClaimsService
     {
         var claimsIdentity = new ClaimsIdentity(new[]
         {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(JwtRegisteredClaimNames.Sub, user.Email ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty)
         });

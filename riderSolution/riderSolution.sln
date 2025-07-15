@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.API", "Vehicles.AP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.Tests", "Vehicles.Tests\Vehicles.Tests.csproj", "{AE973950-ACE8-418D-8F7C-148A6FF7E105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.NotificationsProcessing", "Vehicles.NotificationsProcessing\Vehicles.NotificationsProcessing.csproj", "{DB84770C-49DA-432A-8094-9AFF0AB3EEF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.NotificationsWorker", "Vehicles.NotificationsWorker\Vehicles.NotificationsWorker.csproj", "{DB84770C-49DA-432A-8094-9AFF0AB3EEF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -58,6 +58,20 @@ public static class WebApplicationBuilderExtensions
                     RequireExpirationTime = true,
                     ValidateLifetime = true,
                 };
+                jwt.Events = new JwtBearerEvents //SignalR usage for notifications
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(token) && path.StartsWithSegments("/hubs/notifications"))
+                        {
+                            context.Token = token;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
                 jwt.Audience = jwtSettings.Audiences?[0];
                 jwt.ClaimsIssuer = jwtSettings.Issuer;
             });

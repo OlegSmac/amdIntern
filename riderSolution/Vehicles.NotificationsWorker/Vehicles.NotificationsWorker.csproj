@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-Vehicles.NotificationsProcessing-c36c1668-55d9-448a-a722-167b248f5282</UserSecretsId>
+        <RootNamespace>Vehicles.NotificationsProcessing</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

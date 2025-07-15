@@ -8,6 +8,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import { useAuth } from '../contexts/AuthContext';
 import axios from '../api/axios';
+import * as signalR from '@microsoft/signalr';
 
 const Navbar = () => {
     const { isAuthenticated, username, logout } = useAuth();
@@ -64,6 +65,43 @@ const Navbar = () => {
     }
 
     const [unreadCount, setUnreadCount] = useState(0);
+    const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
+
+    useEffect(() => {
+        if (!isAuthenticated || !localStorage.getItem('authToken')) return;
+
+        const newConnection = new signalR.HubConnectionBuilder()
+            .withUrl('http://localhost:5078/hubs/notifications', {
+                accessTokenFactory: () => localStorage.getItem('authToken') || ''
+            })
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Warning)
+            .build();
+
+        newConnection.start()
+            .then(() => {
+                console.log('Connected to SignalR notification hub');
+                setConnection(newConnection);
+            })
+            .catch(err => console.error('SignalR Connection Error:', err));
+
+        return () => {
+            newConnection.stop();
+        };
+    }, [isAuthenticated]);
+
+    useEffect(() => {
+        if (!connection) return;
+
+        connection.on('UpdateUnreadCount', (count: number) => {
+            console.log("unread count: " + count);
+            setUnreadCount(count);
+        });
+
+        return () => {
+            connection.off('UpdateUnreadCount');
+        };
+    }, [connection, location.pathname]);
 
     useEffect(() => {
         if (!role) return;

@@ -107,7 +107,7 @@ const Notifications = () => {
             axios.post(`/api/notifications/setRead/${id}`)
         });
         
-    }, [notifications]); 
+    }, [notifications]);
 
     const handlePrevious = () => {
         if (currentPage > 0) setCurrentPage(prev => prev - 1);
