@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Application.Auth.Requests;
 using Vehicles.Application.Auth.Responses;
@@ -10,28 +11,55 @@ namespace Vehicles.Application.Auth.Commands;
 
 public class UserRegistrationHandler : IRegistrationHandler
 {
-    private readonly IMediator _mediator;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<UserRegistrationHandler> _logger;
 
     public string Type => "user";
 
-    public UserRegistrationHandler(IMediator mediator)
+    public UserRegistrationHandler(IUnitOfWork unitOfWork, ILogger<UserRegistrationHandler> logger)
     {
-        _mediator = mediator;
+        _unitOfWork = unitOfWork;
+        _logger = logger;
+    }
+    
+    private async Task<User> CreateUserAsync(RegisterRequest request, ApplicationUser identity)
+    {
+        return new User()
+        {
+            Id = identity.Id,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+        };
     }
 
     public async Task<RegistrationResult> RegisterAsync(RegisterRequest request, ApplicationUser identity)
     {
-        var claims = new List<Claim>
-        {
-            new("FirstName", request.FirstName!),
-            new("LastName", request.LastName!)
-        };
+        _logger.LogInformation("CreateUser was called");
+        ArgumentNullException.ThrowIfNull(request);
 
-        await _mediator.Send(new CreateUser(identity.Id, request.FirstName!, request.LastName!));
+        try
+        {
+            User user = await CreateUserAsync(request, identity);
+            
+            await _unitOfWork.ExecuteTransactionAsync(async () =>
+            {
+                await _unitOfWork.UserRepository.CreateAsync(user);
+                await _unitOfWork.SaveAsync();
+            });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            throw;
+        }
 
         return new RegistrationResult
         {
-            Claims = claims,
+            Claims = new List<Claim>
+            {
+                new("FirstName", request.FirstName!),
+                new("LastName", request.LastName!)
+            },
             Role = "User"
         };
     }

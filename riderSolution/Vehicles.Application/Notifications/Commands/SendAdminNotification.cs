@@ -2,9 +2,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Vehicles.Application.Abstractions;
 using Vehicles.Application.PaginationModels;
-using Vehicles.Application.Posts.Posts.Commands;
 using Vehicles.Domain.Notifications.Models;
-using Vehicles.Domain.Posts.Models;
 
 namespace Vehicles.Application.Notifications.Commands;
 
