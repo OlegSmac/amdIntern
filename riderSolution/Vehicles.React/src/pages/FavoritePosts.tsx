@@ -76,7 +76,7 @@ const FavoritePosts = () => {
             
             <Box mt={4} mx={40}>
                 <Paper sx={{ p: 2, mb: 2, backgroundColor: '#f1f1f1' }}>
-                    <Box display="grid" gridTemplateColumns="1fr 2fr 1.5fr 1fr 1fr 1fr 1.2fr" alignItems="center" gap={2}>
+                    <Box display="grid" gridTemplateColumns="1fr 2fr 1.2fr 1fr 1fr 1fr 1.2fr" alignItems="center" gap={2}>
                     <Typography variant="subtitle2">Image</Typography>
                     <Typography variant="subtitle2">Title</Typography>
                     <Typography variant="subtitle2">Brand</Typography>
@@ -88,7 +88,7 @@ const FavoritePosts = () => {
 
                 {posts.map((post) => (
                     <Paper key={post.id} sx={{ px: 2, py: 1, mb: 1 }}>
-                        <Box display="grid" gridTemplateColumns="1fr 2fr 1.5fr 1fr 1fr 1fr 1.2fr" alignItems="center" gap={2}>
+                        <Box display="grid" gridTemplateColumns="1fr 2fr 1.2fr 1fr 1fr 1fr 1.2fr" alignItems="center" gap={2}>
                             <Box>
                                 <img
                                     src={post.images?.[0]?.url || "/placeholder.jpg"}

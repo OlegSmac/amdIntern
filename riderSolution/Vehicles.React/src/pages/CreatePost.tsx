@@ -107,7 +107,7 @@ const CreatePost = () => {
         const { name, value } = e.target;
         setForm((prev) => ({
             ...prev,
-            [name]: name === "price" ? Number(value) : value,
+            [name]: name === "price" ? (value === "" ? "" : Number(value)) : value,
         }));
     };
 

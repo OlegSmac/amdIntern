@@ -73,6 +73,7 @@ public class Program
         builder.Services.AddScoped<IModelRepository, ModelRepository>();
         builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
         builder.Services.AddScoped<INotificationSender, NotificationService>();
+        builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
         builder.Services.AddScoped<IdentityService>();
         
         builder.Services.AddScoped<IRegistrationHandler, UserRegistrationHandler>();

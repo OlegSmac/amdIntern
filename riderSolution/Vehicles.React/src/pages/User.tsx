@@ -5,9 +5,19 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from '../api/axios';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
+export type User = {
+    id: string;
+    email: string;
+    phone?: string;
+    firstName?: string;
+    lastName?: string;
+    name?: string;
+    description?: string;
+};
+
 const User = () => {
     const { logout } = useAuth();
-    const [userData, setUserData] = useState<any>(null);
+    const [userData, setUserData] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [editMode, setEditMode] = useState(false);
     const [role, setRole] = useState('');
@@ -114,7 +124,7 @@ const User = () => {
 
                 <Divider sx={{ mb: 3 }} />
 
-                {!editMode ? (
+                {!editMode && userData ? (
                     <Box sx={{ lineHeight: 2.5 }}>
                         {role === 'Company' ? (
                             <>

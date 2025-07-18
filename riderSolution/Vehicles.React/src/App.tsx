@@ -7,7 +7,6 @@ import Login from './pages/Login';
 import User from './pages/User';
 import Post from "./pages/Post";
 import AllPosts from './pages/AllPosts';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import theme from './theme'
 import { ThemeProvider } from '@mui/material/styles';
@@ -23,6 +22,7 @@ import Footer from './smallComponents/Footer';
 import { Box } from '@mui/material';
 import { PageContextProvider } from './contexts/PageContext';
 import GoogleCallback from './pages/GoogleCallback';
+import CompanyStatistics from './pages/CompanyStatistics';
 
 function App() {
   return (
@@ -58,6 +58,8 @@ function App() {
                   <Route path='/createPost' element={<CreatePost />} />
                   <Route path='/updatePost/:id' element={<UpdatePost />} />
                   <Route path='/addModel' element={<AddModel />} />
+
+                  <Route path='/statistics' element={<CompanyStatistics />} />
 
                   <Route path='/companies' element={<Companies />} />
 

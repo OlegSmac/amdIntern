@@ -1,5 +1,3 @@
-
-
 using Vehicles.API.Contracts.DTOs.Users;
 using Vehicles.API.Contracts.DTOs.Vehicles;
 

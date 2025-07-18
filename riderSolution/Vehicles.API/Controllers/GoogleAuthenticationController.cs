@@ -52,7 +52,7 @@ public class GoogleAuthenticationController : ControllerBase
         if (string.IsNullOrEmpty(email)) return BadRequest("Email claim not found.");
 
         var user = await _registrationService.RegisterOrLoginGoogleAsync(email, name);
-        if (user == null) return NoContent();
+        if (user == null) return Unauthorized();
         
         var roles = await _userManager.GetRolesAsync(user);
         var claimsIdentity = ClaimsService.CreateFromLogin(user, new List<Claim>(), roles);

@@ -44,6 +44,7 @@ const Navbar = () => {
         if (location.pathname === '/favoritePosts' && role == "User") return 3;
         if (location.pathname === '/addModel' && role === "Company") return 4;
         if (location.pathname === '/companies' && role === "User") return 5;
+        if (location.pathname === '/statistics' && role === "Company") return 6;
         return 0;
     };
 
@@ -62,6 +63,7 @@ const Navbar = () => {
         else if (newValue === 3) navigate('/favoritePosts');
         else if (newValue === 4) navigate('/addModel');
         else if (newValue === 5) navigate('/companies');
+        else if (newValue === 6) navigate('/statistics')
     }
 
     const [unreadCount, setUnreadCount] = useState(0);
@@ -178,6 +180,7 @@ const Navbar = () => {
                         {role === "User" ? <Tab label="Favorite Posts" value={3} disabled={tabValue === 3} /> : null}
                         {role === "Company" ? <Tab label="Add Model" value={4} disabled={tabValue === 4} /> : null}
                         {role === "User" ? <Tab label="Companies" value={5} disabled={tabValue === 5} /> : null}
+                        {role === "Company" ? <Tab label="Statistics" value={6} disabled={tabValue === 6} /> : null}
                     </Tabs>
                 </Box>
 

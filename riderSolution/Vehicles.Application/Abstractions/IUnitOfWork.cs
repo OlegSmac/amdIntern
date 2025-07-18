@@ -11,7 +11,7 @@ public interface IUnitOfWork
     public IImageRepository ImageRepository { get; }
     public IModelRepository ModelRepository { get; }
     public INotificationRepository NotificationRepository { get; }
-    
+    public IStatisticsRepository StatisticsRepository { get; }
     
     Task ExecuteTransactionAsync(Func<Task> transaction);
     Task SaveAsync();
