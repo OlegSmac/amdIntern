@@ -2,8 +2,8 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Vehicles.Application.Posts.Categories.Commands;
-using Vehicles.Application.Posts.Categories.Queries;
+using Vehicles.Application.Requests.Posts.Categories.Commands;
+using Vehicles.Application.Requests.Posts.Categories.Queries;
 
 namespace Vehicles.API.Controllers;
 

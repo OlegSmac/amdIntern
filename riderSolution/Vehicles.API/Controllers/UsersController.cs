@@ -2,8 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Vehicles.API.Services;
-using Vehicles.Application.Users.Users.Commands;
-using Vehicles.Application.Users.Users.Queries;
+using Vehicles.Application.Requests.Users.Users.Commands;
+using Vehicles.Application.Requests.Users.Users.Queries;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.API.Controllers;

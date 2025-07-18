@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Vehicles.API.Contracts.DTOs.Notifications;
 using Vehicles.API.Contracts.Requests.Notifications;
 using Vehicles.API.Extensions;
-using Vehicles.Application.Notifications.Commands;
-using Vehicles.Application.Notifications.Queries;
+using Vehicles.Application.Requests.Notifications.Commands;
+using Vehicles.Application.Requests.Notifications.Queries;
 using Vehicles.Application.PaginationModels;
 using Vehicles.Domain.Notifications.Models;
 

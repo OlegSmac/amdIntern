@@ -1,4 +1,4 @@
-using Vehicles.Application.Vehicles.Models.Responses;
+using Vehicles.Application.Requests.Vehicles.Models.Responses;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Application.Abstractions;

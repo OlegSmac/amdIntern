@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Auth\Queires\" />
+    <Folder Include="Requests\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 using MediatR;
-using Vehicles.Application.Posts.Categories.Queries;
+using Vehicles.Application.Requests.Posts.Categories.Queries;
 using Vehicles.Domain.Posts.Models;
 
 namespace Vehicles.API.Services;

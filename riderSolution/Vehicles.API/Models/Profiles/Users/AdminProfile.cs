@@ -1,7 +1,7 @@
 using AutoMapper;
 using Vehicles.API.Contracts.DTOs.Users;
 using Vehicles.API.Contracts.Requests.Users;
-using Vehicles.Application.Auth.Requests;
+using Vehicles.Application.Requests.Auth.Requests;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.API.Models.Profiles.Users;

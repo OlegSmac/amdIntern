@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Vehicles.Models.Responses;
+using Vehicles.Application.Requests.Vehicles.Models.Responses;
 using Vehicles.Domain.VehicleTypes.Models.VehicleModels;
 
 namespace Vehicles.Infrastructure.Repositories;

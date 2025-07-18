@@ -1,8 +1,5 @@
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Users.Users.Commands;
-using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.Tests.CommandHandlers.Users;
 

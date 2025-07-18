@@ -1,13 +1,13 @@
 using MediatR;
-using Vehicles.Application.Users.Admins.Queries;
-using Vehicles.Application.Users.Companies.Queries;
-using Vehicles.Application.Users.Users.Queries;
 using Microsoft.AspNetCore.Identity;
 using Vehicles.API.Contracts.DTOs.Users;
 using Vehicles.API.Contracts.Requests.Users;
-using Vehicles.Application.Users.Admins.Commands;
-using Vehicles.Application.Users.Companies.Commands;
-using Vehicles.Application.Users.Users.Commands;
+using Vehicles.Application.Requests.Users.Admins.Commands;
+using Vehicles.Application.Requests.Users.Admins.Queries;
+using Vehicles.Application.Requests.Users.Companies.Commands;
+using Vehicles.Application.Requests.Users.Companies.Queries;
+using Vehicles.Application.Requests.Users.Users.Commands;
+using Vehicles.Application.Requests.Users.Users.Queries;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.API.Services;

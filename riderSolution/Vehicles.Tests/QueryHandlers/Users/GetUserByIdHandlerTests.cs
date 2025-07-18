@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Users.Users.Queries;
+using Vehicles.Application.Requests.Users.Users.Queries;
 using Vehicles.Domain.Users.Models;
 using Xunit;
 

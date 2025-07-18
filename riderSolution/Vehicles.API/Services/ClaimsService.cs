@@ -1,6 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Vehicles.Application.Auth.Responses;
+using Vehicles.Application.Requests.Auth.Responses;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.API.Services;

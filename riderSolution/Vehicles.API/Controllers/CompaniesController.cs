@@ -5,7 +5,7 @@ using Vehicles.API.Contracts.DTOs.Users;
 using Vehicles.API.Extensions;
 using Vehicles.API.Services;
 using Vehicles.Application.PaginationModels;
-using Vehicles.Application.Users.Companies.Queries;
+using Vehicles.Application.Requests.Users.Companies.Queries;
 using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.API.Controllers;

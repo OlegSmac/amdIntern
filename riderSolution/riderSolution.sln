@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.Application", "Veh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.Infrastructure", "Vehicles.Infrastructure\Vehicles.Infrastructure.csproj", "{3EDD67DD-52AD-4D09-98E8-0FDF935B5869}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.ConsolePresentation", "Vehicles.ConsolePresentation\Vehicles.ConsolePresentation.csproj", "{51EEDEFD-48BB-4143-A631-39752140D872}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.API", "Vehicles.API\Vehicles.API.csproj", "{98C6BD86-C584-4DB9-9285-05131B0F49B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicles.Tests", "Vehicles.Tests\Vehicles.Tests.csproj", "{AE973950-ACE8-418D-8F7C-148A6FF7E105}"
@@ -32,10 +30,6 @@ Global
 		{3EDD67DD-52AD-4D09-98E8-0FDF935B5869}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EDD67DD-52AD-4D09-98E8-0FDF935B5869}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EDD67DD-52AD-4D09-98E8-0FDF935B5869}.Release|Any CPU.Build.0 = Release|Any CPU
-		{51EEDEFD-48BB-4143-A631-39752140D872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51EEDEFD-48BB-4143-A631-39752140D872}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51EEDEFD-48BB-4143-A631-39752140D872}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51EEDEFD-48BB-4143-A631-39752140D872}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98C6BD86-C584-4DB9-9285-05131B0F49B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98C6BD86-C584-4DB9-9285-05131B0F49B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98C6BD86-C584-4DB9-9285-05131B0F49B2}.Release|Any CPU.ActiveCfg = Release|Any CPU

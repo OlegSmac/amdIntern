@@ -1,9 +1,9 @@
 using AutoMapper;
 using MediatR;
 using Vehicles.API.Contracts.Requests.Vehicles;
-using Vehicles.Application.Vehicles.Cars.Commands;
-using Vehicles.Application.Vehicles.Motorcycles.Commands;
-using Vehicles.Application.Vehicles.Trucks.Commands;
+using Vehicles.Application.Requests.Vehicles.Cars.Commands;
+using Vehicles.Application.Requests.Vehicles.Motorcycles.Commands;
+using Vehicles.Application.Requests.Vehicles.Trucks.Commands;
 using Vehicles.Domain.VehicleTypes.Models;
 
 namespace Vehicles.API.Models.Factories;

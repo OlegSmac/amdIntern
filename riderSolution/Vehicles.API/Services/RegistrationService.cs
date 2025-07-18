@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Vehicles.API.Contracts.DTOs.Users;
 using Vehicles.API.Services;
-using Vehicles.Application.Auth.Commands;
-using Vehicles.Application.Auth.Requests;
-using Vehicles.Application.Auth.Responses;
+using Vehicles.Application.Requests.Auth.Commands;
+using Vehicles.Application.Requests.Auth.Requests;
+using Vehicles.Application.Requests.Auth.Responses;
 using Vehicles.Domain.Users.Models;
 
 public class RegistrationService

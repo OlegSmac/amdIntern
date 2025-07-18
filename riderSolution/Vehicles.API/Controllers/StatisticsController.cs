@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vehicles.API.Contracts.DTOs.Posts;
-using Vehicles.Application.Statistics.Queries;
+using Vehicles.Application.Requests.Statistics.Queries;
 using Vehicles.API.Contracts.DTOs.Statistics;
 
 namespace Vehicles.API.Controllers;

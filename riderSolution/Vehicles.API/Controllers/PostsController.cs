@@ -8,8 +8,8 @@ using Vehicles.API.Extensions;
 using Vehicles.API.Models.Factories;
 using Vehicles.API.Services;
 using Vehicles.Application.PaginationModels;
-using Vehicles.Application.Posts.Posts.Commands;
-using Vehicles.Application.Posts.Posts.Queries;
+using Vehicles.Application.Requests.Posts.Posts.Commands;
+using Vehicles.Application.Requests.Posts.Posts.Queries;
 using Vehicles.Domain.Posts.Models;
 
 namespace Vehicles.API.Controllers;

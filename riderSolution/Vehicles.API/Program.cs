@@ -11,15 +11,12 @@ using Vehicles.Application;
 using Vehicles.Infrastructure;
 using Vehicles.Infrastructure.Repositories;
 using Vehicles.Application.Abstractions;
-using Vehicles.Application.Auth.Commands;
-using Vehicles.Application.Notifications.Queries;
 using Vehicles.Application.PaginationModels;
 using Vehicles.Domain.Notifications.Models;
 using DotNetEnv;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Vehicles.API.Hubs;
+using Vehicles.Application.Requests.Auth.Commands;
+using Vehicles.Application.Requests.Notifications.Queries;
 
 namespace Vehicles.API;
 

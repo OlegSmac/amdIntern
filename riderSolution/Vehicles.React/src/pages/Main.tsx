@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import axiosInstance from '../api/axios';
 import type { Post } from '../pages/Post';
 import PostsList from '../smallComponents/PostsList';
+import { Link } from 'react-router-dom';
 
 const Main = () => {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -58,7 +59,6 @@ const Main = () => {
                 }}
             >
                 <Box
-                    className="title-box"
                     sx={{
                         position: 'absolute',
                         top: '14%',
@@ -87,7 +87,6 @@ const Main = () => {
                     />
 
                     <Box
-                        id="title-info"
                         sx={{
                             mr: 2.5,
                             display: 'flex',
@@ -117,6 +116,35 @@ const Main = () => {
                         >
                             Choose your favorite vehicle
                         </Typography>
+
+                        <Box
+                            sx={{
+                                mt: 8
+                            }}
+                        >
+                            <Button 
+                                component={Link} 
+                                to="/allPosts"
+                                variant="contained" 
+                                color="primary" 
+                                sx={{ minWidth: 148, height: 44 }}
+                            >
+                                All Posts
+                            </Button>
+
+                            {localStorage.getItem('userId') == null &&
+                                <Button 
+                                    component={Link} 
+                                    to="/login"
+                                    variant="outlined" 
+                                    color="info" 
+                                    sx={{ ml: 3, minWidth: 148, height: 44, background: 'white', '&:hover': {backgroundColor: '#b3bdc6'}
+                                    }}
+                                >
+                                    Login
+                                </Button>
+                            }
+                        </Box>
                     </Box>
                 </Box>
 
