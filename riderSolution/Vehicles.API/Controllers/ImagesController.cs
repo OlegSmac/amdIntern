@@ -9,14 +9,10 @@ namespace Vehicles.API.Controllers;
 [Route("api/images")]
 public class ImagesController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
     private readonly MinioService _minioService;
 
-    public ImagesController(IMediator mediator, IMapper mapper, MinioService minioService)
+    public ImagesController(MinioService minioService)
     {
-        _mediator = mediator;
-        _mapper = mapper;
         _minioService = minioService;
     }
     

@@ -1,10 +1,8 @@
 using MediatR;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Vehicles.API.Services;
 using Vehicles.Application.Requests.Users.Users.Commands;
 using Vehicles.Application.Requests.Users.Users.Queries;
-using Vehicles.Domain.Users.Models;
 
 namespace Vehicles.API.Controllers;
 
@@ -13,17 +11,14 @@ namespace Vehicles.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IdentityService _identityService;
 
-    public UsersController(IMediator mediator, UserManager<ApplicationUser> userManager, IdentityService identityService)
+    public UsersController(IMediator mediator)
     {
         _mediator = mediator;
-        _userManager = userManager;
-        _identityService = identityService;
     }
 
     [HttpPost("addPostToFavorite/{userId}/{postId}")]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> AddPostToFavorite([FromRoute] string userId, [FromRoute] int postId)
     {
         var command = new AddPostToFavoriteList(userId, postId);
@@ -33,6 +28,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpDelete("removePostFromFavorite/{userId}/{postId}")]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> RemovePostFromFavorite([FromRoute] string userId, [FromRoute] int postId)
     {
         var command = new RemovePostFromFavoriteList(userId, postId);
@@ -42,6 +38,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("isPostFavorite/{userId}/{postId}")]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> IsPostFavorite([FromRoute] string userId, [FromRoute] int postId)
     {
         var command = new IsPostFavorite(userId, postId);
@@ -51,6 +48,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet("getUserSubscriptions/{id}")]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> GetUserSubscriptions([FromRoute] string id)
     {
         var command = new GetUserSubscriptions(id);

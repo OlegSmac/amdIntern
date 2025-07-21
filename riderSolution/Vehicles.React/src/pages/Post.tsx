@@ -49,7 +49,7 @@ const Post = () => {
         const fetchRole = async () => {
             if (isAuthenticated) {
                 try {
-                    const roleResponse = await axios.post('/api/application-users/getRoleFromToken', {
+                    const roleResponse = await axiosPrivate.post('/api/application-users/getRoleFromToken', {
                         token: localStorage.getItem('authToken'),
                     });
                     setRole(roleResponse.data);
@@ -68,7 +68,7 @@ const Post = () => {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await axios.get(`/api/posts/${id}`);
+                const response = await axiosPrivate.get(`/api/posts/${id}`);
                 setPost(response.data);
             } catch (err) {
                 console.error('Error fetching vehicle:', err);
@@ -85,7 +85,7 @@ const Post = () => {
         const checkFavoriteStatus = async () => {
         if (isAuthenticated && userId && id) {
             try {
-                const response = await axios.get(`/api/users/isPostFavorite/${userId}/${id}`);
+                const response = await axiosPrivate.get(`/api/users/isPostFavorite/${userId}/${id}`);
                 setIsFavorite(response.data);
             } catch (error) {
                 console.error('Failed to check favorite status:', error);
@@ -100,7 +100,7 @@ const Post = () => {
         const fetchFavoriteCount = async () => {
         if (id) {
             try {
-                const response = await axios.get(`/api/posts/favoriteCount/${id}`);
+                const response = await axiosPrivate.get(`/api/posts/favoriteCount/${id}`);
                 setFavoriteCounter(response.data);
             } catch (error) {
                 console.error('Failed to fetch favorite count:', error);
@@ -113,7 +113,7 @@ const Post = () => {
     const handleAddFavorite = async () => {
         if (!userId || !id) return;
         try {
-            await axios.post(`/api/users/addPostToFavorite/${userId}/${id}`);
+            await axiosPrivate.post(`/api/users/addPostToFavorite/${userId}/${id}`);
             setIsFavorite(true);
         } catch (error) {
             console.error('Failed to add to favorite:', error);
@@ -123,7 +123,7 @@ const Post = () => {
     const handleRemoveFavorite = async () => {
         if (!userId || !id) return;
         try {
-            await axios.delete(`/api/users/removePostFromFavorite/${userId}/${id}`);
+            await axiosPrivate.delete(`/api/users/removePostFromFavorite/${userId}/${id}`);
             setIsFavorite(false);
         } catch (error) {
             console.error('Failed to remove from favorite:', error);

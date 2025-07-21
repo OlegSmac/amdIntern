@@ -29,7 +29,7 @@ public class ExceptionHandlingMiddleware
             var error = new Error()
             {
                 StatusCode = context.Response.StatusCode.ToString(),
-                Message = "Sorry an error on the server occured"
+                Message = "Sorry, an error on the server occured"
             };
             
             await context.Response.WriteAsync(error.ToString());

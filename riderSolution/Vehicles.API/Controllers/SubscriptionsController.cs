@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vehicles.API.Contracts.Requests.Users;
 using Vehicles.Application.Requests.Users.Users.Commands;
@@ -11,15 +12,14 @@ namespace Vehicles.API.Controllers;
 public class SubscriptionsController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
 
-    public SubscriptionsController(IMediator mediator, IMapper mapper)
+    public SubscriptionsController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     [HttpPost]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> Subscribe([FromBody] SubscriptionRequest request)
     {
         var command = new SubscribeToCompany(request.UserId, request.CompanyId);
@@ -29,6 +29,7 @@ public class SubscriptionsController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> Unsubscribe([FromBody] SubscriptionRequest request)
     {
         var command = new UnsubscribeFromCompany(request.UserId, request.CompanyId);

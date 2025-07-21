@@ -35,7 +35,6 @@ public class ApplicationUsersController : ControllerBase
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
     {
         var result = await UserService.UpdateUserAsync(_mediator, _userManager, request);
-        Console.WriteLine(result);
         if (!result.Equals("Successfully updated")) return BadRequest(result);
 
         return Ok(result);

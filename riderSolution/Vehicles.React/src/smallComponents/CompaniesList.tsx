@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Paper, Typography } from "@mui/material";
 import type { Company } from "../pages/Post";
 import { useEffect, useState, type FC } from "react";
-import axiosInstance from "../api/axios";
+import axiosInstance, { axiosPrivate } from "../api/axios";
 import axios from "../api/axios";
 import SendEmailForm from "./SendEmailForm";
 
@@ -43,7 +43,7 @@ const CompaniesList: FC<CompaniesListProps> = ({ companies, subscribeIds }) => {
         const payload = { userId, companyId };
         
         try {
-            await axios.post("/api/subscriptions", payload);
+            await axiosPrivate.post("/api/subscriptions", payload);
             setSubscribedIds(prev => [...prev, companyId]);
         } catch (error) {
             console.error("Failed to subscribe:", error);
@@ -54,7 +54,7 @@ const CompaniesList: FC<CompaniesListProps> = ({ companies, subscribeIds }) => {
         const payload = { userId, companyId };
         
         try {
-            await axios.delete("/api/subscriptions", {
+            await axiosPrivate.delete("/api/subscriptions", {
                 data: payload
             });
             setSubscribedIds(prev => prev.filter(id => id !== companyId));

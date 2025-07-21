@@ -14,6 +14,8 @@ using Vehicles.Application.Abstractions;
 using Vehicles.Application.PaginationModels;
 using Vehicles.Domain.Notifications.Models;
 using DotNetEnv;
+using FluentValidation.AspNetCore;
+using Vehicles.API.Contracts.DTOValidations.Vehicles;
 using Vehicles.API.Hubs;
 using Vehicles.Application.Requests.Auth.Commands;
 using Vehicles.Application.Requests.Notifications.Queries;
@@ -71,13 +73,13 @@ public class Program
         builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
         builder.Services.AddScoped<INotificationSender, NotificationService>();
         builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
-        builder.Services.AddScoped<IdentityService>();
         
         builder.Services.AddScoped<IRegistrationHandler, UserRegistrationHandler>();
         builder.Services.AddScoped<IRegistrationHandler, CompanyRegistrationHandler>();
         builder.Services.AddScoped<IRegistrationHandler, AdminRegistrationHandler>();
         builder.Services.AddScoped<RegistrationHandlerFactory>();
         builder.Services.AddScoped<RegistrationService>();
+        builder.Services.AddScoped<IdentityService>();
         
         builder.Services.Configure<MinioSettings>(options =>
         {
@@ -99,6 +101,10 @@ public class Program
         });
         
         builder.Services.AddControllers()
+            .AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssemblyContaining<VehicleDTOValidator>();
+            })
             .AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.TypeNameHandling = TypeNameHandling.None;

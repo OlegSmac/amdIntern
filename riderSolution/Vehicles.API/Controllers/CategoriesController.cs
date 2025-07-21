@@ -12,12 +12,10 @@ namespace Vehicles.API.Controllers;
 public class CategoriesController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
 
-    public CategoriesController(IMediator mediator, IMapper mapper)
+    public CategoriesController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     [HttpPost]

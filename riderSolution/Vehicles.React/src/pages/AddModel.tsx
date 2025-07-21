@@ -20,7 +20,7 @@ const AddModel = () => {
     useEffect(() => {
         const fetchCompanyName = async () => {
             try {
-                const response = await axios.get(`/api/accounts/${localStorage.getItem('userId')}`);
+                const response = await axios.get(`/api/application-users/${localStorage.getItem('userId')}`);
                 form.company = response.data.name;
             } catch (err) {
                 console.log(err);

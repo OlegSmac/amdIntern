@@ -74,16 +74,16 @@ public static class UserService
 
         if (role == "Admin")
         {
-            var command = new UpdateAdmin(request.Id, request.FirstName, request.LastName);
+            var command = new UpdateAdmin(request.Id, request.FirstName ?? "", request.LastName ?? "");
             await mediator.Send(command);
         }
         else if (role == "User")
         {
-            var command = new UpdateUser(request.Id, request.FirstName, request.LastName);
+            var command = new UpdateUser(request.Id, request.FirstName ?? "", request.LastName ?? "");
             await mediator.Send(command);
         }
         else if (role == "Company") {
-            var command = new UpdateCompany(request.Id, request.CompanyName, request.Description);
+            var command = new UpdateCompany(request.Id, request.CompanyName ?? "", request.Description ?? "");
             await mediator.Send(command);
         }
         

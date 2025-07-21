@@ -1,7 +1,7 @@
 import { Box, Button, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { Company } from "./Post";
-import axiosInstance from "../api/axios";
+import { axiosPrivate } from "../api/axios";
 import CompaniesList from "../smallComponents/CompaniesList";
 
 const Companies = () => {
@@ -25,7 +25,7 @@ const Companies = () => {
                     }
                 };
 
-                const response = await axiosInstance.post("/api/companies/getPagedCompanies", requestBody);
+                const response = await axiosPrivate.post("/api/companies/getPagedCompanies", requestBody);
 
                 setCompanies(response.data.items);
                 setTotalPages(Math.ceil(response.data.total / pageSize));
@@ -42,7 +42,7 @@ const Companies = () => {
         const fetchSubscribeIds = async () => {
             try {
                 const userId = localStorage.getItem('userId');
-                const response = await axiosInstance.get(`/api/users/getUserSubscriptions/${userId}`);
+                const response = await axiosPrivate.get(`/api/users/getUserSubscriptions/${userId}`);
                 setSubscribeIds(response.data);
             } catch (error) {
                 console.log("Failed to fetch user subscriptions", error);

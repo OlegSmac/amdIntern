@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Post } from "./Post";
-import axiosInstance from "../api/axios";
+import axiosInstance, { axiosPrivate } from "../api/axios";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Paper, Stack, Typography } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -60,7 +60,7 @@ const FavoritePosts = () => {
         if (!postToDelete) return;
 
         try {
-            await axiosInstance.delete(`/api/users/removePostFromFavorite/${userId}/${postToDelete}`);
+            await axiosPrivate.delete(`/api/users/removePostFromFavorite/${userId}/${postToDelete}`);
             
             setPosts(prevList => prevList.filter(post => post.id !== postToDelete));
         } catch (error) {

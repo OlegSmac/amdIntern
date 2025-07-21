@@ -56,7 +56,7 @@ const NotificationsList: FC<PropsNotificationsList> = ({ notifications }) => {
     };
 
     return (
-        <Box maxWidth="1700px" mx={40} px={1}>
+        <Box maxWidth="1800px" mx={40} px={1}>
             {localNotifications.map((notification) => {
                 const { message, linkText, href } = extractTextAndLink(notification.body);
                 const isAdmin = notification.type === "Admin";
@@ -79,8 +79,8 @@ const NotificationsList: FC<PropsNotificationsList> = ({ notifications }) => {
                             display="grid"
                             gridTemplateColumns={
                                 isAdmin
-                                    ? "1.1fr 1.8fr 0.9fr 1.4fr"
-                                    : "1.1fr 1.8fr 0.7fr 0.3fr"
+                                    ? "1.3fr 1.8fr 0.9fr 1.4fr"
+                                    : "1.3fr 1.8fr 0.5fr 0.3fr"
                             }
                             alignItems="center"
                             gap={1}
