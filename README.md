@@ -9,18 +9,18 @@ Database structure:
 
 User types:
 1. Regular user 
-Can see all vehicles from each company and add them to his favorite list. 
+Can see all vehicles from each company and add them to his favorite list.
 When a user adds a car to his favorite list, a notification is sent to a company account.
 Can send messages to the company's email. (smtp4dev)
 Can subscribe to a company to get notifications about new posts.
 
 
-2. Company account
+3. Company account
 When a company posts a new vehicle, users, who are subscribed to this company will get notification about the new post.
 Can see statistics: how many and what vehicle types were added to favorite lists (which vehicles are popular)
 Can answer regular users using email.
 
 
-3. Admin
+4. Admin
 Can manage all posts on the platform.
 Responsible for adding new vehicle models to the system.
