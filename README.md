@@ -1,8 +1,9 @@
 # amdIntern
-Database structure:
+## **Database structure:**
 <img width="1719" height="1080" alt="Vehicles_database" src="https://github.com/user-attachments/assets/be91be13-ad28-4d74-b647-c1ea6885edcc" />
 
-Application pages:
+
+## **Application pages:**
 
 ![Main_page](https://github.com/user-attachments/assets/bc9d3158-8f27-49c3-a2b9-bd2dbd22130c)
 ![Post_page](https://github.com/user-attachments/assets/7c7a3f1d-bd19-4cf8-8c46-2f18abc2bcde)
