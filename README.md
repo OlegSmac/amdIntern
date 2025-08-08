@@ -3,6 +3,7 @@
 <img width="1719" height="1080" alt="Vehicles_database" src="https://github.com/user-attachments/assets/be91be13-ad28-4d74-b647-c1ea6885edcc" />
 
 
+
 ## **Application pages:**
 
 ![Main_page](https://github.com/user-attachments/assets/bc9d3158-8f27-49c3-a2b9-bd2dbd22130c)
@@ -10,7 +11,9 @@
 ![Posts_managing](https://github.com/user-attachments/assets/5f9fe0a8-ff3e-46ae-8a79-ab422b5811d7)
 ![Company_statistics](https://github.com/user-attachments/assets/938ef8a0-2de0-4f93-a748-fd4eb83874f7)
 
-User types:
+
+
+## **User types:**
 1. Regular user 
 - Can see all vehicles from each company and add them to his favorite list.
 - When a user adds a car to his favorite list, a notification is sent to a company account.
