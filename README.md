@@ -5,11 +5,10 @@
 
 
 ## **Application pages:**
-
-![Main_page](https://github.com/user-attachments/assets/bc9d3158-8f27-49c3-a2b9-bd2dbd22130c)
-![Post_page](https://github.com/user-attachments/assets/7c7a3f1d-bd19-4cf8-8c46-2f18abc2bcde)
-![Posts_managing](https://github.com/user-attachments/assets/5f9fe0a8-ff3e-46ae-8a79-ab422b5811d7)
-![Company_statistics](https://github.com/user-attachments/assets/938ef8a0-2de0-4f93-a748-fd4eb83874f7)
+<img width="1919" height="1037" alt="Screenshot from 2025-07-27 14-43-09" src="https://github.com/user-attachments/assets/5188bb9f-1118-4d4c-bad0-5add0cb131c3" />
+<img width="1919" height="1034" alt="Screenshot from 2025-07-27 14-44-09" src="https://github.com/user-attachments/assets/a1e87b4d-8242-48b4-be7b-516ee5331cc0" />
+<img width="1919" height="1038" alt="Screenshot from 2025-07-27 14-44-53" src="https://github.com/user-attachments/assets/38a22288-a4ab-49cd-9e1e-aa567d8d3135" />
+<img width="1919" height="1037" alt="Screenshot from 2025-07-27 14-45-03" src="https://github.com/user-attachments/assets/dc8a85de-eae1-474b-8196-40c82a3f4c73" />
 
 
 
