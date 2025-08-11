@@ -1,7 +1,6 @@
 # amdIntern
-## **Database structure:**
-<img width="1719" height="1080" alt="Vehicles_database" src="https://github.com/user-attachments/assets/be91be13-ad28-4d74-b647-c1ea6885edcc" />
-
+## **Design Document:**
+https://docs.google.com/document/d/1BKUmsS29t1UsLrGiC9WAKv-XYVYdqSzq7wBSJMniK30/edit?usp=sharing
 
 
 ## **Application pages:**
